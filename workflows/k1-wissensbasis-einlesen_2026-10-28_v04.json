@@ -1,0 +1,968 @@
+{
+  "name": "AGT-2606 W06T03 K1 Wissensbasis einlesen",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "92a6c1b7-0a0f-1b58-3d7c-a119cb9a1cc6",
+      "name": "Einlesen starten [Manual Trigger]",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "includeOtherFields": false,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "k01",
+              "name": "workflow_version",
+              "value": "w06t03-e1",
+              "type": "string"
+            },
+            {
+              "id": "k02",
+              "name": "repo",
+              "value": "MinkeAutomation/content-maschine-k1",
+              "type": "string"
+            },
+            {
+              "id": "k03",
+              "name": "commit",
+              "value": "fedcd9544cf3e49ccf76f0caf1c598e84b020aee",
+              "type": "string"
+            },
+            {
+              "id": "k04",
+              "name": "raw_basis",
+              "value": "https://raw.githubusercontent.com/MinkeAutomation/content-maschine-k1/fedcd9544cf3e49ccf76f0caf1c598e84b020aee/docs",
+              "type": "string"
+            },
+            {
+              "id": "k05",
+              "name": "dokumente",
+              "value": "architektur,api-uebersicht,bekannte-einschraenkungen",
+              "type": "string"
+            },
+            {
+              "id": "k06",
+              "name": "kategorie",
+              "value": "k1-technik",
+              "type": "string"
+            },
+            {
+              "id": "k07",
+              "name": "embed_model",
+              "value": "models/gemini-embedding-001",
+              "type": "string"
+            },
+            {
+              "id": "k08",
+              "name": "embed_dims",
+              "value": 3072,
+              "type": "number"
+            },
+            {
+              "id": "k09",
+              "name": "chunk_size",
+              "value": 600,
+              "type": "number"
+            },
+            {
+              "id": "k10",
+              "name": "chunk_overlap",
+              "value": 100,
+              "type": "number"
+            },
+            {
+              "id": "k11",
+              "name": "pause_sekunden",
+              "value": 62,
+              "type": "number"
+            },
+            {
+              "id": "k12",
+              "name": "wissensstand",
+              "value": "30.09.2026",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4419ef60-fff2-1477-09a2-926d37823420",
+      "name": "Konfiguration [Edit Fields]",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        320,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "row",
+        "operation": "delete",
+        "tableId": "agt_w06_knowledge_chunks",
+        "filterType": "manual",
+        "matchType": "anyFilter",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "dokument",
+              "condition": "eq",
+              "keyValue": "={{ $('Konfiguration [Edit Fields]').first().json.dokumente.split(',')[0].trim() }}"
+            },
+            {
+              "keyName": "dokument",
+              "condition": "eq",
+              "keyValue": "={{ $('Konfiguration [Edit Fields]').first().json.dokumente.split(',')[1].trim() }}"
+            },
+            {
+              "keyName": "dokument",
+              "condition": "eq",
+              "keyValue": "={{ $('Konfiguration [Edit Fields]').first().json.dokumente.split(',')[2].trim() }}"
+            }
+          ]
+        }
+      },
+      "id": "1e6269df-fc0f-cc09-ab11-9449c4e26460",
+      "name": "Alte Stücke der 3 Dokumente entfernen [Supabase]",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        640,
+        768
+      ],
+      "executeOnce": true,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const c = $('Konfiguration [Edit Fields]').first().json;\nconst namen = String(c.dokumente).split(',').map(s => s.trim()).filter(Boolean);\nif (namen.length === 0) throw new Error('Keine Dokumente in der Konfiguration');\nreturn namen.map((n, i) => ({ json: {\n  dokument: n,\n  datei: n + '.md',\n  url: c.raw_basis + '/' + n + '.md',\n  stand: c.commit,\n  nr: i + 1,\n  von: namen.length\n} }));\n"
+      },
+      "id": "5396e565-e7d2-53e6-e358-c4403c0069e5",
+      "name": "Dateiliste anlegen [Code]",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const kfg = $('Konfiguration [Edit Fields]').first().json;\nconst erwartet = String(kfg.dokumente).split(',').map(s => s.trim()).filter(Boolean);\nconst alle = $input.all().map(i => i.json);\nconst fehler = [];\nfor (const d of erwartet) {\n  const z = alle.find(a => a.dokument === d);\n  if (!z) fehler.push(d + ': nicht verarbeitet');\n  else if (!(z.stuecke_gebildet > 0)) fehler.push(d + ': 0 Stücke');\n}\nif (fehler.length > 0) throw new Error('Einlesen unvollständig: ' + fehler.join('; '));\nconst summe = alle.reduce((s, a) => s + a.stuecke_gebildet, 0);\nreturn [{ json: {\n  ergebnis: 'ok',\n  dokumente: alle.length,\n  stuecke_gesamt: summe,\n  je_dokument: alle.map(a => a.dokument + ': ' + a.stuecke_gebildet).join(', '),\n  embed_model: kfg.embed_model,\n  embed_dims: kfg.embed_dims,\n  stand: kfg.commit\n} }];\n"
+      },
+      "id": "ea3beaf7-fbf5-c006-efce-e0a74dd96714",
+      "name": "Ergebnis prüfen [Code]",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        1248
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.url }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text",
+              "outputPropertyName": "data"
+            }
+          }
+        }
+      },
+      "id": "b29e2098-a1b2-afd4-76a9-84b772474a68",
+      "name": "Dokument holen [HTTP Request]",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1664,
+        768
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "includeOtherFields": false,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "z01",
+              "name": "dokument",
+              "value": "={{ $('Je Dokument einzeln [Loop Over Items]').item.json.dokument }}",
+              "type": "string"
+            },
+            {
+              "id": "z02",
+              "name": "datei",
+              "value": "={{ $('Je Dokument einzeln [Loop Over Items]').item.json.datei }}",
+              "type": "string"
+            },
+            {
+              "id": "z03",
+              "name": "stand",
+              "value": "={{ $('Je Dokument einzeln [Loop Over Items]').item.json.stand }}",
+              "type": "string"
+            },
+            {
+              "id": "z04",
+              "name": "text",
+              "value": "={{ $json.data }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "171c545f-2c83-321a-486e-26065353f341",
+      "name": "Dokument zusammenstellen [Edit Fields]",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1984,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Zerlegt ein Markdown-Dokument in Stücke (Größe und Überlappung aus der Konfiguration).\n// Geschnitten wird nur an Absatz, Zeile, Satzende oder Leerzeichen, jedes Stück ist ein Ausschnitt des Originals\n// (wird geprüft). Vor jedes Stück kommt eine Quellzeile mit Datei und Abschnitt, sie zählt nicht zur Größe.\nfunction zerlege(textRoh, GROESSE, UEBERLAPPUNG) {\n  const text = String(textRoh).replace(/\\r\\n/g, '\\n');\n  const TRENNER = [/\\n[ \\t]*\\n/g, /\\n/g, /(?<=[.!?:;])[ \\t]+/g, /[ \\t]+/g];\n  const einheiten = [];\n  function trimmen(s, e) {\n    while (s < e && /\\s/.test(text[s])) s++;\n    while (e > s && /\\s/.test(text[e - 1])) e--;\n    return [s, e];\n  }\n  function teilen(s, e, stufe) {\n    [s, e] = trimmen(s, e);\n    if (e <= s) return;\n    if (e - s <= GROESSE) { einheiten.push([s, e]); return; }\n    if (stufe >= TRENNER.length) {\n      for (let p = s; p < e; p += GROESSE) einheiten.push([p, Math.min(e, p + GROESSE)]);\n      return;\n    }\n    const re = new RegExp(TRENNER[stufe].source, 'g');\n    const teile = [];\n    let schnitt = s;\n    const segment = text.slice(s, e);\n    let m;\n    while ((m = re.exec(segment)) !== null) {\n      if (m[0].length === 0) { re.lastIndex++; continue; }\n      teile.push([schnitt, s + m.index]);\n      schnitt = s + m.index + m[0].length;\n    }\n    teile.push([schnitt, e]);\n    if (teile.length === 1) { teilen(s, e, stufe + 1); return; }\n    let aktStart = null, aktEnde = null;\n    for (const [a, b] of teile) {\n      const [ta, tb] = trimmen(a, b);\n      if (tb <= ta) continue;\n      if (tb - ta > GROESSE) {\n        if (aktStart !== null) { einheiten.push([aktStart, aktEnde]); aktStart = null; }\n        teilen(ta, tb, stufe + 1);\n        continue;\n      }\n      if (aktStart === null) { aktStart = ta; aktEnde = tb; }\n      else if (tb - aktStart <= GROESSE && stufe >= 2) { aktEnde = tb; }\n      else { einheiten.push([aktStart, aktEnde]); aktStart = ta; aktEnde = tb; }\n    }\n    if (aktStart !== null) einheiten.push([aktStart, aktEnde]);\n  }\n  teilen(0, text.length, 0);\n  const ueberschriften = [];\n  const reH = /^(#{1,6})[ \\t]+(.+)$/gm;\n  let h;\n  while ((h = reH.exec(text)) !== null) ueberschriften.push({ pos: h.index, titel: h[2].trim() });\n  function abschnittBei(pos) {\n    let t = 'Einleitung';\n    for (const u of ueberschriften) { if (u.pos <= pos) t = u.titel; else break; }\n    return t;\n  }\n  const stuecke = [];\n  let i = 0;\n  while (i < einheiten.length) {\n    let j = i;\n    while (j + 1 < einheiten.length && einheiten[j + 1][1] - einheiten[i][0] <= GROESSE) j++;\n    const von = einheiten[i][0], bis = einheiten[j][1];\n    stuecke.push({ von, bis, text: text.slice(von, bis), abschnitt: abschnittBei(von) });\n    if (j + 1 >= einheiten.length) break;\n    let k = j + 1;\n    for (let c = i + 1; c <= j; c++) { if (einheiten[j][1] - einheiten[c][0] <= UEBERLAPPUNG) { k = c; break; } }\n    i = k;\n  }\n  return { text, stuecke };\n}\n\nconst kfg = $('Konfiguration [Edit Fields]').first().json;\nconst doc = $input.first().json;\nconst { text, stuecke } = zerlege(doc.text, Number(kfg.chunk_size), Number(kfg.chunk_overlap));\nif (text.length < 500) throw new Error('Dokument zu kurz oder leer (' + text.length + ' Zeichen): ' + doc.dokument);\nif (stuecke.length === 0) throw new Error('0 Stücke für ' + doc.dokument);\nreturn stuecke.map((s, i) => {\n  if (text.slice(s.von, s.bis) !== s.text) throw new Error('Stück ' + i + ' ist kein Ausschnitt des Originals: ' + doc.dokument);\n  if (s.text.length > Number(kfg.chunk_size)) throw new Error('Stück ' + i + ' zu lang (' + s.text.length + '): ' + doc.dokument);\n  const vorher = i > 0 ? stuecke[i - 1] : null;\n  return { json: {\n    text: 'Quelle: ' + doc.datei + ', Abschnitt: ' + s.abschnitt + '\\n' + s.text,\n    dokument: doc.dokument,\n    datei: doc.datei,\n    stand: doc.stand,\n    abschnitt: s.abschnitt,\n    chunk_index: i,\n    chunk_total: stuecke.length,\n    zeichen_netto: s.text.length,\n    ueberlappung_zeichen: vorher ? Math.max(0, vorher.bis - s.von) : 0,\n    zeichen_original: text.length\n  }, pairedItem: { item: 0 } };\n});\n"
+      },
+      "id": "4c2a2bb8-6ec0-93e1-3eea-3dc8eab372bd",
+      "name": "In Stücke schneiden [Code]",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2304,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": {
+          "__rl": true,
+          "mode": "id",
+          "value": "agt_w06_knowledge_chunks"
+        },
+        "embeddingBatchSize": 50,
+        "options": {
+          "queryName": "match_agt_w06_knowledge_chunks"
+        }
+      },
+      "id": "41d85875-0151-a249-a422-9f6b8681e00f",
+      "name": "In Wissensbasis speichern [Supabase Vector Store]",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        2720,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-embedding-001"
+      },
+      "id": "53c6910d-5c7b-4c8d-0757-e50ece837b64",
+      "name": "Vektoren mit Gemini rechnen [Embeddings Google Gemini]",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        2800,
+        1008
+      ]
+    },
+    {
+      "parameters": {
+        "dataType": "json",
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $('In Stücke schneiden [Code]').item.json.text.replace('\n', ', Wissensstand: ' + $('Konfiguration [Edit Fields]').first().json.wissensstand + '\n') }}",
+        "textSplittingMode": "custom",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "dokument",
+                "value": "={{ $('In Stücke schneiden [Code]').item.json.dokument }}"
+              },
+              {
+                "name": "datei",
+                "value": "={{ $('In Stücke schneiden [Code]').item.json.datei }}"
+              },
+              {
+                "name": "abschnitt",
+                "value": "={{ $('In Stücke schneiden [Code]').item.json.abschnitt }}"
+              },
+              {
+                "name": "chunk_index",
+                "value": "={{ $('In Stücke schneiden [Code]').item.json.chunk_index }}"
+              },
+              {
+                "name": "chunk_total",
+                "value": "={{ $('In Stücke schneiden [Code]').item.json.chunk_total }}"
+              },
+              {
+                "name": "zeichen_netto",
+                "value": "={{ $('In Stücke schneiden [Code]').item.json.zeichen_netto }}"
+              },
+              {
+                "name": "stand",
+                "value": "={{ $('In Stücke schneiden [Code]').item.json.stand }}"
+              },
+              {
+                "name": "kategorie",
+                "value": "={{ $('Konfiguration [Edit Fields]').first().json.kategorie }}"
+              },
+              {
+                "name": "embed_model",
+                "value": "={{ $('Konfiguration [Edit Fields]').first().json.embed_model }}"
+              },
+              {
+                "name": "embed_dims",
+                "value": "={{ $('Konfiguration [Edit Fields]').first().json.embed_dims }}"
+              },
+              {
+                "name": "eingelesen_am",
+                "value": "={{ $now.toISO() }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "d4d5b652-b4b5-c12c-3d29-54f18cbbd134",
+      "name": "Nur den Text übergeben [Default Data Loader]",
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        3120,
+        1008
+      ]
+    },
+    {
+      "parameters": {
+        "chunkSize": 1200,
+        "chunkOverlap": 0,
+        "options": {}
+      },
+      "id": "e4c78615-5512-c550-8507-f36801cec15b",
+      "name": "Notbremse für zu lange Stücke [Recursive Character Text Splitter]",
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        3120,
+        1248
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const gebildet = $('In Stücke schneiden [Code]').all();\nconst erste = gebildet.length > 0 ? gebildet[0].json : {};\nreturn [{ json: {\n  dokument: erste.dokument,\n  datei: erste.datei,\n  stuecke_gebildet: gebildet.length,\n  eintraege_vom_speicher_knoten: $input.all().length,\n  zeichen_original: erste.zeichen_original,\n  eingelesen_am: new Date().toISOString()\n} }];\n"
+      },
+      "id": "a330ac3f-f46d-a730-b13e-0dae42bf75b1",
+      "name": "Stücke zählen [Code]",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3040,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": "={{ $('Konfiguration [Edit Fields]').first().json.pause_sekunden }}",
+        "unit": "seconds"
+      },
+      "id": "9dc44e43-ba00-7818-f354-3d288080b58a",
+      "name": "Pause wegen Gemini-Limit [Wait]",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3360,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "be0b7d6c-e81a-3e4c-fb06-e85fa8a8676d",
+      "name": "Je Dokument einzeln [Loop Over Items]",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1344,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "errorType": "errorMessage",
+        "errorMessage": "=Dokument nicht ladbar, Einlesen abgebrochen: {{ $json.error?.message ?? \"unbekannter Fehler\" }}"
+      },
+      "id": "91ce2804-fdbf-d4b4-e991-2438438340df",
+      "name": "Einlesen abbrechen [Stop and Error]",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        2400,
+        1488
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# AGT-2606 W06T03 K1 Wissensbasis einlesen\nLiest 3 technische K1-Dokumente aus dem öffentlichen Repo, schneidet sie in Stücke (600 Zeichen, 100 Überlappung), rechnet Gemini-Vektoren und speichert sie in Supabase.",
+        "height": 110,
+        "width": 3800,
+        "color": 5
+      },
+      "id": "5f9efc8a-6eb3-dd53-327b-5e5e451050a3",
+      "name": "Titelleiste",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -64,
+        -560
+      ]
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 400,
+        "width": 3800
+      },
+      "id": "309fb0b0-990a-1576-793b-96c566374d1d",
+      "name": "Rahmen Kopf",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -64,
+        -400
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# 📋 Workflow-Beschreibung\n🎯 **Zweck:** Füllt die Wissensbasis des K1 Support-Agenten: 3 Dokumente (Architektur, API-Übersicht, bekannte Einschränkungen) werden zerlegt, mit Gemini eingebettet und in `agt_w06_knowledge_chunks` gespeichert.\n👥 **Für wen:** Patrick als Betreiber. Der Agent liest die Tabelle später über ein Werkzeug.\n🕹️ **So nutzt du ihn:** im Editor „Execute workflow“. Läuft nur von Hand und ist nicht veröffentlicht. Ein 2. Lauf leert die 3 Dokumente zuerst, es entstehen keine Dubletten.\n## Status: 🟢 Läuft, 3 Dokumente mit 22 Stücken eingelesen",
+        "height": 368,
+        "width": 900,
+        "color": 7
+      },
+      "id": "b8c53951-235d-d4ee-e075-155256fd0fde",
+      "name": "Workflow-Beschreibung",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -48,
+        -384
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# 🧾 Version\nw06t03-e1: Stücke bis 600 Zeichen mit bis zu 100 Zeichen Überlappung (nur ganze Absätze, Zeilen oder Sätze), Quellzeile vorne, Vektoren `models/gemini-embedding-001` mit 3072 Dimensionen, 62 Sekunden Pause je Dokument wegen des Gemini-Limits. Die Dokumente kommen mit festem Commit aus dem öffentlichen Repo. Änderungen mit Grund: `ChangeLog.md` im Repo.\n\nDas Werkzeug am Agenten (`K1_Technikwissen`) hängt im Support-Agenten v04. Ein Schwellwert für „nichts gefunden“ ist nicht eingebaut, das Werkzeug liefert immer die besten 4 Stücke.",
+        "height": 368,
+        "width": 640,
+        "color": 7
+      },
+      "id": "b8c62ee3-9f4e-f8dd-16be-3b90cf8cd7fc",
+      "name": "Version",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        880,
+        -384
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# 🧪 K1 Wissensbasis einlesen\n**Aufgabe:** Grundlage für das 5. Werkzeug des Support-Agenten: eine durchsuchbare Wissensbasis mit Vektoren.\n**Die Idee:** Text holen, in Stücke mit Quellzeile schneiden, einbetten, speichern. Jedes Dokument einzeln, danach 62 Sekunden Pause.\n**Warum so?** Das Gratis-Limit von Gemini liefert bei zu schnellen Aufrufen leere Vektoren, und das Leeren vorab verhindert Dubletten.\n**Hinweis:** Der Schreibzugang (service_role) gehört nur in diesen Workflow, der Agent liest später nur mit anon.",
+        "height": 368,
+        "width": 1000,
+        "color": 7
+      },
+      "id": "9d370564-4728-365d-82f6-8252c908d89a",
+      "name": "Kopf",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1536,
+        -384
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Ablauf\n① Vorbereiten: Konfiguration, alte Stücke entfernen, Dateiliste\n② Dokument holen\n③ In Stücke schneiden\n④ Vektoren rechnen und speichern\n⑤ Zählen, 62 Sekunden warten\n⑥ Am Ende prüfen",
+        "height": 368,
+        "width": 560,
+        "color": 7
+      },
+      "id": "72010921-243a-e68a-c626-04bc52fe2fca",
+      "name": "Ablauf",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2552,
+        -384
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Status\n🟢 3 Läufe erfolgreich (1302, 1303, 1305): 22 Stücke, architektur 12, api-uebersicht 4, bekannte-einschraenkungen 6; ab dem 2. Lauf keine Dubletten\n🟢 Das Werkzeug am Agenten hängt im Support-Agenten v04; ein Schwellwert für „nichts gefunden“ ist nicht eingebaut\n🔵 Embedding: gemini-embedding-001, 3072 Dimensionen (gemessen, Ausführung 1301)\n🔴 Ein 429 von Gemini liefert leere Vektoren: Supabase meldet „vector must have at least 1 dimension“",
+        "height": 368,
+        "width": 592,
+        "color": 7
+      },
+      "id": "1b84d833-dc1a-ae68-6ed7-b0bcdefd17c3",
+      "name": "Status",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3128,
+        -384
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# 01 · Vorbereiten\nLegt Modell, Stückgröße und Pause fest, entfernt die alten Stücke der 3 Dokumente und baut die Dateiliste.\n\n### 🩺 Wenn es hakt\nFehler beim Entfernen: Zugang `<Zugang Supabase Schreibrolle>` prüfen und ob die Tabelle per SQL 004 angelegt wurde.",
+        "height": 1370,
+        "width": 1328,
+        "color": 4
+      },
+      "id": "81161ec1-5bb8-8e00-929d-c3455cd95f83",
+      "name": "Phase 01 Vorbereiten",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -64,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# 02 · Holen, Zerlegen und Prüfen\nHolt jedes Dokument einzeln aus dem Repo und schneidet es in Stücke mit Quellzeile. Am done-Ausgang der Schleife prüft ein Knoten, dass jedes der 3 Dokumente mindestens 1 Stück hat.\n\n### 🩺 Wenn es hakt\nKein Stück oder Fehler im Zerlegen: Adresse und Commit in der Konfiguration prüfen, die Fehlermeldung nennt Dokument und Stück. Fehlt am Ende ein Dokument, steht sein Name in der Meldung.",
+        "height": 1370,
+        "width": 1360,
+        "color": 5
+      },
+      "id": "c81fb525-53bb-f63f-e99d-5a8e98d80660",
+      "name": "Phase 02 Holen und Zerlegen",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# 03 · Vektoren und Speichern\nGemini rechnet die Vektoren, die Stücke landen in `agt_w06_knowledge_chunks`, danach 62 Sekunden Pause.\n\n### 🩺 Wenn es hakt\n„vector must have at least 1 dimension“ heißt: Gemini hat mit 429 geantwortet. 5 Minuten warten, neu starten.",
+        "height": 1370,
+        "width": 1080,
+        "color": 6
+      },
+      "id": "cf3e8cf2-6099-6712-86a8-be7f71eec441",
+      "name": "Phase 03 Vektoren und Speichern",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2656,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## ① Vorbereiten\nDie Konfiguration hält Commit, Modell, Stückgröße und Pause an einem Ort. Die alten Stücke der 3 Dokumente werden zuerst entfernt, damit ein 2. Lauf keine Dubletten erzeugt.\n\n### 🟢 läuft",
+        "height": 240,
+        "width": 1232,
+        "color": 1
+      },
+      "id": "52f16085-4e64-cc36-b857-412803c9a23b",
+      "name": "Schritt 1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## ② Dokument holen\nDie Schleife nimmt je 1 Dokument und holt den Text per festem Commit aus dem Repo. 3 Versuche, bei Fehler Abbruch.\n\n### 🟢 läuft",
+        "height": 240,
+        "width": 640,
+        "color": 1
+      },
+      "id": "d9cc6361-26b3-7ed0-145b-2d1deeec5471",
+      "name": "Schritt 2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1312,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## ③ In Stücke schneiden\nStücke bis 600 Zeichen, Schnitt nur an Absatz, Zeile oder Satz. Jedes Stück bekommt vorne die Quellzeile.\n\n### 🟢 läuft",
+        "height": 240,
+        "width": 640,
+        "color": 1
+      },
+      "id": "98a15fc7-4560-9779-5982-577ad1639e88",
+      "name": "Schritt 3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1968,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## ④ Vektoren und speichern\nGemini rechnet je Stück 3072 Zahlen, der Knoten speichert Text, Metadaten und Vektor.\n\n### 🟢 läuft",
+        "height": 240,
+        "width": 300,
+        "color": 1
+      },
+      "id": "b5d95412-e819-6d0d-168a-992f780eed68",
+      "name": "Schritt 4",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2688,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## ⑤ Zählen und warten\nStücke je Dokument zählen, dann 62 Sekunden Pause gegen das Gemini-Limit.\n\n### 🟢 läuft",
+        "height": 240,
+        "width": 640,
+        "color": 1
+      },
+      "id": "a0a8b3b2-020a-ba80-5cd4-b4388934c01d",
+      "name": "Schritt 5",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3008,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## ⑥ Prüfen\nAm Ende zählt der Lauf alle Dokumente und bricht ab, wenn eines fehlt oder 0 Stücke hat.\n\n### 🟢 läuft",
+        "height": 240,
+        "width": 360,
+        "color": 1
+      },
+      "id": "92170208-d392-e29f-0bee-1837d4107ade",
+      "name": "Schritt 6",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        1000
+      ]
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 468,
+        "width": 800,
+        "color": 5
+      },
+      "id": "30907352-dccb-41a5-b1f0-8ebbd6d8514f",
+      "name": "Rahmen Fehlerweg",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        1450
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## ⑦ Fehlerweg\n- **Dokument nicht ladbar:** 3 Versuche, dann Abbruch mit Meldung, nichts wird still übergangen.\n- **0 Stücke oder zu kurz:** Abbruch mit Dokumentname.\n- **Gemini 429:** leere Vektoren, der Supabase-Knoten meldet einen Fehler, der Lauf endet rot.\n- **Dokument fehlt am Ende:** Abbruch im Prüfen.",
+        "height": 300,
+        "width": 768,
+        "color": 3
+      },
+      "id": "dddbba81-f989-cc1f-d9e1-0abe62195284",
+      "name": "Fehlerweg",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1296,
+        1466
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# 📋 Error Report\nAusführungen ansehen auf der eigenen n8n-Instanz: Workflow öffnen, Reiter Executions.",
+        "height": 120,
+        "width": 768,
+        "color": 3
+      },
+      "id": "e3c3de19-75b4-6fa7-96c8-1e716967fda2",
+      "name": "Error Report",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1296,
+        1782
+      ]
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 1384,
+        "width": 592,
+        "color": 5
+      },
+      "id": "5cd08af3-4ad1-a7d3-41c9-53ba71b3aa62",
+      "name": "Rahmen Hilfe-Spalte",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3792,
+        -560
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# ✅ Setup-Checkliste\n1. Tabelle und Funktion per SQL anlegen: `docs/sql/004_agt_w06_wissensbasis.sql` im Repo.\n2. `<Zugang Supabase Schreibrolle>` (Rolle service_role) am Speicher-Knoten und am Entfernen-Knoten.\n3. `<Zugang Google Gemini Embeddings>` am Embeddings-Knoten.\n4. In der Konfiguration Commit und Dokumentnamen prüfen.\n5. „Execute workflow“ drücken, rund 4 Minuten warten.\n6. Danach in Supabase die Stücke je Dokument zählen.\n7. Nicht veröffentlichen, der Workflow läuft nur von Hand.",
+        "height": 440,
+        "width": 560,
+        "color": 7
+      },
+      "id": "1c75538a-1cdd-7cca-22ba-73d85132d4b1",
+      "name": "Setup-Checkliste",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3808,
+        -544
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# 🌐 Plattform-Hinweise\n**n8n (eigene Instanz):** Erlaubt: Standard-Knoten, Wait mit 62 Sekunden. 🟡 Besonderheit: Ausführungsdaten enthalten die Vektoren und werden groß.\n\n**Gemini (Google):** Erlaubt: Gratiskontingent. 🟡 Besonderheit: Minutenlimit, bei 429 leere Vektoren. Eingaben dürfen zur Produktverbesserung genutzt werden.\n\n**Supabase:** Erlaubt: Gratisplan. 🟡 Besonderheit: Row Level Security an, schreiben nur mit dem Schreibzugang.\n\n**GitHub:** Erlaubt: öffentliches Repo ohne Anmeldung. 🟡 Besonderheit: Der Commit ist fest, `main` würde sich ändern.",
+        "height": 520,
+        "width": 560,
+        "color": 7
+      },
+      "id": "97d09a54-a564-9dd4-36e3-6f04a4d6ce7e",
+      "name": "Plattform-Hinweise",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3808,
+        -88
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# 🩺 Fehlerbehebung\n👉 **Lauf bricht beim Speichern ab:** Fehlertext lesen. „vector must have at least 1 dimension“ ist ein Gemini-429, 5 Minuten warten.\n👉 **0 Zeilen in der Tabelle:** SQL 004 nicht eingespielt oder falscher Zugang.\n👉 **Dubletten:** darf nicht vorkommen, der 1. Knoten entfernt die Stücke vorab. Sonst Tabelle prüfen.",
+        "height": 360,
+        "width": 560,
+        "color": 7
+      },
+      "id": "747b965c-f75f-9032-85f8-54b70972153b",
+      "name": "Fehlerbehebung",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3808,
+        448
+      ]
+    }
+  ],
+  "connections": {
+    "Einlesen starten [Manual Trigger]": {
+      "main": [
+        [
+          {
+            "node": "Konfiguration [Edit Fields]",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Konfiguration [Edit Fields]": {
+      "main": [
+        [
+          {
+            "node": "Alte Stücke der 3 Dokumente entfernen [Supabase]",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alte Stücke der 3 Dokumente entfernen [Supabase]": {
+      "main": [
+        [
+          {
+            "node": "Dateiliste anlegen [Code]",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dateiliste anlegen [Code]": {
+      "main": [
+        [
+          {
+            "node": "Je Dokument einzeln [Loop Over Items]",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dokument holen [HTTP Request]": {
+      "main": [
+        [
+          {
+            "node": "Dokument zusammenstellen [Edit Fields]",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Einlesen abbrechen [Stop and Error]",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dokument zusammenstellen [Edit Fields]": {
+      "main": [
+        [
+          {
+            "node": "In Stücke schneiden [Code]",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "In Stücke schneiden [Code]": {
+      "main": [
+        [
+          {
+            "node": "In Wissensbasis speichern [Supabase Vector Store]",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "In Wissensbasis speichern [Supabase Vector Store]": {
+      "main": [
+        [
+          {
+            "node": "Stücke zählen [Code]",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vektoren mit Gemini rechnen [Embeddings Google Gemini]": {
+      "ai_embedding": [
+        [
+          {
+            "node": "In Wissensbasis speichern [Supabase Vector Store]",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nur den Text übergeben [Default Data Loader]": {
+      "ai_document": [
+        [
+          {
+            "node": "In Wissensbasis speichern [Supabase Vector Store]",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notbremse für zu lange Stücke [Recursive Character Text Splitter]": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Nur den Text übergeben [Default Data Loader]",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stücke zählen [Code]": {
+      "main": [
+        [
+          {
+            "node": "Pause wegen Gemini-Limit [Wait]",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pause wegen Gemini-Limit [Wait]": {
+      "main": [
+        [
+          {
+            "node": "Je Dokument einzeln [Loop Over Items]",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Je Dokument einzeln [Loop Over Items]": {
+      "main": [
+        [
+          {
+            "node": "Ergebnis prüfen [Code]",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Dokument holen [HTTP Request]",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [],
+  "active": false,
+  "pinData": {}
+}

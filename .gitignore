@@ -1,0 +1,11 @@
+# Zugangsdaten und lokale Werte gehören nie ins Repository
+.env
+*.env
+config.py
+*.key
+*.pem
+
+# Systemdateien
+desktop.ini
+Thumbs.db
+.DS_Store
