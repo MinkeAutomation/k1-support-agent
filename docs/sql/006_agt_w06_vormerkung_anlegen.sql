@@ -1,4 +1,4 @@
--- 006_agt_w06_ticket_erfassen.sql
+-- 006_agt_w06_vormerkung_anlegen.sql
 -- Schreibfunktion fuer das Werkzeug Teamvormerkung: legt genau 1 Zeile in agt_w06_tickets an und liefert ein JSON-Objekt.
 --   status "fehlt"     das Anliegen ist leer oder kuerzer als 5 Zeichen; Feld "feld" nennt "anliegen", es wird nichts angelegt.
 --   status "erfasst"   Feld "vorgang" traegt die Nummer (K1-T-...), Feld "neu" ist false, wenn innerhalb von 30 Minuten

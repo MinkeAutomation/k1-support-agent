@@ -1,4 +1,4 @@
--- 005_agt_w06_auftrag_nachschlagen.sql
+-- 005_agt_w06_auftrag_abfragen.sql
 -- Lesefunktion fuer das Werkzeug Auftragsstand. Sie liefert immer ein JSON-Objekt mit dem Feld "status".
 --   status "fehlt"       keine Ziffer in der Eingabe; Feld "feld" nennt, was fehlt.
 --   status "ungueltig"   Eingabe ist keine Zahl mit genau 5 Ziffern.

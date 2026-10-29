@@ -23,7 +23,7 @@
 <a href="w06t01.html">Tag 1</a>
 <a href="w06t02.html">Tag 2</a>
 <a href="w06t03.html">Tag 3</a>
-<span aria-disabled="true" class="aus" title="noch nicht dokumentiert">Tag 4</span>
+<a href="w06t04.html">Tag 4</a>
 <span aria-disabled="true" class="aus" title="noch nicht dokumentiert">Tag 5</span>
 <a href="https://github.com/MinkeAutomation/k1-support-agent">Repository</a>
 </nav>
@@ -48,19 +48,20 @@
 <text x="193" y="185">Tag 3</text><text x="168" y="202">Datenquellen</text>
 <text x="278" y="120">Tag 4</text><text x="270" y="103">Prompts</text>
 <text x="363" y="185">Tag 5</text><text x="344" y="202">Vergleich</text>
-<text class="t-stark" x="222" y="40">v04</text><text x="222" y="57">6 Werkzeuge, Wissensbasis</text>
+<text class="t-stark" x="222" y="40">v05</text><text x="222" y="57">3 Prompts, Leitplanken</text>
 <path class="gleis" d="M210 26 L210 136"></path>
 </svg>
 </div>
 <dl aria-label="Stand der Woche" class="messleiste">
-<div><dt>Workflow</dt><dd>v04<small>vom 28.10.2026</small></dd></div><div><dt>Werkzeuge</dt><dd>6<small>FAQ, Wissensbasis, Feiertage, Status, Ticket, Mail</small></dd></div><div><dt>Quelle wie erwartet</dt><dd>9 von 10<small>neue Fragen, 1 Abweichung erklärt (Q04)</small></dd></div><div><dt>Gedächtnistest</dt><dd>PASS<small>Läufe 1453 und 1454, 1461 und 1462</small></dd></div><div><dt>Tage dokumentiert</dt><dd>3 von 5<small>wird täglich erweitert</small></dd></div>
+<div><dt>Workflow</dt><dd>v05<small>vom 29.10.2026</small></dd></div><div><dt>Werkzeuge</dt><dd>6<small>FAQ, Wissensbasis, Feiertage, Status, Ticket, Mail</small></dd></div><div><dt>Prompt-Vergleich</dt><dd>45 Läufe<small>3 Fassungen, 5 Anfragen, je 3 Läufe</small></dd></div><div><dt>Regression</dt><dd>13 von 14<small>Abweichung Q09 erklärt, 2 Testmails</small></dd></div><div><dt>Tage dokumentiert</dt><dd>4 von 5<small>wird täglich erweitert</small></dd></div>
 </dl>
 
 <div class="knoepfe">
-<a class="knopf" href="w06t03.html">Tages-Doku W06T03 <span aria-hidden="true" class="pfeil">→</span></a>
+<a class="knopf" href="w06t04.html">Tages-Doku W06T04 <span aria-hidden="true" class="pfeil">→</span></a>
+<a class="knopf zweit" href="w06t03.html">Tages-Doku W06T03 <span aria-hidden="true" class="pfeil">→</span></a>
 <a class="knopf zweit" href="w06t02.html">Tages-Doku W06T02 <span aria-hidden="true" class="pfeil">→</span></a>
 <a class="knopf zweit" href="w06t01.html">Tages-Doku W06T01 <span aria-hidden="true" class="pfeil">→</span></a>
-<a class="knopf" href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/k1-support-agent_2026-10-28_v04.json">Workflow-Export v04 (JSON) <span aria-hidden="true" class="pfeil">↗</span></a>
+<a class="knopf" href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/k1-support-agent_2026-10-29_v05.json">Workflow-Export v05 (JSON) <span aria-hidden="true" class="pfeil">↗</span></a>
 <a class="knopf zweit" href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/faq/k1-faq.csv">FAQ-Tabelle (CSV) <span aria-hidden="true" class="pfeil">↗</span></a>
 <a class="knopf zweit" href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/ChangeLog.md">ChangeLog <span aria-hidden="true" class="pfeil">↗</span></a>
 <a class="knopf zweit" href="#versionen">Versionen <span aria-hidden="true" class="pfeil">→</span></a>
@@ -91,11 +92,11 @@
 <caption id="t-aktueller-stand">Aktueller Stand</caption>
 <thead><tr><th scope="col">Angabe</th><th scope="col">Wert</th></tr></thead>
 <tbody>
-<tr><th scope="row">Workflow-Version</th><td>v04 vom 28.10.2026</td></tr>
-<tr><th scope="row">Fähigkeiten</th><td>Agent mit Systemprompt p8 (Belegregel, Entscheidungstabelle) und 6 Werkzeugen (K1_Antwortkatalog, K1_Technikwissen, Feiertage_nachschlagen, Auftragsstand, Teamvormerkung, Eilmeldung_ans_Team), Gesprächsverlauf in Postgres (Fenster 10), Jev-Weiche j9 vor dem Agenten, Fehlerwege, Protokoll je Lauf</td></tr>
+<tr><th scope="row">Workflow-Version</th><td>v05 vom 29.10.2026</td></tr>
+<tr><th scope="row">Fähigkeiten</th><td>Agent mit Systemprompt p10 (3 Fassungen, balanciert im Echtbetrieb, Verbotsliste, Rückfrage vor der Vormerkung, KI-Hinweis), Obergrenze von 20 Nachrichten, Ausweichmodell und 6 Werkzeugen (K1_Antwortkatalog, K1_Technikwissen, Feiertage_nachschlagen, Auftragsstand, Teamvormerkung, Eilmeldung_ans_Team), Gesprächsverlauf in Postgres (Fenster 10), Jev-Weiche j10 mit Verlauf der Sitzung vor dem Agenten, Fehlerwege, Protokoll je Lauf</td></tr>
 <tr><th scope="row">Modelle</th><td>Agent nvidia/nemotron-3-ultra-550b-a55b:free, Weiche typesafe/jev-1.14, beide über OpenRouter</td></tr>
 <tr><th scope="row">Wissensquellen</th><td><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/faq/k1-faq.csv">faq/k1-faq.csv</a> (14 Einträge, Ablauf und feste Regeln), Wissensbasis in Supabase (22 Stücke, Stand 30.09.2026, Technik von K1), Feiertags-Schnittstelle Nager.Date (Kalender)</td></tr>
-<tr><th scope="row">letzter Test</th><td>Test v04 am 28.10.2026 (Läufe 1447 bis 1467): 14 Fälle plus 2 Zusatzfälle, bei 9 von 10 neuen Fragen die erwartete Quelle, 1 Abweichung (Q04) erklärt, Gedächtnistest PASS, 2 Testmails. Gesamttest Tag 2: 10 von 10 Anfragen; Test von Tag 1: 16 von 20 PASS</td></tr>
+<tr><th scope="row">letzter Test</th><td>Test v05 am 29.10.2026 (Läufe 1479 bis 1613): 45 Vergleichsläufe, Rückfrage Ja und Nein, Obergrenze, Köder, Jev mit und ohne Verlauf, Regression 13 von 14 mit 2 Testmails. Test v04 am 28.10.2026 (Läufe 1447 bis 1467): 14 Fälle plus 2 Zusatzfälle, bei 9 von 10 neuen Fragen die erwartete Quelle, 1 Abweichung (Q04) erklärt, Gedächtnistest PASS, 2 Testmails. Gesamttest Tag 2: 10 von 10 Anfragen; Test von Tag 1: 16 von 20 PASS</td></tr>
 </tbody>
 </table>
 </div>
@@ -113,7 +114,7 @@
 <tr><th scope="row">1</th><td>Mo 26.10.2026</td><td>Der erste Agent</td><td>v02: Agent mit eigenem Prompt, Werkzeug K1_Antwortkatalog, Jev-Weiche, Protokoll</td><td><a href="w06t01.html">Tages-Doku W06T01</a></td></tr>
 <tr><th scope="row">2</th><td>Di 27.10.2026</td><td>Mehr Werkzeuge, Gedächtnis, Eilmeldung</td><td>v03: 4 Werkzeuge, Postgres-Gedächtnis, Jev j5, Eilmeldung, Systemprompt p2</td><td><a href="w06t02.html">Tages-Doku W06T02</a></td></tr>
 <tr><th scope="row">3</th><td>Mi 28.10.2026</td><td>Wissensbasis und Schnittstelle</td><td>v04: 6 Werkzeuge, Wissensbasis mit Stand 30.09.2026, Feiertags-Schnittstelle, Systemprompt p8, Jev j9</td><td><a href="w06t03.html">Tages-Doku W06T03</a></td></tr>
-<tr><th scope="row">4</th><td>Do 29.10.2026</td><td>Prompt verbessern</td><td>folgt</td><td>folgt</td></tr>
+<tr><th scope="row">4</th><td>Do 29.10.2026</td><td>Prompts und Leitplanken</td><td>v05: 3 Systemprompts im Vergleich, Verbotsliste mit erlaubten Wegen, Rückfrage vor der Vormerkung, KI-Hinweis, Obergrenze, Ausweichmodell, Verlauf für Jev</td><td><a href="w06t04.html">Tages-Doku W06T04</a></td></tr>
 <tr><th scope="row">5</th><td>Fr 30.10.2026</td><td>Agent oder fester Workflow</td><td>folgt</td><td>folgt</td></tr>
 </tbody>
 </table>
@@ -131,8 +132,8 @@
 <li>Ein Code-Knoten misst die Werkzeugaufrufe, erkennt Werkzeugfehler und sperrt erfundene Zusagen. Jeder Weg schreibt eine Protokollzeile in Supabase, dann geht die Antwort an den Kunden.</li>
 </ol>
 <figure>
-<a href="plan/plan-w06t03-v04.png"><img alt="Planskizze v04 des Support-Agenten in 6 Bereichen: Trigger, Datenquellen mit FAQ, Wissensbasis und Feiertags-Schnittstelle, Verarbeitung mit Agent und 6 Werkzeugen, Regel zur Quellenwahl, Ausgabe und Fehlerwege, Testtabelle mit Quelle erwartet." height="2597" loading="lazy" src="bilder/w06t03-plan-v04.png" width="2000"/></a>
-<figcaption><strong>Planskizze v04, Endstand Tag 3.</strong> Bild anklicken für die volle Auflösung, die Zeichnung als <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/plan/plan-w06t03-v04.excalidraw">Excalidraw-Datei</a>. Werte aus dem Test vom 28.10.2026 (Läufe 1447 bis 1467, <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/testtabelle-w06t03-v04.md">Testtabelle</a>).</figcaption>
+<a href="plan/plan-w06t04-v05.png"><img alt="Plan von v05: Weg einer Anfrage mit Sitzungszähler und Jev-Weiche, Agent mit 3 Prompt-Fassungen, Leitplanken und Bestätigung, Ausgabe und Prüfung, Testaufbau." height="2526" loading="lazy" src="bilder/w06t04-plan-v05.png" width="2000"/></a>
+<figcaption><strong>Plan v05, Endstand Tag 4.</strong> Bild anklicken für die volle Auflösung, die Zeichnung als <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/plan/plan-w06t04-v05.excalidraw">Excalidraw-Datei</a>. Den Plan von Tag 3 zeigt die <a href="w06t03.html">Tages-Doku W06T03</a>.</figcaption>
 </figure>
 <figure>
 <a href="plan/plan-w06t02-v03.png"><img alt="Planskizze v03 des Support-Agenten in 6 Bereichen: Trigger, Datenquellen, Verarbeitung mit Folgefrage-Erkennung, Jev-Weiche, Agent mit Gedächtnis und 4 Werkzeugen, Ausgabe mit Protokoll und Eskalationsmail samt Knopf, Fehlerbehandlung, Monitoring und Test mit den gemessenen Werten des Gesamttests." height="3086" loading="lazy" src="bilder/w06t02-plan-v03.png" width="2000"/></a>
@@ -145,7 +146,7 @@
 </section><section aria-labelledby="k4-t" class="kapitel" id="versionen">
 <div class="kkopf"><div aria-hidden="true" class="knum">04</div><div>
 <p class="kklein">Kapitel 4</p><h2 id="k4-t">Versionen</h2>
-<p class="klede">Jede Version hat ihren Eintrag im ChangeLog und ihre Tages-Doku; der Export im Repository ist der aktuelle Stand v04.</p>
+<p class="klede">Jede Version hat ihren Eintrag im ChangeLog und ihre Tages-Doku; der Export im Repository ist der aktuelle Stand v05.</p>
 </div></div>
 <p>Eine Version ist ein Stand des n8n-Workflows. Ihre Nummer (vNN) steht im Dateinamen des Exports und im Git-Tag. Der ChangeLog zählt die Änderungen am ganzen Repository mit V und Nummer, nicht mit v.</p>
 <div aria-labelledby="t-versionsleiter-neueste-oben" class="tabelle" role="region" tabindex="0">
@@ -153,6 +154,7 @@
 <caption id="t-versionsleiter-neueste-oben">Versionsleiter, neueste oben</caption>
 <thead><tr><th scope="col">Version</th><th scope="col">Datum, Tag</th><th scope="col">Was neu ist</th><th scope="col">Ergebnis</th><th scope="col">Export</th><th scope="col">Tages-Doku</th></tr></thead>
 <tbody>
+<tr><th scope="row">v05</th><td>29.10.2026, Tag 4</td><td>3 Systemprompt-Fassungen (minimal, strikt, balanciert), Verbotsliste mit erlaubten Wegen, Rückfrage vor Teamvormerkung, KI-Hinweis in der ersten Antwort, Obergrenze von 20 Nachrichten je Sitzung, Ausweichmodell, Jev mit den letzten 3 Wechseln, Prüfknoten und Vormerkung verschärft (SQL 011 bis 018)</td><td>45 Vergleichsläufe, Rückfrage Ja und Nein 1 und 0 Tickets, Nachricht 21 bekommt den Abschluss, Regression 13 von 14 (Q09 erklärt), 2 Testmails</td><td><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/k1-support-agent_2026-10-29_v05.json">v05 (JSON)</a></td><td><a href="w06t04.html">W06T04</a></td></tr>
 <tr><th scope="row">v04</th><td>28.10.2026, Tag 3</td><td>Werkzeug K1_Technikwissen (Supabase Vector Store, 22 Stücke, Wissensstand 30.09.2026), Werkzeug Feiertage_nachschlagen (Nager.Date), Systemprompt w06t03-p8 (Belegregel, Entscheidungstabelle) trennt die Quellen, Jev j9, Auftragsabfrage agt_w06_auftrag_abfragen (SQL 005) und Vormerkung agt_w06_vormerkung_anlegen (SQL 006), beide mit JSON-Rückgabe, gemessene Werkzeugwahl, Max Tokens 4096, Fehlererkennung für die neuen Werkzeuge; dazu der Einlese-Workflow der Wissensbasis</td><td>14 Fälle plus 2 Zusatzfälle in 19 Läufen (Läufe 1447 bis 1467): 9 von 10 neuen Fragen mit der erwarteten Quelle, Regression 4 von 4 PASS, 2 Testmails</td><td><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/k1-support-agent_2026-10-28_v04.json">v04 (JSON)</a>, <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/k1-wissensbasis-einlesen_2026-10-28_v04.json">Einlese-Workflow</a>, <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/testtabelle-w06t03-v04.md">Testtabelle</a></td><td><a href="w06t03.html">W06T03</a></td></tr>
 <tr><th scope="row">v03</th><td>27.10.2026, Tag 2</td><td>4 Werkzeuge (K1_Antwortkatalog, Auftragsstand, Teamvormerkung, Eilmeldung_ans_Team), Postgres-Dauergedächtnis (Fenster 10), Jev-Anweisung j5, Eilmeldung als HTML, Systemprompt w06t02-p2-j5</td><td>10 von 10 Anfragen mit dem erwarteten Werkzeug, Gedächtnistest PASS</td><td>-</td><td><a href="w06t02.html">W06T02</a></td></tr>
 <tr><th scope="row">v02</th><td>26.10.2026, Tag 1</td><td>Agent mit eigenem Systemprompt (w06t01-p2-j4), Werkzeug K1_Antwortkatalog, Jev-Weiche, Protokoll in Supabase, Fehlerwege; kein Wiederholversuch bei Jev, Status tool_error</td><td>16 von 20 PASS; 18 von 18 gelesene Antworten richtig</td><td>-</td><td><a href="w06t01.html">W06T01</a></td></tr>

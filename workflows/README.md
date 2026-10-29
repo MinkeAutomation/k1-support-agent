@@ -4,7 +4,11 @@ Hier liegen die n8n-Exporte des Support-Agenten. Dateiname `k1-support-agent_<JJ
 
 Welche Version zu welchem Tag und welcher Tages-Doku gehört, steht in der [Versionstabelle im README](../README.md#versionen).
 
-**Stand 28.10.2026:**
+**Stand 29.10.2026:**
+
+- `k1-support-agent_2026-10-29_v05.json`: der Support-Agent mit denselben 6 Werkzeugen, 3 Fassungen des Systemprompts (im Echtbetrieb balanciert, `w06t04-p10-j10`), Rückfrage vor der Vormerkung, Obergrenze von 20 Nachrichten, Ausweichmodell, Jev `j10` mit Verlauf. Er greift auf dieselben Adressen zu wie v04 (raw.githubusercontent.com, openrouter.ai, date.nager.at, supabase.com).
+
+**Stand 28.10.2026 (Vorgänger):**
 
 - `k1-support-agent_2026-10-28_v04.json`: der Support-Agent mit 6 Werkzeugen (`K1_Antwortkatalog`, `K1_Technikwissen`, `Feiertage_nachschlagen`, `Auftragsstand`, `Teamvormerkung`, `Eilmeldung_ans_Team`), Systemprompt `w06t03-p8` (Belegregel, Entscheidungstabelle, Warte-Probe), Jev `j9`, Max Tokens 4096. Tests in `docs/testtabelle-w06t03-v04.md`.
 - `k1-wissensbasis-einlesen_2026-10-28_v04.json`: der Einlese-Workflow, der die Wissensbasis füllt (3 Dokumente aus dem öffentlichen K1-Repository, 22 Stücke, Wissensstand 30.09.2026).
@@ -13,7 +17,7 @@ Beide Exporte haben einen Chat Trigger beziehungsweise einen manuellen Start ohn
 
 ## Nach dem Import einrichten
 
-1. **Datenbank:** in Supabase im SQL-Editor nacheinander ausführen: `docs/sql/001_agt_w06_support_log.sql`, `002_agt_w06_chat_histories.sql`, `003_agt_w06_auftraege_tickets.sql`, `004_agt_w06_wissensbasis.sql`, `005_agt_w06_auftrag_nachschlagen.sql` und `006_agt_w06_ticket_erfassen.sql`. Anschließend den Einlese-Workflow einmal ausführen (Zugänge: Supabase mit der Rolle `service_role` zum Schreiben, Google Gemini für die Vektoren), er legt die 22 Stücke an.
+1. **Datenbank:** in Supabase im SQL-Editor nacheinander ausführen: `docs/sql/001_agt_w06_support_log.sql`, `002_agt_w06_chat_histories.sql`, `003_agt_w06_auftraege_tickets.sql`, `004_agt_w06_wissensbasis.sql`, `005_agt_w06_auftrag_abfragen.sql` und `006_agt_w06_vormerkung_anlegen.sql`. Anschließend den Einlese-Workflow einmal ausführen (Zugänge: Supabase mit der Rolle `service_role` zum Schreiben, Google Gemini für die Vektoren), er legt die 22 Stücke an.
 2. **Credentials neu zuweisen** (der Export führt keine Zugänge):
 
 | Knoten | Credential-Typ | wofür |
