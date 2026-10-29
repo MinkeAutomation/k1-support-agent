@@ -6,7 +6,9 @@ Welche Version zu welchem Tag und welcher Tages-Doku gehört, steht in der [Vers
 
 **Stand 29.10.2026:**
 
-- `k1-support-agent_2026-10-29_v05.json`: der Support-Agent mit denselben 6 Werkzeugen, 3 Fassungen des Systemprompts (im Echtbetrieb balanciert, `w06t04-p10-j10`), Rückfrage vor der Vormerkung, Obergrenze von 20 Nachrichten, Ausweichmodell, Jev `j10` mit Verlauf. Er greift auf dieselben Adressen zu wie v04 (raw.githubusercontent.com, openrouter.ai, date.nager.at, supabase.com).
+Der Export v05 hat 61 Knoten: 37 ausführbare Knoten und 24 Notizen.
+
+- `k1-support-agent_2026-10-29_v05.json`: der Support-Agent mit denselben 6 Werkzeugen, 3 Fassungen des Systemprompts (im Echtbetrieb balanciert, `w06t04-p11-j11`), Rückfrage vor der Vormerkung, Obergrenze von 20 Nachrichten, Ausweichmodell, Jev `j11` mit Verlauf. Er greift auf dieselben Adressen zu wie v04 (raw.githubusercontent.com, openrouter.ai, date.nager.at, supabase.com).
 
 **Stand 28.10.2026 (Vorgänger):**
 
@@ -17,14 +19,15 @@ Beide Exporte haben einen Chat Trigger beziehungsweise einen manuellen Start ohn
 
 ## Nach dem Import einrichten
 
-1. **Datenbank:** in Supabase im SQL-Editor nacheinander ausführen: `docs/sql/001_agt_w06_support_log.sql`, `002_agt_w06_chat_histories.sql`, `003_agt_w06_auftraege_tickets.sql`, `004_agt_w06_wissensbasis.sql`, `005_agt_w06_auftrag_abfragen.sql` und `006_agt_w06_vormerkung_anlegen.sql`. Anschließend den Einlese-Workflow einmal ausführen (Zugänge: Supabase mit der Rolle `service_role` zum Schreiben, Google Gemini für die Vektoren), er legt die 22 Stücke an.
+1. **Datenbank:** in Supabase im SQL-Editor nacheinander ausführen: `docs/sql/001_agt_w06_support_log.sql`, `002_agt_w06_chat_histories.sql`, `003_agt_w06_auftraege_tickets.sql`, `004_agt_w06_wissensbasis.sql`, `005_agt_w06_auftrag_abfragen.sql` und `006_agt_w06_vormerkung_anlegen.sql`, für v05 danach `011`, `013`, `014` und `016` (Kennzeichen in der Wissensbasis, Weg `limit`, Prüfung der Vormerkung, Antworttext im Protokoll; `012`, `015`, `017` und `018` gehören zu den Tests). Anschließend den Einlese-Workflow einmal ausführen (Zugänge: Supabase mit der Rolle `service_role` zum Schreiben, Google Gemini für die Vektoren), er legt die 22 Stücke an.
 2. **Credentials neu zuweisen** (der Export führt keine Zugänge):
 
 | Knoten | Credential-Typ | wofür |
 |---|---|---|
 | `K1-Bezug prüfen`, `K1-Bezug erneut prüfen` | OpenAI-Typ mit Base URL `https://openrouter.ai/api/v1` (OpenRouter-Schlüssel) | Jev über die Decisions API |
-| `Gratismodell [OpenAI Chat Model]` | OpenAI-Typ mit Base URL `https://openrouter.ai/api/v1` (OpenRouter-Schlüssel) | Sprachmodell des Agenten |
+| `Gratismodell [OpenAI Chat Model]`, `Ausweichmodell [OpenAI Chat Model]` | OpenAI-Typ mit Base URL `https://openrouter.ai/api/v1` (OpenRouter-Schlüssel) | Sprachmodell des Agenten und das Ausweichmodell, wenn das Hauptmodell ausfällt |
 | `Verlauf der Sitzung lesen`, `Lauf protokollieren` | Supabase API mit dem serverseitigen Schlüssel der Rolle `service_role` | Protokolltabelle (Row Level Security ohne INSERT-Policy) |
+| `Gesprächsverlauf holen`, `Dialog speichern` | dieselbe Supabase API mit der Rolle `service_role` | liest und schreibt `agt_w06_chat_histories` für den Verlauf von Jev |
 | `Auftragsstand`, `Teamvormerkung` | Supabase API mit dem öffentlichen `anon`-Schlüssel | rufen nur die Funktionen `agt_w06_auftrag_abfragen` und `agt_w06_vormerkung_anlegen` auf |
 | `K1_Technikwissen` | Supabase API mit dem öffentlichen `anon`-Schlüssel (nur lesen) | Suche in `agt_w06_knowledge_chunks` über `match_agt_w06_knowledge_chunks` |
 | `Vektoren der Frage [Embeddings Google Gemini]` | Google Gemini (PaLM) API-Schlüssel | gleiches Modell wie beim Einlesen: `models/gemini-embedding-001` (3072 Stellen) |
