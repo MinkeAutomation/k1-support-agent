@@ -27,7 +27,7 @@ Dazu der Gesprächsverlauf in Postgres (Fenster 10), der Systemprompt `w06t03-p8
 
 Tag 5 (30.10.2026) ist noch nicht dokumentiert, die Seite folgt mit dem Tag.
 
-![Plan v05](docs/bilder/w06t04-plan-v05.png)
+![Plan v05](bilder/w06t04-plan-v05.png)
 
 ## Doku je Tag
 
@@ -44,12 +44,12 @@ Die Doku liegt als Webseite vor (GitHub Pages). Die Wochen-Doku fasst die Woche 
 
 ## Versionen
 
-Eine Version ist ein Stand des n8n-Workflows. Ihre Nummer steht im Dateinamen des Exports (`k1-support-agent_<Datum>_vNN.json`). Das **Git-Tag** `v05` markiert den Commit mit dem aktuellen Stand. Jede Änderung steht mit Funktion und Messwerten im [ChangeLog](ChangeLog.md).
+Eine Version ist ein Stand des n8n-Workflows. Ihre Nummer steht im Dateinamen des Exports (`k1-support-agent_<Datum>_vNN.json`). Das **Git-Tag** `v05` markiert den Commit mit dem aktuellen Stand. Jede Änderung steht mit Funktion und Messwerten im [ChangeLog](../ChangeLog.md).
 
 | Version | Datum | Kurstag | Export | Tages-Doku | Kurzinhalt | Git-Tag |
 |---|---|---|---|---|---|---|
-| **v05** | 29.10.2026 | Tag 4 | [`workflows/k1-support-agent_2026-10-29_v05.json`](workflows/k1-support-agent_2026-10-29_v05.json) | [W06T04](https://minkeautomation.github.io/k1-support-agent/w06t04.html) | 3 Prompt-Fassungen, Prompt `w06t04-p11-j11`, Verbotsliste, Rückfrage vor Teamvormerkung, KI-Hinweis, Obergrenze 20, Ausweichmodell, Jev mit Verlauf; SQL 011 bis 018 | `v05` |
-| **v04** | 28.10.2026 | Tag 3 | [`workflows/k1-support-agent_2026-10-28_v04.json`](workflows/k1-support-agent_2026-10-28_v04.json), Einlese-Workflow [`workflows/k1-wissensbasis-einlesen_2026-10-28_v04.json`](workflows/k1-wissensbasis-einlesen_2026-10-28_v04.json) | [W06T03](https://minkeautomation.github.io/k1-support-agent/w06t03.html), Tests: [`docs/testtabelle-w06t03-v04.md`](docs/testtabelle-w06t03-v04.md) | 6 Werkzeuge mit Wissensbasis und Feiertags-Schnittstelle, Prompt `w06t03-p8`, Jev `j9`, Auftragsabfrage (SQL 005), Vormerkung (SQL 006), gemessene Werkzeugwahl, Max Tokens 4096. 14 Fälle plus 2 Zusatzfälle in 19 Läufen, 2 Testmails | `v04` |
+| **v05** | 29.10.2026 | Tag 4 | [`workflows/k1-support-agent_2026-10-29_v05.json`](../workflows/k1-support-agent_2026-10-29_v05.json) | [W06T04](https://minkeautomation.github.io/k1-support-agent/w06t04.html) | 3 Prompt-Fassungen, Prompt `w06t04-p11-j11`, Verbotsliste, Rückfrage vor Teamvormerkung, KI-Hinweis, Obergrenze 20, Ausweichmodell, Jev mit Verlauf; SQL 011 bis 018 | `v05` |
+| **v04** | 28.10.2026 | Tag 3 | [`workflows/k1-support-agent_2026-10-28_v04.json`](../workflows/k1-support-agent_2026-10-28_v04.json), Einlese-Workflow [`workflows/k1-wissensbasis-einlesen_2026-10-28_v04.json`](../workflows/k1-wissensbasis-einlesen_2026-10-28_v04.json) | [W06T03](https://minkeautomation.github.io/k1-support-agent/w06t03.html), Tests: [`docs/testtabelle-w06t03-v04.md`](testtabelle-w06t03-v04.md) | 6 Werkzeuge mit Wissensbasis und Feiertags-Schnittstelle, Prompt `w06t03-p8`, Jev `j9`, Auftragsabfrage (SQL 005), Vormerkung (SQL 006), gemessene Werkzeugwahl, Max Tokens 4096. 14 Fälle plus 2 Zusatzfälle in 19 Läufen, 2 Testmails | `v04` |
 | v03 | 27.10.2026 | Tag 2 | - | [W06T02](https://minkeautomation.github.io/k1-support-agent/w06t02.html) | 4 Werkzeuge, Postgres-Gedächtnis, Folgefragen ohne Jev, Jev j5, HTML-Eilmeldung. Gesamttest 10 von 10 | - |
 | v02 | 26.10.2026 | Tag 1 | - | [W06T01](https://minkeautomation.github.io/k1-support-agent/w06t01.html) | Agent mit Systemprompt, Werkzeug `K1_Antwortkatalog`, Jev-Weiche, Status `tool_error`. 16 von 20 PASS | - |
 
@@ -65,7 +65,7 @@ Der Export im Repository ist der jeweils aktuelle Stand (v05); der Export von v0
    - Postgres über den Session Pooler von Supabase, SSL an, für den Gesprächsverlauf.
    - SMTP für `Eilmeldung_ans_Team` (im Export ist kein Zugang hinterlegt).
 
-   Im Export stehen 3 Platzhalter an insgesamt 5 Stellen, vor dem Start durch die eigenen Werte ersetzen: `<<REPLACE_WITH_SUPABASE_PROJECT>>` (Projektkennung der Supabase-Adresse, in der Konfiguration und im Knopf der Mail), `<<REPLACE_WITH_TABLE_ID>>` (Tabellen-ID der Tabelle `agt_w06_tickets` für den Knopf „Ticket öffnen“, sie steht in der Adresszeile der Supabase-Tabellenansicht nach `/editor/`) und `<<REPLACE_WITH_TEST_EMAIL>>` (Test-Mailadresse, 2 Mal: Absender und fester Empfänger). Die FAQ-Adresse in der Konfiguration (`faq_url`) zeigt auf die Raw-Datei `faq/k1-faq.csv` dieses Repositorys und wird bei einem anderen Repository-Namen angepasst. Weitere Hinweise in [`workflows/README.md`](workflows/README.md).
+   Im Export stehen 3 Platzhalter an insgesamt 5 Stellen, vor dem Start durch die eigenen Werte ersetzen: `<<REPLACE_WITH_SUPABASE_PROJECT>>` (Projektkennung der Supabase-Adresse, in der Konfiguration und im Knopf der Mail), `<<REPLACE_WITH_TABLE_ID>>` (Tabellen-ID der Tabelle `agt_w06_tickets` für den Knopf „Ticket öffnen“, sie steht in der Adresszeile der Supabase-Tabellenansicht nach `/editor/`) und `<<REPLACE_WITH_TEST_EMAIL>>` (Test-Mailadresse, 2 Mal: Absender und fester Empfänger). Die FAQ-Adresse in der Konfiguration (`faq_url`) zeigt auf die Raw-Datei `faq/k1-faq.csv` dieses Repositorys und wird bei einem anderen Repository-Namen angepasst. Weitere Hinweise in [`workflows/README.md`](../workflows/README.md).
 2. In Supabase im SQL-Editor die Dateien `docs/sql/001` bis `006` und danach `011`, `013`, `014`, `016` in dieser Reihenfolge ausführen (Protokoll, Chat-Verlauf, Aufträge und Tickets, Wissensbasis, Auftragsabfrage, Vormerkung, Kennzeichen in der Wissensbasis, Weg limit, Prüfung der Vormerkung, Antworttext im Protokoll; `012`, `015`, `017` und `018` gehören zu den Tests). Danach den Workflow `k1-wissensbasis-einlesen_2026-10-28_v04.json` einmal ausführen, er füllt die Wissensbasis (22 Stücke, etwa 3 Minuten wegen des Gemini-Minutenlimits).
 3. **Schlüssel für das Supabase-Protokoll:** Die Protokolltabelle hat Row Level Security an und bewusst keine INSERT-Policy. Das n8n-Credential braucht deshalb den serverseitigen Schlüssel der Rolle `service_role` (in n8n das Feld für das Service Role Secret), nicht den öffentlichen `anon`-Schlüssel. Mit `anon` scheitert das Schreiben, die Chat-Antwort erscheint trotzdem, der Fehler steht nur in der Ausführung. Der Schlüssel gehört nur ins Credential, nie in den Workflow oder in den Browser.
 4. Erster Test im Editor über „Open chat“, zum Beispiel `[Q03] Wie lange wartet K1 auf meine Freigabe?`.
@@ -77,12 +77,12 @@ Der Export im Repository ist der jeweils aktuelle Stand (v05); der Export von v0
 
 | Ordner | Inhalt |
 |---|---|
-| [`faq/`](faq/) | FAQ-Tabelle `k1-faq.csv` (7 Spalten: `id`, `kategorie`, `frage`, `stichworte`, `antwort`, `eskalation`, `stand`), die das Werkzeug des Agenten liest |
-| [`workflows/`](workflows/) | n8n-Exporte, nur Platzhalter und keine Schlüssel; Einrichtung nach dem Import |
-| [`docs/`](docs/) | Wochen-Doku `index.html` und Tages-Dokus als Webseite (GitHub Pages), Testtabellen `testtabelle-w06t03-v04.md` und `testtabelle-w06t04-v05.md`, Testfragen der Wissensbasis, Bilder |
-| [`docs/plan/`](docs/plan/) | Planskizzen je Tag als Excalidraw und PNG (`plan-w06t01-v02`, `plan-w06t02-v03`, `plan-w06t03-v04`, `plan-w06t04-v05`) |
-| [`docs/sql/`](docs/sql/) | SQL-Schema: Protokolltabelle, Chat-Verlauf, Aufträge und Tickets, Wissensbasis, Auftragsabfrage, Vormerkung (`001` bis `006`), Kennzeichen der Wissensbasis, Weg `limit`, Prüfung der Vormerkung, Testdaten (`011` bis `018`); 14 Dateien |
-| [`ChangeLog.md`](ChangeLog.md) | Funktion und Messwerte je Tag, neueste oben |
+| [`faq/`](../faq/) | FAQ-Tabelle `k1-faq.csv` (7 Spalten: `id`, `kategorie`, `frage`, `stichworte`, `antwort`, `eskalation`, `stand`), die das Werkzeug des Agenten liest |
+| [`workflows/`](../workflows/) | n8n-Exporte, nur Platzhalter und keine Schlüssel; Einrichtung nach dem Import |
+| [`docs/`]() | Wochen-Doku `index.html` und Tages-Dokus als Webseite (GitHub Pages), Testtabellen `testtabelle-w06t03-v04.md` und `testtabelle-w06t04-v05.md`, Testfragen der Wissensbasis, Bilder |
+| [`docs/plan/`](plan/) | Planskizzen je Tag als Excalidraw und PNG (`plan-w06t01-v02`, `plan-w06t02-v03`, `plan-w06t03-v04`, `plan-w06t04-v05`) |
+| [`docs/sql/`](sql/) | SQL-Schema: Protokolltabelle, Chat-Verlauf, Aufträge und Tickets, Wissensbasis, Auftragsabfrage, Vormerkung (`001` bis `006`), Kennzeichen der Wissensbasis, Weg `limit`, Prüfung der Vormerkung, Testdaten (`011` bis `018`); 14 Dateien |
+| [`ChangeLog.md`](../ChangeLog.md) | Funktion und Messwerte je Tag, neueste oben |
 
 ## Ablauf
 
