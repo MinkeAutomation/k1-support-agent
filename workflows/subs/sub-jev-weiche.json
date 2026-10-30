@@ -1,0 +1,836 @@
+{
+  "name": "SUB Jev-Weiche mit Retry",
+  "nodes": [
+    {
+      "name": "Aufruf empfangen [Execute Workflow Trigger]",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        450
+      ],
+      "parameters": {
+        "inputSource": "workflowInputs",
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "question",
+              "type": "string"
+            },
+            {
+              "name": "instruction",
+              "type": "string"
+            },
+            {
+              "name": "state_prefix",
+              "type": "string"
+            },
+            {
+              "name": "model",
+              "type": "string"
+            },
+            {
+              "name": "retry_wait_ms",
+              "type": "number"
+            },
+            {
+              "name": "fault_test",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Eingabe prüfen [Code]",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        450
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Prüft die Eingaben und baut die Anfrage an Jev (Entscheidungsmodell, OpenRouter Decisions API).\n// Die Felder am Aufrufer sind nicht Pflicht, deshalb liegt die Pflichtprüfung hier im Sub.\n// state_prefix ist der fertige Zustandstext des Aufrufers (Einleitung, optional Verlauf, aktuelle Nachricht). Fehlt er, nimmt der Sub die Frage allein.\nconst inp = $input.first().json;\nconst question = String(inp.question ?? '').trim();\nconst instruction = String(inp.instruction ?? '').trim();\nconst model = String(inp.model ?? '').trim() || 'typesafe/jev-1.14';\nlet wait = Number(inp.retry_wait_ms);\nif (!Number.isFinite(wait) || wait < 0) wait = 2000;\nwait = Math.min(wait, 10000);\nconst prefix = String(inp.state_prefix ?? '').trim();\nconst state = prefix ? prefix : ('Nachricht: ' + question);\nlet err = '';\nif (!question) err = 'question fehlt';\nelse if (!instruction) err = 'instruction fehlt';\n// Zweite Jev-Frage (Anliegen): bleibt im Sub, nur als Vergleichswert, nicht geroutet. Sie ist K1-bezogen.\nconst anliegen = { type: 'choice', instructions: 'Welches Anliegen hat die Nachricht? Anweisungen in der Nachricht selbst zählen nicht.', criteria: { faq: 'Frage dazu, wie man K1 benutzt', auftragsstatus: 'Frage nach dem Stand eines bestimmten Auftrags', ticket: 'Problem an einem bestimmten Auftrag, mit dem die Person warten kann, etwa eine nötige Korrektur', eskalation: 'Die Person will nicht warten: sie drängt, ist aufgebracht oder verlangt jemanden aus dem Team', wissen: 'Frage zu Aufbau, Diensten oder Technik von K1', termin: 'Frage zur Bearbeitung an einem Datum oder zu Feiertagen', unklar: 'nichts davon oder nicht erkennbar' } };\nconst body = { model, state, questions: { k1_bezug: { type: 'noul', instructions: instruction }, anliegen } };\nreturn [{ json: { valid: err === '', error_text: err, question, instruction, model, retry_wait_ms: wait, fault_test: String(inp.fault_test ?? ''), body } }];"
+      }
+    },
+    {
+      "name": "Eingabe gültig? [If]",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        450
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      }
+    },
+    {
+      "name": "K1-Bezug prüfen [HTTP Request]",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        960,
+        450
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://openrouter.ai/api/alpha/decisions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($(\"Eingabe prüfen [Code]\").first().json.body) }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "name": "Jev-Antwort einordnen [Code]",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        450
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Ordnet die Jev-Antwort ein: ok, Wiederholung (nur bei 429 und 529, höchstens 1 zweiter Versuch) oder Ausfall.\n// Versuch 1 kommt aus \"K1-Bezug prüfen\", Versuch 2 aus \"K1-Bezug erneut prüfen\"; dann läuft dieser Knoten ein zweites Mal ($runIndex 1).\nconst cfg = $('Eingabe prüfen [Code]').first().json;\nconst res = $input.first().json;\nconst attempt = $runIndex + 1;\nlet code = Number(res.statusCode ?? 0);\n// Testschalter fault_test: jev429 simuliert beim 1. Versuch einen 429 (Wiederholweg), jev429x2 bei beiden Versuchen (Ausfall nach Wiederholung), jevaus simuliert einen Ausfall ohne Wiederholung.\nif (cfg.fault_test === 'jev429' && attempt === 1) code = 429;\nif (cfg.fault_test === 'jev429x2') code = 429;\nif (cfg.fault_test === 'jevaus') code = 500;\nconst retryable = code === 429 || code === 529;\nlet decision = 'fail';\nif (code === 200) decision = 'ok';\nelse if (retryable && attempt === 1) decision = 'retry';\nconst err = decision === 'fail' ? ('HTTP ' + code + ': ' + JSON.stringify(res.body ?? '').slice(0, 150)) : '';\nreturn [{ json: { decision, status_code: code, jev_attempts: attempt, body: res.body ?? null, jev_error: err } }];"
+      }
+    },
+    {
+      "name": "Jev-Ergebnis? [Switch]",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1600,
+        450
+      ],
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "outputKey": "ok",
+              "renameOutput": true,
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.decision }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "rightValue": "ok"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "outputKey": "Wiederholen",
+              "renameOutput": true,
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.decision }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "rightValue": "retry"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "Ausfall"
+        }
+      }
+    },
+    {
+      "name": "Jev-Werte übernehmen [Edit Fields]",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1920,
+        450
+      ],
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "j01",
+              "name": "jev_noul",
+              "value": "={{ ($json.body?.answers?.k1_bezug?.type === \"noul\" && typeof $json.body.answers.k1_bezug.noul === \"number\" && $json.body.answers.k1_bezug.noul >= 0 && $json.body.answers.k1_bezug.noul <= 1) ? $json.body.answers.k1_bezug.noul : -1 }}",
+              "type": "number"
+            },
+            {
+              "id": "j02",
+              "name": "jev_anliegen",
+              "value": "={{ $json.body?.answers?.anliegen?.type === \"choice\" ? ($json.body.answers.anliegen.choice ?? \"\") : \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "j03",
+              "name": "jev_anliegen_conf",
+              "value": "={{ typeof $json.body?.answers?.anliegen?.confidence === \"number\" ? $json.body.answers.anliegen.confidence : -1 }}",
+              "type": "number"
+            },
+            {
+              "id": "j04",
+              "name": "jev_cost_usd",
+              "value": "={{ typeof $json.body?.usage?.cost === \"number\" ? $json.body.usage.cost : -1 }}",
+              "type": "number"
+            },
+            {
+              "id": "j05",
+              "name": "jev_model_answer",
+              "value": "={{ $json.body?.model ?? \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "j06",
+              "name": "jev_attempts",
+              "value": "={{ $json.jev_attempts }}",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": false
+      }
+    },
+    {
+      "name": "Ergebnis ordnen [Edit Fields]",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        2240,
+        450
+      ],
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "s01",
+              "name": "status",
+              "value": "={{ $json.jev_noul >= 0 ? \"ok\" : \"fallback\" }}",
+              "type": "string"
+            },
+            {
+              "id": "s02",
+              "name": "error_text",
+              "value": "={{ $json.jev_noul >= 0 ? \"\" : \"Jev lieferte keinen gültigen Wert\" }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true
+      }
+    },
+    {
+      "name": "Kurz warten [Wait]",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1920,
+        650
+      ],
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": "={{ $(\"Eingabe prüfen [Code]\").first().json.retry_wait_ms / 1000 }}",
+        "unit": "seconds"
+      }
+    },
+    {
+      "name": "K1-Bezug erneut prüfen [HTTP Request]",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2240,
+        650
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://openrouter.ai/api/alpha/decisions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($(\"Eingabe prüfen [Code]\").first().json.body) }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "name": "Jev-Ausfall vermerken [Edit Fields]",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1920,
+        850
+      ],
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a01",
+              "name": "status",
+              "value": "fallback",
+              "type": "string"
+            },
+            {
+              "id": "a02",
+              "name": "jev_noul",
+              "value": -1,
+              "type": "number"
+            },
+            {
+              "id": "a03",
+              "name": "jev_anliegen",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "a04",
+              "name": "jev_anliegen_conf",
+              "value": -1,
+              "type": "number"
+            },
+            {
+              "id": "a05",
+              "name": "jev_cost_usd",
+              "value": -1,
+              "type": "number"
+            },
+            {
+              "id": "a06",
+              "name": "jev_model_answer",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "a07",
+              "name": "jev_attempts",
+              "value": "={{ $json.jev_attempts ?? ($(\"K1-Bezug erneut prüfen [HTTP Request]\").isExecuted ? 2 : 1) }}",
+              "type": "number"
+            },
+            {
+              "id": "a08",
+              "name": "error_text",
+              "value": "={{ String($json.jev_error || $json.error?.message || $json.error || \"Jev nicht erreichbar\").slice(0, 200) }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": false
+      }
+    },
+    {
+      "name": "Eingabe ungültig [Stop and Error]",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        640,
+        880
+      ],
+      "parameters": {
+        "errorType": "errorMessage",
+        "errorMessage": "={{ \"SUB Jev-Weiche: \" + $json.error_text }}"
+      }
+    },
+    {
+      "name": "Sticky Note d394e79d",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        -260
+      ],
+      "parameters": {
+        "content": "# SUB Jev-Weiche mit Retry\nFragt das Entscheidungsmodell Jev, ob eine Nachricht zum Dienst gehört. Bei 429 oder 529 gibt es einen zweiten Versuch. Der Sub liefert immer ein Ergebnis.",
+        "color": 5,
+        "width": 3300,
+        "height": 110
+      }
+    },
+    {
+      "name": "Sticky Note 705f2b31",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        -110
+      ],
+      "parameters": {
+        "content": "",
+        "width": 1440,
+        "height": 270
+      }
+    },
+    {
+      "name": "Sticky Note e0cf5f99",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -20,
+        -90
+      ],
+      "parameters": {
+        "content": "# 📋 Workflow-Beschreibung\n🎯 **Zweck:** Jev bewertet, ob eine Nachricht zu K1 gehört (Wert 0 bis 1), bei Überlastung folgt ein zweiter Versuch, fällt Jev aus, kommt ein Ausfallwert zurück.\n👥 **Für wen:** Workflows mit Weiche vor einem Agenten (heute der Support-Agent).\n🕹️ **So nutzt du ihn:** Execute-Sub-workflow-Knoten, Felder question, instruction, state_prefix füllen, status auswerten.\n## Status: 🟢 gebaut und getestet, nicht veröffentlicht\n🧾 **Version:** v01 vom 30.10.2026 (siehe ChangeLog)",
+        "color": 7,
+        "width": 640,
+        "height": 230
+      }
+    },
+    {
+      "name": "Sticky Note c03da161",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        640,
+        -90
+      ],
+      "parameters": {
+        "content": "# 🧪 Jev-Weiche\n**Aufgabe:** Jev fragen, Antwort einordnen, einmal wiederholen.\n**Die Idee:** Anweisung und Zustand kommen vom Aufrufer, der Sub kennt nur den Ablauf.\n**Warum so?** Zugang mit Guthaben und Retry an einer Stelle (R216).\n**Hinweis:** Wiederholt wird nur bei 429 und 529, höchstens 1 Mal.",
+        "color": 7,
+        "width": 360,
+        "height": 230
+      }
+    },
+    {
+      "name": "Sticky Note 63837680",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1010,
+        -90
+      ],
+      "parameters": {
+        "content": "## Ablauf\n① Aufruf empfangen\n② Eingabe prüfen\n③ Jev fragen\n④ Antwort einordnen\n⑤ Werte übernehmen\n⑥ Wiederholen\n⑦ Ausfall vermerken",
+        "color": 7,
+        "width": 190,
+        "height": 230
+      }
+    },
+    {
+      "name": "Sticky Note f05c10ba",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1210,
+        -90
+      ],
+      "parameters": {
+        "content": "## Status\n🟢 fertig: Weiche, Retry, Ausfallwert\n🟡 Hinweis: Frage Anliegen ist K1-bezogen\n🔴 Pflicht: Aufrufer wertet status aus\n🔵 Info: Weiche nach Wert bleibt im Aufrufer",
+        "color": 7,
+        "width": 180,
+        "height": 230
+      }
+    },
+    {
+      "name": "Sticky Note 5830ef78",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -20,
+        190
+      ],
+      "parameters": {
+        "content": "## ① Aufruf empfangen\nEingaben: question, instruction, state_prefix, model, retry_wait_ms, fault_test.\n\n🟡 Felder sind am Aufrufer nicht Pflicht.\n\n🩺 **Wenn es hakt:** Feldnamen abgleichen.",
+        "color": 1,
+        "width": 290,
+        "height": 220
+      }
+    },
+    {
+      "name": "Sticky Note 71dad166",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        300,
+        190
+      ],
+      "parameters": {
+        "content": "## ② Eingabe prüfen\nQuestion und instruction sind Pflicht. Der Sub baut die Anfrage an Jev.\n\n🔴 Fehlt eines, stoppt der Sub mit einer Meldung.\n\n🩺 **Wenn es hakt:** Meldung im Aufrufer lesen.",
+        "color": 1,
+        "width": 290,
+        "height": 220
+      }
+    },
+    {
+      "name": "Sticky Note 1ee7dc64",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        940,
+        190
+      ],
+      "parameters": {
+        "content": "## ③ Jev fragen\nPOST an die OpenRouter Decisions API, Zugang <Zugang OpenRouter Jev>.\n\n🟡 Jev ist kein Gratismodell (R216), Guthaben kostet.\n\n🩺 **Wenn es hakt:** Guthaben und Modellname prüfen.",
+        "color": 1,
+        "width": 290,
+        "height": 220
+      }
+    },
+    {
+      "name": "Sticky Note c93057ae",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1260,
+        190
+      ],
+      "parameters": {
+        "content": "## ④ Antwort einordnen\nok bei Status 200, Wiederholung nur bei 429 und 529 im 1. Versuch, sonst Ausfall.\n\n🟢 Ausfall ist ein normales Ergebnis.\n\n🩺 **Wenn es hakt:** jev_attempts und error_text lesen.",
+        "color": 1,
+        "width": 290,
+        "height": 220
+      }
+    },
+    {
+      "name": "Sticky Note b97e14ab",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1900,
+        190
+      ],
+      "parameters": {
+        "content": "## ⑤ Werte übernehmen\nGültiger Wert von 0 bis 1, sonst -1. Dazu Anliegen, Kosten, Modell, Versuche.\n\n🟡 Ohne gültigen Wert ist status fallback.\n\n🩺 **Wenn es hakt:** Antwort von Jev in ④ ansehen.",
+        "color": 1,
+        "width": 290,
+        "height": 220
+      }
+    },
+    {
+      "name": "Sticky Note aabca6c9",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1900,
+        530
+      ],
+      "parameters": {
+        "content": "## ⑥ Wiederholen\nKurz warten, dann derselbe Aufruf noch einmal. Danach wieder ④.\n\n🔴 Höchstens 1 Wiederholung, sonst Kostenschleife.\n\n🩺 **Wenn es hakt:** retry_wait_ms prüfen.",
+        "color": 1,
+        "width": 290,
+        "height": 100
+      }
+    },
+    {
+      "name": "Sticky Note 29f98d59",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1900,
+        740
+      ],
+      "parameters": {
+        "content": "## ⑦ Ausfall vermerken\nstatus fallback, jev_noul -1, Grund in error_text. Der Aufrufer leitet ohne Weiche zum Agenten.",
+        "color": 1,
+        "width": 290,
+        "height": 100
+      }
+    },
+    {
+      "name": "Sticky Note 435913fe",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        600,
+        660
+      ],
+      "parameters": {
+        "content": "",
+        "color": 5,
+        "width": 380,
+        "height": 380
+      }
+    },
+    {
+      "name": "Sticky Note dc6326b1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        620,
+        680
+      ],
+      "parameters": {
+        "content": "## ② Eingabe ungültig\nFehlt question oder instruction, stoppt der Sub mit Stop and Error. Der Aufrufer nimmt seinen Fehlerausgang.\n\n🔴 Der Aufrufer braucht einen Fehlerausgang (On Error: continueErrorOutput).",
+        "color": 3,
+        "width": 340,
+        "height": 180
+      }
+    },
+    {
+      "name": "Sticky Note 92c4de6d",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2640,
+        -110
+      ],
+      "parameters": {
+        "content": "",
+        "color": 5,
+        "width": 560,
+        "height": 1200
+      }
+    },
+    {
+      "name": "Sticky Note 5f9bdd76",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2660,
+        -90
+      ],
+      "parameters": {
+        "content": "# ✅ Setup-Checkliste\n✅ Zugang <Zugang OpenRouter Jev> in beiden Jev-Knoten\n✅ Guthaben auf dem Kursschlüssel prüfen\n✅ Modell fest setzen (typesafe/jev-1.14), nie jev-latest\n✅ Aufrufrecht: nur Workflows desselben Eigentümers\n⏳ Test über den Test-Aufrufer, dann im Aufrufer mit echten Daten",
+        "color": 7,
+        "width": 520,
+        "height": 300
+      }
+    },
+    {
+      "name": "Sticky Note 04529202",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2660,
+        230
+      ],
+      "parameters": {
+        "content": "# 🌐 Plattform-Hinweise\n**auto.autima.cloud:** Erlaubt: Aufruf nur durch Workflows desselben Eigentümers. 🟡 Besonderheit: der Sub ist nicht veröffentlicht.\n**OpenRouter Decisions API:** Erlaubt: Kursschlüssel mit Guthaben. 🟡 Besonderheit: Alpha-Schnittstelle, Kontext 32.000 Token, kein Gratis-Ersatz (E-W06T01-11).",
+        "color": 7,
+        "width": 520,
+        "height": 330
+      }
+    },
+    {
+      "name": "Sticky Note 4842aaa1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2660,
+        580
+      ],
+      "parameters": {
+        "content": "# 🩺 Fehlerbehebung\n👉 status fallback: error_text lesen (HTTP 402 heißt kein Guthaben).\n👉 jev_attempts 2: der erste Versuch war überlastet.\n👉 Sub stoppt: question oder instruction fehlt im Aufrufer.\n👉 Nichts passiert: Ausführung über View sub-execution öffnen.",
+        "color": 7,
+        "width": 520,
+        "height": 330
+      }
+    }
+  ],
+  "connections": {
+    "Aufruf empfangen [Execute Workflow Trigger]": {
+      "main": [
+        [
+          {
+            "node": "Eingabe prüfen [Code]",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Eingabe prüfen [Code]": {
+      "main": [
+        [
+          {
+            "node": "Eingabe gültig? [If]",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Eingabe gültig? [If]": {
+      "main": [
+        [
+          {
+            "node": "K1-Bezug prüfen [HTTP Request]",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Eingabe ungültig [Stop and Error]",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "K1-Bezug prüfen [HTTP Request]": {
+      "main": [
+        [
+          {
+            "node": "Jev-Antwort einordnen [Code]",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Jev-Ausfall vermerken [Edit Fields]",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Jev-Antwort einordnen [Code]": {
+      "main": [
+        [
+          {
+            "node": "Jev-Ergebnis? [Switch]",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Jev-Ergebnis? [Switch]": {
+      "main": [
+        [
+          {
+            "node": "Jev-Werte übernehmen [Edit Fields]",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Kurz warten [Wait]",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Jev-Ausfall vermerken [Edit Fields]",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Jev-Werte übernehmen [Edit Fields]": {
+      "main": [
+        [
+          {
+            "node": "Ergebnis ordnen [Edit Fields]",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kurz warten [Wait]": {
+      "main": [
+        [
+          {
+            "node": "K1-Bezug erneut prüfen [HTTP Request]",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "K1-Bezug erneut prüfen [HTTP Request]": {
+      "main": [
+        [
+          {
+            "node": "Jev-Antwort einordnen [Code]",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Jev-Ausfall vermerken [Edit Fields]",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "tags": [
+    {
+      "name": "sub-workflow"
+    },
+    {
+      "name": "KI-AGT-2606"
+    },
+    {
+      "name": "woche-6"
+    },
+    {
+      "name": "schulung"
+    }
+  ],
+  "active": false,
+  "pinData": {}
+}

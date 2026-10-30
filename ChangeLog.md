@@ -12,6 +12,7 @@ Je Version des Workflows, was der Agent kann und was gemessen wurde. Neueste Ein
 - `Jev-Werte übernehmen` liest jetzt die Rückgabe des Subs. Der Name bleibt, weil der Prüfknoten die Route daran erkennt.
 - `Konfiguration`: `workflow_version` ist `v06`. Titelleiste und Versionskarte nennen v06.
 - Unverändert gegenüber v05.1: Prüfknoten `Werkzeugwahl messen` (Code zeichengleich, SHA256 `84162f71417ec67ef6717d9298727e2518e355335c0352cdcb778d02b344513f`), `Protokollzeile bauen`, Systemprompts, Jev-Anweisung, alle 6 Werkzeuge, SQL, Gedächtnis und Ausweichmodell. 59 Knoten (35 ausführbar, 24 Notizen).
+- Die Exporte der beiden Subs liegen unter `workflows/subs/` (`sub-protokollzeile.json`, `sub-jev-weiche.json`), ohne Versionsnummer im Dateinamen und mit Platzhaltern statt Zugängen.
 - Testschalter: `stoer=logfehler` lenkt den Protokollaufruf in der Test-Ausführung auf eine nicht erlaubte Tabelle.
 
 **Messwerte:** Knotentest des Prüfknotens 289 Fälle, 0 Abweichungen (derselbe Code wie v05.1). Läufe am 30.10.2026, nacheinander, ohne Mail und ohne Sub-Fehler: Q03 mit Jev-Wert 0,99 und derselben Antwort wie im v05-Lauf RG-Q03 (Weg agent, Werkzeug K1_Antwortkatalog), Folgefrage in derselben Sitzung (Weg folgefrage, Jev-Wert 0,98), Jev-Ausfall (Weg ohne_jev, Status fallback), erzwungener Protokollfehler (Antwort kam an, keine Zeile).
@@ -27,7 +28,7 @@ Je Version des Workflows, was der Agent kann und was gemessen wurde. Neueste Ein
 - Prüfknoten: Ein Leerzeichen vor dem schließenden Apostroph in einem Zitat kann das Ticket-Nomen vom Partizip trennen, sodass eine Zusage nicht erkannt wird. Der Fall ist konstruiert und kam in 190 echten Antworten nicht vor.
 - Die Subs sind nicht veröffentlicht und laufen aus manuell gestarteten Testläufen. Der Betrieb aus einem veröffentlichten Aufrufer ist nicht gemessen.
 - Die Jev-Anweisung steht als Text in der Konfiguration des Agenten und wird dem Sub übergeben. Die zweite Jev-Frage (Anliegen) ist im Sub fest hinterlegt und bleibt K1-bezogen.
-- Die Exporte der beiden Subs liegen noch nicht im Repo, und die Doku-Bilder der neuen Aufrufknoten fehlen noch.
+- Die Doku-Bilder der neuen Aufrufknoten sind nur Ausschnitte aus der Gesamtansicht.
 
 ## v05.1 (2026-10-30): Tag 5, Fr 30.10.2026
 
