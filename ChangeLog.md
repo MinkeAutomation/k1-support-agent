@@ -5,7 +5,7 @@ Je Version des Workflows, was der Agent kann und was gemessen wurde. Neueste Ein
 ## v06 (2026-10-30): Tag 5, Fr 30.10.2026
 
 **Funktion**
-- Die Jev-Weiche läuft jetzt als eigener Workflow `SUB Jev-Weiche mit Retry`. Im Support-Agenten steht nur noch der Aufruf `Jev-Weiche aufrufen`. Der Sub fragt Jev, wiederholt bei 429 und 529 genau 1 Mal und liefert immer ein Ergebnis (`status` ok oder fallback). Grund: Zugang, Guthaben und Wiederholung liegen an einer Stelle, und der Ausfallweg ist dort einzeln getestet.
+- Die Jev-Weiche läuft jetzt als eigener Workflow `SUB Jev-Weiche mit Retry`. Im Support-Agenten steht nur noch der Aufruf `Jev-Weiche aufrufen`. Der Sub fragt Jev, wiederholt bei 429 und 529 genau 1 Mal und liefert bei gültiger Eingabe immer ein Ergebnis (`status` ok oder fallback), bei fehlender Frage oder Anweisung stoppt er mit einem Fehler. Grund: Zugang, Guthaben und Wiederholung liegen an einer Stelle, und der Ausfallweg ist dort einzeln getestet.
 - Die Protokollzeile schreibt der Workflow `SUB Protokollzeile schreiben` (Tabelle, Zeile und Lauf-Kennung als Eingabe, feste Erlaubnisliste von 2 Tabellen). Im Agenten ersetzt `Protokollzeile aufrufen` den bisherigen Supabase-Knoten. Der Schreibzugang liegt nur im Sub. Grund: eine Stelle für den Schreibweg, kein Retry am Insert, ein Protokollfehler hält die Antwort an die Person nie auf.
 - Neu im Agenten: `Protokoll geschrieben?` wertet die Rückgabe des Subs aus. Bei einem Fehler vermerkt `Protokollfehler vermerken` den Grund, die Antwort geht trotzdem raus.
 - Der Fehlerausgang des Jev-Aufrufs führt wie bisher in `Jev-Ausfall vermerken` und von dort ohne Weiche zum Agenten.
@@ -15,7 +15,7 @@ Je Version des Workflows, was der Agent kann und was gemessen wurde. Neueste Ein
 - Die Exporte der beiden Subs liegen unter `workflows/subs/` (`sub-protokollzeile.json`, `sub-jev-weiche.json`), ohne Versionsnummer im Dateinamen und mit Platzhaltern statt Zugängen.
 - Testschalter: `stoer=logfehler` lenkt den Protokollaufruf in der Test-Ausführung auf eine nicht erlaubte Tabelle.
 
-**Messwerte:** Knotentest des Prüfknotens 289 Fälle, 0 Abweichungen (derselbe Code wie v05.1). Läufe am 30.10.2026, nacheinander, ohne Mail und ohne Sub-Fehler: Q03 mit Jev-Wert 0,99 und derselben Antwort wie im v05-Lauf RG-Q03 (Weg agent, Werkzeug K1_Antwortkatalog), Folgefrage in derselben Sitzung (Weg folgefrage, Jev-Wert 0,98), Jev-Ausfall (Weg ohne_jev, Status fallback), erzwungener Protokollfehler (Antwort kam an, keine Zeile).
+**Messwerte:** Knotentest des Prüfknotens 289 Fälle, 0 Abweichungen (derselbe Code wie v05.1). Läufe am 30.10.2026, nacheinander, ohne Mail und ohne Stop and Error: Q03 mit Jev-Wert 0,99 und einer inhaltlich gleichen Antwort wie im v05-Lauf RG-Q03 (Wortlaut kürzer; Weg agent, Werkzeug K1_Antwortkatalog), Folgefrage in derselben Sitzung (Weg folgefrage, Jev-Wert 0,98), Jev-Ausfall (Weg ohne_jev, Status fallback), erzwungener Protokollfehler (Antwort kam an, keine Zeile).
 
 **Gültige Läufe dieses Stands:**
 - Lauf 1767, Q03 `Wie lange wartet K1 auf meine Freigabe?`: Weg agent, Werkzeug K1_Antwortkatalog, Jev-Wert 0,99, Anliegen auftragsstatus (0,76), Kosten 0,000033474 USD, Protokollzeile 559 (alle 27 Spalten gleich wie die v05-Zeile 455 bis auf Kennungen, Zeit, Dauer und Antworttext), Unterläufe Jev 1768 und Protokoll 1769.
@@ -27,8 +27,10 @@ Je Version des Workflows, was der Agent kann und was gemessen wurde. Neueste Ein
 **Bekannte Grenzen:**
 - Prüfknoten: Ein Leerzeichen vor dem schließenden Apostroph in einem Zitat kann das Ticket-Nomen vom Partizip trennen, sodass eine Zusage nicht erkannt wird. Der Fall ist konstruiert und kam in 190 echten Antworten nicht vor.
 - Die Subs sind nicht veröffentlicht und laufen aus manuell gestarteten Testläufen. Der Betrieb aus einem veröffentlichten Aufrufer ist nicht gemessen.
-- Die Jev-Anweisung steht als Text in der Konfiguration des Agenten und wird dem Sub übergeben. Die zweite Jev-Frage (Anliegen) ist im Sub fest hinterlegt und bleibt K1-bezogen.
+- Die Jev-Anweisung steht als fester Text im Aufrufknoten `Jev-Weiche aufrufen` und wird dem Sub übergeben. Die zweite Jev-Frage (Anliegen) ist im Sub fest hinterlegt und bleibt K1-bezogen.
 - Die Doku-Bilder der neuen Aufrufknoten sind nur Ausschnitte aus der Gesamtansicht.
+- Die Wege `fremd`, `rueckfrage`, `limit` und `ausfall` laufen ebenfalls durch den neuen Aufruf `Protokollzeile aufrufen` und das neue `Protokoll geschrieben?`, sind in v06 aber nicht gemessen. Bei `fremd` und `rueckfrage` läuft zusätzlich `Dialog sichern` parallel (Antwortmodus letzter Knoten). Dass die Chat-Antwort dort weiter aus `Antwort an Kunden` kommt, ist für v06 nicht belegt.
+- Protokoll-Sub: `Zeile speichern` gibt auch dann ein leeres Ergebnis aus, wenn Supabase keine Zeile zurückliefert. Dann meldet der Sub `status` ok mit leerer `log_id`, ohne dass die Zeile sicher steht. Die Notiz im Sub nennt das, ein Abgleich mit der Tabelle bleibt nötig. Diese Lage ist nicht getestet.
 
 ## v05.1 (2026-10-30): Tag 5, Fr 30.10.2026
 

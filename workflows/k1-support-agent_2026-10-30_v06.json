@@ -1087,7 +1087,7 @@
         -384
       ],
       "parameters": {
-        "content": "# 📋 Workflow-Beschreibung\n🎯 **Zweck:** Kundenfragen zu K1 beantworten, Probleme an Aufträgen vormerken (nach Rückfrage), dringende Fälle sofort an das Team geben und dabei nichts zusagen, nichts Internes nennen und nichts erfinden.\n👥 **Für wen:** Kunden der Content-Maschine K1 (im Kurs fiktiv), Patrick als Betreiber.\n🕹️ **So nutzt du ihn:** im Editor „Open chat“. Testkürzel vor der Frage, zum Beispiel `[V01|s=name] Frage`: `s=` feste Sitzung, `p=min|strikt|bal|balohne` Fassung des Systemprompts, `h=0` Jev ohne Verlauf, `m=aus` Hauptmodell ausfallen lassen, `stoer=jevaus` Jev ausfallen lassen. Die Schalter wirken nur in manuellen Läufen, im Echtbetrieb gilt immer `bal`.\n## Status: 🟡 läuft, alle Zugänge eingerichtet",
+        "content": "# 📋 Workflow-Beschreibung\n🎯 **Zweck:** Kundenfragen zu K1 beantworten, Probleme an Aufträgen vormerken (nach Rückfrage), dringende Fälle sofort an das Team geben und dabei nichts zusagen, nichts Internes nennen und nichts erfinden.\n👥 **Für wen:** Kunden der Content-Maschine K1 (im Kurs fiktiv), Patrick als Betreiber.\n🕹️ **So nutzt du ihn:** im Editor „Open chat“. Testkürzel vor der Frage, zum Beispiel `[V01|s=name] Frage`: `s=` feste Sitzung, `p=min|strikt|bal|balohne` Fassung des Systemprompts, `h=0` Jev ohne Verlauf, `m=aus` Hauptmodell ausfallen lassen, `stoer=jevaus` Jev ausfallen lassen, `stoer=logfehler` Protokollfehler erzwingen. Die Schalter wirken nur in manuellen Läufen, im Echtbetrieb gilt immer `bal`.\n## Status: 🟡 läuft, alle Zugänge eingerichtet",
         "height": 368,
         "width": 900,
         "color": 7

@@ -39,7 +39,7 @@
       ],
       "parameters": {
         "mode": "runOnceForAllItems",
-        "jsCode": "// Prüft die Eingaben des Aufrufers, bevor etwas geschrieben wird.\n// Erlaubnisliste: nur diese Tabellen darf der Sub beschreiben (R218, R231). Neue Tabellen kommen nur mit Patricks Ja hinzu.\nconst ERLAUBT = ['agt_w06_support_log', 'agt_w06_sub_test'];\nconst inp = $input.first().json;\nconst table = String(inp.table_name ?? '').trim();\nconst row = inp.row;\nconst runId = inp.run_id == null ? '' : String(inp.run_id);\nlet err = '';\nif (!table) err = 'table_name fehlt';\nelse if (!ERLAUBT.includes(table)) err = 'Tabelle nicht erlaubt: ' + table.slice(0, 60);\nelse if (row === null || typeof row !== 'object' || Array.isArray(row)) err = 'row muss ein Objekt sein';\nelse if (Object.keys(row).length === 0) err = 'row ist leer';\nreturn [{ json: { valid: err === '', error_text: err, table_name: table, run_id: runId, row: err === '' ? row : null } }];"
+        "jsCode": "// Prüft die Eingaben des Aufrufers, bevor etwas geschrieben wird.\n// Erlaubnisliste: nur diese Tabellen darf der Sub beschreiben. Neue Tabellen kommen nur nach Freigabe des Betreibers hinzu.\nconst ERLAUBT = ['agt_w06_support_log', 'agt_w06_sub_test'];\nconst inp = $input.first().json;\nconst table = String(inp.table_name ?? '').trim();\nconst row = inp.row;\nconst runId = inp.run_id == null ? '' : String(inp.run_id);\nlet err = '';\nif (!table) err = 'table_name fehlt';\nelse if (!ERLAUBT.includes(table)) err = 'Tabelle nicht erlaubt: ' + table.slice(0, 60);\nelse if (row === null || typeof row !== 'object' || Array.isArray(row)) err = 'row muss ein Objekt sein';\nelse if (Object.keys(row).length === 0) err = 'row ist leer';\nreturn [{ json: { valid: err === '', error_text: err, table_name: table, run_id: runId, row: err === '' ? row : null } }];"
       }
     },
     {
@@ -250,7 +250,7 @@
         -90
       ],
       "parameters": {
-        "content": "# 🧪 Protokollzeile\n**Aufgabe:** Zeile prüfen, speichern, Ergebnis melden.\n**Die Idee:** Tabelle ist ein Parameter, aber nur aus einer festen Liste.\n**Warum so?** Der Zugang mit Schreibrecht liegt nur hier (R218).\n**Hinweis:** Kein Retry am Insert, sonst entsteht eine doppelte Zeile (R10).",
+        "content": "# 🧪 Protokollzeile\n**Aufgabe:** Zeile prüfen, speichern, Ergebnis melden.\n**Die Idee:** Tabelle ist ein Parameter, aber nur aus einer festen Liste.\n**Warum so?** Der Zugang mit Schreibrecht liegt nur hier.\n**Hinweis:** Kein Retry am Insert, sonst entsteht eine doppelte Zeile.",
         "color": 7,
         "width": 360,
         "height": 230
@@ -280,7 +280,7 @@
         -90
       ],
       "parameters": {
-        "content": "## Status\n🟢 fertig: Prüfung, Speichern, Meldung\n🟡 Hinweis: nur 2 Tabellen erlaubt\n🔴 Pflicht: Aufrufer wertet status aus\n🔵 Info: K1-Tabelle erst nach dem 03.11.",
+        "content": "## Status\n🟢 fertig: Prüfung, Speichern, Meldung\n🟡 Hinweis: nur 2 Tabellen erlaubt\n🔴 Pflicht: Aufrufer wertet status aus\n🔵 Info: weitere Tabellen nur nach Freigabe des Betreibers.",
         "color": 7,
         "width": 180,
         "height": 230
@@ -310,7 +310,7 @@
         150
       ],
       "parameters": {
-        "content": "## ② Eingabe prüfen\nTabelle muss in der Erlaubnisliste stehen, row muss ein nicht leeres Objekt sein.\n\n🔴 Neue Tabellen nur mit Patricks Ja in die Liste.\n\n🩺 **Wenn es hakt:** error_text nennt den Grund.",
+        "content": "## ② Eingabe prüfen\nTabelle muss in der Erlaubnisliste stehen, row muss ein nicht leeres Objekt sein.\n\n🔴 Neue Tabellen nur nach Freigabe des Betreibers in die Liste.\n\n🩺 **Wenn es hakt:** error_text nennt den Grund.",
         "color": 1,
         "width": 290,
         "height": 220
@@ -370,7 +370,7 @@
         150
       ],
       "parameters": {
-        "content": "## ⑥ Ergebnis ordnen\nRückgabe: status, log_id, table_name, run_id, error_text.\n\n🟢 status ok heißt: die Zeile steht in der Tabelle.\n\n🩺 **Wenn es hakt:** log_id leer heißt, die Tabelle hat keine Spalte id.",
+        "content": "## ⑥ Ergebnis ordnen\nRückgabe: status, log_id, table_name, run_id, error_text.\n\n🟢 status ok mit gesetzter log_id heißt: die Zeile steht in der Tabelle. Ist die log_id leer, hat Supabase keine Zeile zurückgegeben, dann in der Tabelle nachsehen.\n\n🩺 **Wenn es hakt:** log_id leer heißt, die Tabelle hat keine Spalte id oder der Insert lieferte nichts zurück.",
         "color": 1,
         "width": 290,
         "height": 220
@@ -430,7 +430,7 @@
         -90
       ],
       "parameters": {
-        "content": "# ✅ Setup-Checkliste\n✅ Zugang <Zugang Supabase Schreibrolle> (Service-Rolle) im Knoten ⑤\n✅ Tabelle in Supabase angelegt, Row Level Security an\n✅ Tabelle steht in der Erlaubnisliste in ②\n✅ Aufrufrecht: nur Workflows desselben Eigentümers\n⏳ Test über den Test-Aufrufer, dann im Aufrufer mit echten Daten",
+        "content": "# ✅ Setup-Checkliste\n✅ Zugang <Zugang Supabase Schreibrolle> (Service-Rolle) im Knoten ⑤\n✅ Tabelle in Supabase angelegt, Row Level Security an\n✅ Tabelle steht in der Erlaubnisliste in ②\n✅ Aufrufrecht: nur Workflows desselben Eigentümers\n⏳ Erst mit einem eigenen Test-Workflow aufrufen, dann im Support-Agenten mit echten Daten",
         "color": 7,
         "width": 520,
         "height": 300
@@ -445,7 +445,7 @@
         230
       ],
       "parameters": {
-        "content": "# 🌐 Plattform-Hinweise\n**auto.autima.cloud:** Erlaubt: Aufruf nur durch Workflows desselben Eigentümers. 🟡 Besonderheit: der Sub ist nicht veröffentlicht, er läuft aus Aufrufern, die manuell oder produktiv starten.\n**Supabase:** Erlaubt: Insert mit dem Service-Schlüssel. 🟡 Besonderheit: unbekannte Spalten führen zu einem Fehler, die Tabelle wird nie automatisch angelegt.",
+        "content": "# 🌐 Plattform-Hinweise\n**n8n (eigene Instanz):** Erlaubt: Aufruf nur durch Workflows desselben Eigentümers. 🟡 Besonderheit: der Sub ist nicht veröffentlicht, er läuft aus Aufrufern, die manuell oder produktiv starten.\n**Supabase:** Erlaubt: Insert mit dem Service-Schlüssel. 🟡 Besonderheit: unbekannte Spalten führen zu einem Fehler, die Tabelle wird nie automatisch angelegt.",
         "color": 7,
         "width": 520,
         "height": 330

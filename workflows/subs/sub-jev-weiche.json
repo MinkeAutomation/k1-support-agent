@@ -401,7 +401,7 @@
         -260
       ],
       "parameters": {
-        "content": "# SUB Jev-Weiche mit Retry\nFragt das Entscheidungsmodell Jev, ob eine Nachricht zum Dienst gehört. Bei 429 oder 529 gibt es einen zweiten Versuch. Der Sub liefert immer ein Ergebnis.",
+        "content": "# SUB Jev-Weiche mit Retry\nFragt das Entscheidungsmodell Jev, ob eine Nachricht zum Dienst gehört. Bei 429 oder 529 gibt es einen zweiten Versuch. Bei gültiger Eingabe liefert der Sub immer ein Ergebnis (ok oder fallback), bei fehlender Frage oder Anweisung stoppt er mit einem Fehler.",
         "color": 5,
         "width": 3300,
         "height": 110
@@ -445,7 +445,7 @@
         -90
       ],
       "parameters": {
-        "content": "# 🧪 Jev-Weiche\n**Aufgabe:** Jev fragen, Antwort einordnen, einmal wiederholen.\n**Die Idee:** Anweisung und Zustand kommen vom Aufrufer, der Sub kennt nur den Ablauf.\n**Warum so?** Zugang mit Guthaben und Retry an einer Stelle (R216).\n**Hinweis:** Wiederholt wird nur bei 429 und 529, höchstens 1 Mal.",
+        "content": "# 🧪 Jev-Weiche\n**Aufgabe:** Jev fragen, Antwort einordnen, einmal wiederholen.\n**Die Idee:** Anweisung und Zustand kommen vom Aufrufer, der Sub kennt nur den Ablauf.\n**Warum so?** Zugang mit Guthaben und Retry an einer Stelle.\n**Hinweis:** Wiederholt wird nur bei 429 und 529, höchstens 1 Mal.",
         "color": 7,
         "width": 360,
         "height": 230
@@ -520,7 +520,7 @@
         190
       ],
       "parameters": {
-        "content": "## ③ Jev fragen\nPOST an die OpenRouter Decisions API, Zugang <Zugang OpenRouter Jev>.\n\n🟡 Jev ist kein Gratismodell (R216), Guthaben kostet.\n\n🩺 **Wenn es hakt:** Guthaben und Modellname prüfen.",
+        "content": "## ③ Jev fragen\nPOST an die OpenRouter Decisions API, Zugang <Zugang OpenRouter Jev>.\n\n🟡 Jev ist kein Gratismodell, die Nutzung kostet Guthaben.\n\n🩺 **Wenn es hakt:** Guthaben und Modellname prüfen.",
         "color": 1,
         "width": 290,
         "height": 220
@@ -640,7 +640,7 @@
         -90
       ],
       "parameters": {
-        "content": "# ✅ Setup-Checkliste\n✅ Zugang <Zugang OpenRouter Jev> in beiden Jev-Knoten\n✅ Guthaben auf dem Kursschlüssel prüfen\n✅ Modell fest setzen (typesafe/jev-1.14), nie jev-latest\n✅ Aufrufrecht: nur Workflows desselben Eigentümers\n⏳ Test über den Test-Aufrufer, dann im Aufrufer mit echten Daten",
+        "content": "# ✅ Setup-Checkliste\n✅ Zugang <Zugang OpenRouter Jev> in beiden Jev-Knoten\n✅ Guthaben auf dem Schlüssel prüfen\n✅ Modell fest setzen (typesafe/jev-1.14), nie jev-latest\n✅ Aufrufrecht: nur Workflows desselben Eigentümers\n⏳ Erst mit einem eigenen Test-Workflow aufrufen, dann im Support-Agenten mit echten Daten",
         "color": 7,
         "width": 520,
         "height": 300
@@ -655,7 +655,7 @@
         230
       ],
       "parameters": {
-        "content": "# 🌐 Plattform-Hinweise\n**auto.autima.cloud:** Erlaubt: Aufruf nur durch Workflows desselben Eigentümers. 🟡 Besonderheit: der Sub ist nicht veröffentlicht.\n**OpenRouter Decisions API:** Erlaubt: Kursschlüssel mit Guthaben. 🟡 Besonderheit: Alpha-Schnittstelle, Kontext 32.000 Token, kein Gratis-Ersatz (E-W06T01-11).",
+        "content": "# 🌐 Plattform-Hinweise\n**n8n (eigene Instanz):** Erlaubt: Aufruf nur durch Workflows desselben Eigentümers. 🟡 Besonderheit: der Sub ist nicht veröffentlicht.\n**OpenRouter Decisions API:** Erlaubt: Schlüssel mit Guthaben. 🟡 Besonderheit: Alpha-Schnittstelle, Kontext 32.000 Token, kein Gratis-Ersatz.",
         "color": 7,
         "width": 520,
         "height": 330
