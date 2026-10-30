@@ -6,7 +6,7 @@ Welche Version zu welchem Tag und welcher Tages-Doku gehört, steht in der [Vers
 
 **Stand 30.10.2026:**
 
-- `k1-support-agent_2026-10-30_v05.1.json`: derselbe Aufbau wie v05 (61 Knoten, 37 ausführbar und 24 Notizen, gleiche Werkzeuge, gleiche Prompts, gleiche Platzhalter und Zugänge) mit korrigiertem Prüfknoten `Werkzeugwahl messen`: Zusagen neben einem Angebot im selben Satz werden erkannt, und eine Ticketaktion entsteht nur aus der bestätigten Rückgabe der Vormerkung. Die Einrichtung nach dem Import ist dieselbe wie unten. Einzelheiten und Läufe im [ChangeLog](../ChangeLog.md).
+- `k1-support-agent_2026-10-30_v05.1.json`: derselbe Aufbau wie v05 (61 Knoten, 37 ausführbar und 24 Notizen, gleiche Werkzeuge, gleiche Prompts, gleiche Platzhalter und Zugänge) mit korrigiertem Prüfknoten `Werkzeugwahl messen`: Zusagen neben einem Angebot im selben Satz werden erkannt, und eine Ticketaktion entsteht nur aus der bestätigten Rückgabe der Vormerkung. Die Einrichtung nach dem Import ist dieselbe wie unten. Einzelheiten und Läufe im [ChangeLog](../ChangeLog.md). Bekannte Grenze: Der Prüfknoten arbeitet mit einer Liste fester Formulierungen, einige Sätze rutschen durch (Einzelheiten und Plan für v06 im ChangeLog).
 
 **Stand 29.10.2026 (Vorgänger):**
 

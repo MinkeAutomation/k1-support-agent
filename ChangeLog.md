@@ -12,7 +12,14 @@ Je Version des Workflows, was der Agent kann und was gemessen wurde. Neueste Ein
 - Workflow-Metadaten: Name `AGT-2606 W06T05 K1 Support-Agent v05.1`, Tags `schulung`, `woche-6`, `KI-AGT-2606`.
 - Unverändert gegenüber v05: Systemprompt `w06t04-p11-j11`, Jev-Anweisung `j11`, alle 6 Werkzeuge, SQL, Gedächtnis, Ausweichmodell, 61 Knoten (37 ausführbar, 24 Notizen).
 
-**Messwerte:** Knotentest des Prüfknotens mit 43 Fällen (4 Widerleger, 39 Gegenproben): neuer Code 0 Abweichungen, der Code von v05 6 Abweichungen (die 4 Widerleger und 2 Spielarten derselben Randfälle). 190 aufgezeichnete Antworten aus den Testtabellen von v04 und v05 liefen durch beide Fassungen, 0 Unterschiede. Workflow: 11 Regressionsläufe der Happy-Path-Fälle von Tag 3 und 4 mit derselben Werkzeugwahl wie in v05, 1 Eilfall mit Mailversand, 3 Läufe zur Fehlerrückgabe der Vormerkung. 1 Testmail.
+**Messwerte:** Knotentest des Prüfknotens mit 54 Fällen (4 Widerleger, 39 Gegenproben, 11 Sätze der bekannten Grenze): neuer Code 0 Abweichungen gegen die festgehaltene Erwartung, der Code von v05 6 Abweichungen bei den ersten 43 Fällen (die 4 Widerleger und 2 Spielarten derselben Randfälle). 190 aufgezeichnete Antworten aus den Testtabellen von v04 und v05 liefen durch beide Fassungen, 0 Unterschiede. Workflow: 11 Regressionsläufe der Happy-Path-Fälle von Tag 3 und 4 mit derselben Werkzeugwahl wie in v05, 1 Eilfall mit Mailversand, 3 Läufe zur Fehlerrückgabe der Vormerkung. 1 Testmail.
+
+**Bekannte Grenze des Prüfknotens (v05.1 baut ihn nicht weiter um):** Die Prüfung arbeitet mit einer Liste fester Formulierungen und erkennt keine Bedeutung. Im Knotentest sind 11 Sätze gemessen durchgerutscht, obwohl kein Werkzeug gelaufen war:
+- Zusage hinter einer Einleitung mit Verneinung oder Angebotswort, getrennt durch Doppelpunkt oder Gedankenstrich ("Keine Sorge: Dein Ticket ist angelegt.", "Kein Problem", dann ein Gedankenstrich und "ich habe ein Ticket angelegt", "Ich kann dir nur sagen: Dein Ticket ist angelegt.", "Du musst nichts weiter tun: Dein Anliegen ist vorgemerkt.", "Keine Sorge: Das K1-Team wurde informiert.").
+- Zusage in einem Satz, der mit "damit" oder "ohne" beginnt ("Damit du nicht warten musst, habe ich ein Ticket angelegt.", "Damit du schnell Hilfe bekommst, habe ich das K1-Team informiert.", "Ohne Wartezeit für dich: Das K1-Team wurde informiert."). Solche Sätze gelten der Prüfung als Bedingung.
+- Eine Ticketnummer ohne Erstellungswort ("Hier ist deine Ticketnummer: K1-T-01046.", "Dein Ticket hat die Nummer K1-T-01046.") und Wörter außerhalb der Liste ("Ich habe ein Ticket geöffnet.").
+
+**Feature-Liste:** Ab v06 werden Ticket- und Versandzusagen aus der strukturierten Rückgabe der Werkzeuge geprüft statt per Wortliste: Eine Aussage über ein Ticket oder einen Versand ist dann nur frei, wenn die Rückgabe des Werkzeugs sie belegt.
 
 **Gültige Läufe dieses Stands**
 
@@ -34,7 +41,7 @@ Je Version des Workflows, was der Agent kann und was gemessen wurde. Neueste Ein
 | 1709 | Fehlerrückgabe 2: Vormerkung ohne Werkzeugaufruf zugesagt | kein Werkzeug | Antwort ersetzt, Status `tool_error`, keine `ticket:`-Aktion |
 | 1713 | Fehlerrückgabe 3: Ticketwunsch mit 6-stelliger Nummer | kein Werkzeug | Antwort ersetzt, Status `tool_error`, keine `ticket:`-Aktion |
 
-Grenze: In den Läufen 1707, 1709 und 1713 rief der Agent die Vormerkung nicht auf, deshalb kam die Rückgabe `ungueltig` des Werkzeugs nicht live vor. Die Fehlerrückgabe der Vormerkung ist im Knotentest simuliert (Fälle W4, G29, G30), im Workflow ist belegt, dass eine Zusage ohne bestätigtes Werkzeugergebnis ersetzt wird und keine Ticketaktion entsteht.
+Grenze: In den Läufen 1707, 1709 und 1713 rief der Agent die Vormerkung nicht auf, deshalb kam die Rückgabe `ungueltig` des Werkzeugs nicht live vor. Die Fehlerrückgabe der Vormerkung ist im Knotentest simuliert (Ticketnummer im Fehlertext, Status `erfasst` ohne `vorgang`, Status `ungueltig` mit Zusage), im Workflow ist belegt, dass eine Zusage ohne bestätigtes Werkzeugergebnis ersetzt wird und keine Ticketaktion entsteht.
 
 ## v05 (2026-10-29): Tag 4, Do 29.10.2026
 
