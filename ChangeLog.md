@@ -2,6 +2,33 @@
 
 Je Version des Workflows, was der Agent kann und was gemessen wurde. Neueste Einträge oben. Die Überschrift trägt die Version und das Datum des Stands.
 
+## v06 (2026-10-30): Tag 5, Fr 30.10.2026
+
+**Funktion**
+- Die Jev-Weiche läuft jetzt als eigener Workflow `SUB Jev-Weiche mit Retry`. Im Support-Agenten steht nur noch der Aufruf `Jev-Weiche aufrufen`. Der Sub fragt Jev, wiederholt bei 429 und 529 genau 1 Mal und liefert immer ein Ergebnis (`status` ok oder fallback). Grund: Zugang, Guthaben und Wiederholung liegen an einer Stelle, und der Ausfallweg ist dort einzeln getestet.
+- Die Protokollzeile schreibt der Workflow `SUB Protokollzeile schreiben` (Tabelle, Zeile und Lauf-Kennung als Eingabe, feste Erlaubnisliste von 2 Tabellen). Im Agenten ersetzt `Protokollzeile aufrufen` den bisherigen Supabase-Knoten. Der Schreibzugang liegt nur im Sub. Grund: eine Stelle für den Schreibweg, kein Retry am Insert, ein Protokollfehler hält die Antwort an die Person nie auf.
+- Neu im Agenten: `Protokoll geschrieben?` wertet die Rückgabe des Subs aus. Bei einem Fehler vermerkt `Protokollfehler vermerken` den Grund, die Antwort geht trotzdem raus.
+- Der Fehlerausgang des Jev-Aufrufs führt wie bisher in `Jev-Ausfall vermerken` und von dort ohne Weiche zum Agenten.
+- `Jev-Werte übernehmen` liest jetzt die Rückgabe des Subs. Der Name bleibt, weil der Prüfknoten die Route daran erkennt.
+- `Konfiguration`: `workflow_version` ist `v06`. Titelleiste und Versionskarte nennen v06.
+- Unverändert gegenüber v05.1: Prüfknoten `Werkzeugwahl messen` (Code zeichengleich, SHA256 `84162f71417ec67ef6717d9298727e2518e355335c0352cdcb778d02b344513f`), `Protokollzeile bauen`, Systemprompts, Jev-Anweisung, alle 6 Werkzeuge, SQL, Gedächtnis und Ausweichmodell. 59 Knoten (35 ausführbar, 24 Notizen).
+- Testschalter: `stoer=logfehler` lenkt den Protokollaufruf in der Test-Ausführung auf eine nicht erlaubte Tabelle.
+
+**Messwerte:** Knotentest des Prüfknotens 289 Fälle, 0 Abweichungen (derselbe Code wie v05.1). Läufe am 30.10.2026, nacheinander, ohne Mail und ohne Sub-Fehler: Q03 mit Jev-Wert 0,99 und derselben Antwort wie im v05-Lauf RG-Q03 (Weg agent, Werkzeug K1_Antwortkatalog), Folgefrage in derselben Sitzung (Weg folgefrage, Jev-Wert 0,98), Jev-Ausfall (Weg ohne_jev, Status fallback), erzwungener Protokollfehler (Antwort kam an, keine Zeile).
+
+**Gültige Läufe dieses Stands:**
+- Lauf 1767, Q03 `Wie lange wartet K1 auf meine Freigabe?`: Weg agent, Werkzeug K1_Antwortkatalog, Jev-Wert 0,99, Anliegen auftragsstatus (0,76), Kosten 0,000033474 USD, Protokollzeile 559 (alle 27 Spalten gleich wie die v05-Zeile 455 bis auf Kennungen, Zeit, Dauer und Antworttext), Unterläufe Jev 1768 und Protokoll 1769.
+- Lauf 1770, Folgefrage `Und wie lange dauert das danach?` in derselben Sitzung: Weg folgefrage, Jev-Wert 0,98, Protokollzeile 560, Unterläufe 1771 und 1772.
+- Lauf 1773, Jev-Ausfall mit `stoer=jevaus`: Jev-Aufruf liefert fallback, die Weiche nimmt den Zweig "Kein Jev-Wert", Weg ohne_jev, Antwort vom Agenten mit Werkzeug K1_Antwortkatalog, Protokollzeile 561 (Status fallback, Jev-Werte leer), Unterläufe 1774 und 1775.
+- Lauf 1776, erzwungener Protokollfehler mit `stoer=logfehler`: der Sub lehnt die Tabelle ab ("Tabelle nicht erlaubt"), `Protokollfehler vermerken` läuft, die Antwort an die Person kommt, es entsteht keine Zeile. Unterläufe 1777 und 1779.
+- Die Subs wurden vorher einzeln getestet: Protokollzeile Läufe 1735 (Unterläufe 1736 bis 1743, 7 erwartete PASS und 1 beabsichtigter FAIL), Jev-Weiche Lauf 1747 (Unterläufe 1748 bis 1755, 6 erwartete PASS und 1 beabsichtigter FAIL).
+
+**Bekannte Grenzen:**
+- Prüfknoten: Ein Leerzeichen vor dem schließenden Apostroph in einem Zitat kann das Ticket-Nomen vom Partizip trennen, sodass eine Zusage nicht erkannt wird. Der Fall ist konstruiert und kam in 190 echten Antworten nicht vor.
+- Die Subs sind nicht veröffentlicht und laufen aus manuell gestarteten Testläufen. Der Betrieb aus einem veröffentlichten Aufrufer ist nicht gemessen.
+- Die Jev-Anweisung steht als Text in der Konfiguration des Agenten und wird dem Sub übergeben. Die zweite Jev-Frage (Anliegen) ist im Sub fest hinterlegt und bleibt K1-bezogen.
+- Die Exporte der beiden Subs liegen noch nicht im Repo, und die Doku-Bilder der neuen Aufrufknoten fehlen noch.
+
 ## v05.1 (2026-10-30): Tag 5, Fr 30.10.2026
 
 **Funktion**

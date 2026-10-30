@@ -6,6 +6,8 @@ Welche Version zu welchem Tag und welcher Tages-Doku gehört, steht in der [Vers
 
 **Stand 30.10.2026:**
 
+- `k1-support-agent_2026-10-30_v06.json`: derselbe Aufbau wie v05.1, aber die Jev-Weiche und die Protokollzeile laufen als Aufrufe von 2 eigenen Sub-Workflows (`SUB Jev-Weiche mit Retry`, `SUB Protokollzeile schreiben`). 59 Knoten (35 ausführbar und 24 Notizen). Die beiden Subs liegen noch nicht als Export im Repo; die Aufrufknoten verweisen auf Subs mit diesem Namen im selben n8n-Projekt (nach dem Import die Workflow-Auswahl in beiden Aufrufknoten neu setzen). Der Jev-Sub trägt den OpenRouter-Zugang, der Protokoll-Sub den Supabase-Schreibzugang. Zusätzlich zur Tabelle `agt_w06_support_log` kennt die Erlaubnisliste des Protokoll-Subs eine Testtabelle `agt_w06_sub_test` (nur für Tests).
+
 - `k1-support-agent_2026-10-30_v05.1.json`: derselbe Aufbau wie v05 (61 Knoten, 37 ausführbar und 24 Notizen, gleiche Werkzeuge, gleiche Prompts, gleiche Platzhalter und Zugänge) mit korrigiertem Prüfknoten `Werkzeugwahl messen`: jede Zusage in Vergangenheit oder Vollzug ("ist angelegt", "wurde informiert") wird auf dem ganzen Text ersetzt, ohne Abstandsfenster (das Partizip der Wortliste allein genügt), egal ob neben einem Angebot, in Klammern, Zitaten, Hervorhebungen, langen Einschüben oder einem Zukunftsnachsatz ("ist angelegt und wird bearbeitet"), solange das Werkzeug sie nicht bestätigt hat, und eine Ticketaktion entsteht nur aus der bestätigten Rückgabe der Vormerkung. Die Einrichtung nach dem Import ist dieselbe wie unten. Einzelheiten und Läufe im [ChangeLog](../ChangeLog.md). Bekannte Grenze: Der Prüfknoten arbeitet mit einer Liste fester Formulierungen, Umschreibungen außerhalb der Liste rutschen durch, und ein korrektes Angebot mit geteiltem Modalverb ("Ich kann das vormerken und weiterleiten") wird unnötig ersetzt, die sichere Richtung (Einzelheiten und Plan für v06 im ChangeLog).
 
 **Stand 29.10.2026 (Vorgänger):**
@@ -28,9 +30,9 @@ Beide Exporte haben einen Chat Trigger beziehungsweise einen manuellen Start ohn
 
 | Knoten | Credential-Typ | wofür |
 |---|---|---|
-| `K1-Bezug prüfen`, `K1-Bezug erneut prüfen` | OpenAI-Typ mit Base URL `https://openrouter.ai/api/v1` (OpenRouter-Schlüssel) | Jev über die Decisions API |
+| `K1-Bezug prüfen`, `K1-Bezug erneut prüfen` (bis v05.1; ab v06 im Sub `SUB Jev-Weiche mit Retry`) | OpenAI-Typ mit Base URL `https://openrouter.ai/api/v1` (OpenRouter-Schlüssel) | Jev über die Decisions API |
 | `Gratismodell [OpenAI Chat Model]`, `Ausweichmodell [OpenAI Chat Model]` | OpenAI-Typ mit Base URL `https://openrouter.ai/api/v1` (OpenRouter-Schlüssel) | Sprachmodell des Agenten und das Ausweichmodell, wenn das Hauptmodell ausfällt |
-| `Verlauf der Sitzung lesen`, `Lauf protokollieren` | Supabase API mit dem serverseitigen Schlüssel der Rolle `service_role` | Protokolltabelle (Row Level Security ohne INSERT-Policy) |
+| `Verlauf der Sitzung lesen`, `Lauf protokollieren` (bis v05.1; ab v06 im Sub `SUB Protokollzeile schreiben`) | Supabase API mit dem serverseitigen Schlüssel der Rolle `service_role` | Protokolltabelle (Row Level Security ohne INSERT-Policy) |
 | `Gesprächsverlauf holen`, `Dialog speichern` | dieselbe Supabase API mit der Rolle `service_role` | liest und schreibt `agt_w06_chat_histories` für den Verlauf von Jev |
 | `Auftragsstand`, `Teamvormerkung` | Supabase API mit dem öffentlichen `anon`-Schlüssel | rufen nur die Funktionen `agt_w06_auftrag_abfragen` und `agt_w06_vormerkung_anlegen` auf |
 | `K1_Technikwissen` | Supabase API mit dem öffentlichen `anon`-Schlüssel (nur lesen) | Suche in `agt_w06_knowledge_chunks` über `match_agt_w06_knowledge_chunks` |
