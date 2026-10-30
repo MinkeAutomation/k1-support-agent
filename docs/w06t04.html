@@ -45,6 +45,15 @@
 <a class="knopf zweit" href="index.html">Wochen-Doku <span aria-hidden="true" class="pfeil">→</span></a>
 </div>
 <main class="inhalt" id="inhalt">
+<div class="merksatz einminute" id="in-1-minute"><span class="ktag">In 1 Minute</span>
+<ul>
+<li><strong>Ziel:</strong> Drei Systemprompts im Vergleich, dazu Leitplanken, Rückfrage vor der Vormerkung, Obergrenze je Sitzung und ein Ausweichmodell.</li>
+<li><strong>Ergebnis:</strong> Der balancierte Prompt ist der Arbeitsprompt: keine Zusagen, keine internen Namen, bei Gefahr sofort die Eilmeldung.</li>
+<li><strong>Zahl:</strong> 45 gezählte Vergleichsläufe (3 Fassungen, 5 Anfragen, je 3 Läufe, Workflow v05).</li>
+<li><strong>Grenze:</strong> Der Prüfknoten erkennt feste Formulierungen, keine Bedeutung; eine spätere Korrektur steht in v05.1 (30.10.2026).</li>
+<li><strong>Link:</strong> Weiter unten: der Systemprompt im Wortlaut, Testtabelle und Nachmessung.</li>
+</ul></div>
+
 <section aria-labelledby="k1-t" class="kapitel" id="k1">
 <div class="kkopf"><div aria-hidden="true" class="knum">01</div><div>
 <p class="kklein">Kapitel 1</p><h2 id="k1-t">Ziele des Tages</h2>
@@ -340,7 +349,7 @@ Passt die Anfrage zu keiner Zeile der Tabelle, liefert ein Werkzeug nichts oder 
 <tr><th scope="row">Gegenprobe: Hauptstadt von Frankreich</th><td>0,03</td><td>fremd, fester Hinweis, kein Agent</td><td>1655</td></tr>
 </tbody>
 </table>
-</div><p>8 von 8 Gefahrmeldungen lösen die Eilmeldung aus, 3 von 3 Fremdfragen bleiben beim festen Hinweis. Das sind wenige Läufe, und Jev ist ein vorgeschaltetes Modell: Die Wirkung ist gemessen, nicht garantiert.</p>
+</div><p>In 8 von 8 Gefahrmeldungen wird das Werkzeug Eilmeldung aufgerufen (der Versand war simuliert, es ging keine Mail raus), 3 von 3 Fremdfragen bleiben beim festen Hinweis. Das sind wenige Läufe, und Jev ist ein vorgeschaltetes Modell: Die Wirkung ist gemessen, nicht garantiert.</p>
 <h3>Testschalter nur im Test</h3>
 <p>Der Schalter für die Sitzungskennung (<code>s=</code>) und die Testkennung lasen die Schalter-Kürzel in jedem Modus; im Echtbetrieb hätte eine Person damit fremde Testsitzungen nutzen oder die Obergrenze durch Wechsel der Kennung umgehen können. Beide Felder sind jetzt wie die übrigen Schalter (Fassung, Verlauf, Ausfall, Störung) an die Test-Modi gebunden. Gemessen habe ich die Ausdrücke der Konfiguration mit verschiedenen Modi (Simulation der Ausdrücke mit den Werten <code>$execution.mode</code> und <code>chatInput</code>, weil ein Echtlauf mit dem inaktiven Workflow nicht möglich ist):</p><div aria-labelledby="t-schalter" class="tabelle" role="region" tabindex="0">
 <table class="mittel">

@@ -1,8 +1,42 @@
 # ChangeLog K1 Support-Agent
 
-Je Tag, was der Agent kann und was gemessen wurde. Neueste Einträge oben. `v` zählt die Stände des Workflows, `V` die Einträge dieses Logs.
+Je Version des Workflows, was der Agent kann und was gemessen wurde. Neueste Einträge oben. Die Überschrift trägt die Version und das Datum des Stands.
 
-## V4: Tag 4, Do 29.10.2026 (Workflow v05)
+## v05.1 (2026-10-30): Tag 5, Fr 30.10.2026
+
+**Funktion**
+- Prüfknoten `Werkzeugwahl messen`, Randfall 1: Die Satzteile einer Antwort werden auch an "und" und "sowie" getrennt. Vorher verdeckte ein "kann" oder "kein" im vorigen Satzteil eine Zusage im nächsten ("Ich kann dir helfen und habe ein Ticket angelegt.", "Ich habe kein Ticket angelegt und dein Anliegen ist vorgemerkt.", "Ich kann dir helfen und das K1-Team wurde informiert."). Jede Behauptung wird mit ihrer eigenen Verneinung oder Angebotsform geprüft.
+- Prüfknoten, Randfall 2: Eine Ticketaktion (`action` mit `ticket:`) entsteht nur aus der strukturierten Rückgabe der Vormerkung mit Status `erfasst` und gültigem Feld `vorgang`. Eine Nummer im Fehlertext zählt nie, und "erfasst" ohne gültige Nummer gilt als Werkzeugfehler.
+- Testtabelle von v05: Q08 steht im vollständigen Wortlaut. Die Aussage zu den Gefahrläufen nennt jetzt, dass der Mailversand simuliert war (8 von 8 Werkzeugaufrufe, kein Versand).
+- Doku: README auf unter 250 Wörter und Wochen-Doku auf eine Seite gekürzt, auf jeder Tagesseite steht oben ein Kasten "In 1 Minute". Die bisherigen Langfassungen liegen unverändert als `docs/readme-ausfuehrlich.md` und `docs/woche6-ausfuehrlich.html`. Die Überschriften dieses Logs tragen jetzt Version und Datum.
+- Workflow-Metadaten: Name `AGT-2606 W06T05 K1 Support-Agent v05.1`, Tags `schulung`, `woche-6`, `KI-AGT-2606`.
+- Unverändert gegenüber v05: Systemprompt `w06t04-p11-j11`, Jev-Anweisung `j11`, alle 6 Werkzeuge, SQL, Gedächtnis, Ausweichmodell, 61 Knoten (37 ausführbar, 24 Notizen).
+
+**Messwerte:** Knotentest des Prüfknotens mit 43 Fällen (4 Widerleger, 39 Gegenproben): neuer Code 0 Abweichungen, der Code von v05 6 Abweichungen (die 4 Widerleger und 2 Spielarten derselben Randfälle). 190 aufgezeichnete Antworten aus den Testtabellen von v04 und v05 liefen durch beide Fassungen, 0 Unterschiede. Workflow: 11 Regressionsläufe der Happy-Path-Fälle von Tag 3 und 4 mit derselben Werkzeugwahl wie in v05, 1 Eilfall mit Mailversand, 3 Läufe zur Fehlerrückgabe der Vormerkung. 1 Testmail.
+
+**Gültige Läufe dieses Stands**
+
+| Lauf | Fall | Werkzeug | Ergebnis |
+|---|---|---|---|
+| 1699 | Q03 Frist der Freigabe | `K1_Antwortkatalog` | 24 Stunden, Status ok |
+| 1700 | Q01 Teilabläufe von K1 | `K1_Technikwissen` | 4 Workflows, Status ok |
+| 1701 | Q02 Bearbeitung am 25.12.2026 | `Feiertage_nachschlagen` | Feiertag, Status ok |
+| 1702 | Q05 Dienste bis Ende September | `K1_Technikwissen` (2 Aufrufe) | Dienste genannt, Status ok |
+| 1703 | Q06 Feiertag 2027 und Spracherkennung | `Feiertage_nachschlagen`, `K1_Technikwissen` | beide Quellen, Status ok |
+| 1704 | Q07 Teil 1, 03.11.2026 | `Feiertage_nachschlagen` | kein Feiertag, Status ok |
+| 1711 | Q07 Teil 2, genanntes Datum | kein Werkzeug | "03.11.2026" aus dem Verlauf |
+| 1705 | A09 Nummer fehlt | kein Werkzeug | fragt nach der fünfstelligen Nummer |
+| 1706 | A10 Auftrag unbekannt | `Auftragsstand` | "keinen Auftrag mit der Nummer 61405" |
+| 1708 | A03 Teil 1, Logo verpixelt | kein Werkzeug | Rückfrage, ob vorgemerkt werden soll |
+| 1710 | A03 Teil 2, "Ja, bitte vormerken" | `Teamvormerkung` | `ticket:K1-T-01046`, Status ok |
+| 1712 | Eilfall (Auftrag 24003) | `Eilmeldung_ans_Team` | `eskalation:gesendet`, 1 Testmail, Status ok |
+| 1707 | Fehlerrückgabe 1: Nummer mit 6 Ziffern | kein Werkzeug | Agent weist auf die falsche Nummer hin |
+| 1709 | Fehlerrückgabe 2: Vormerkung ohne Werkzeugaufruf zugesagt | kein Werkzeug | Antwort ersetzt, Status `tool_error`, keine `ticket:`-Aktion |
+| 1713 | Fehlerrückgabe 3: Ticketwunsch mit 6-stelliger Nummer | kein Werkzeug | Antwort ersetzt, Status `tool_error`, keine `ticket:`-Aktion |
+
+Grenze: In den Läufen 1707, 1709 und 1713 rief der Agent die Vormerkung nicht auf, deshalb kam die Rückgabe `ungueltig` des Werkzeugs nicht live vor. Die Fehlerrückgabe der Vormerkung ist im Knotentest simuliert (Fälle W4, G29, G30), im Workflow ist belegt, dass eine Zusage ohne bestätigtes Werkzeugergebnis ersetzt wird und keine Ticketaktion entsteht.
+
+## v05 (2026-10-29): Tag 4, Do 29.10.2026
 
 **Funktion**
 - Systemprompt in 3 Fassungen (minimal, strikt, balanciert) im Knoten `Systemprompt wählen`; im Echtbetrieb gilt balanciert (`w06t04-p11-j11`), die Auswahl per Kürzel `p=` nur in manuellen Läufen.
@@ -16,7 +50,7 @@ Je Tag, was der Agent kann und was gemessen wurde. Neueste Einträge oben. `v` z
 - SQL-Dateien 005 und 006 heißen jetzt wie ihre Funktionen (`005_agt_w06_auftrag_abfragen.sql`, `006_agt_w06_vormerkung_anlegen.sql`).
 
 **Korrekturen am Endstand (derselbe Tag, Prompt `w06t04-p11-j11`)**
-- Jev-Anweisung `j11`: Die Meldung einer Gefahr für Personen gehört zu K1 und erreicht den Agenten, damit die Eilmeldung ausgelöst wird (vorher meldete Jev auch einen Brand mit Verletztem als fremd). Gemessen: 8 von 8 Gefahrmeldungen lösen die Eilmeldung aus, 3 von 3 Fremdfragen bleiben beim festen Hinweis.
+- Jev-Anweisung `j11`: Die Meldung einer Gefahr für Personen gehört zu K1 und erreicht den Agenten, damit die Eilmeldung ausgelöst wird (vorher meldete Jev auch einen Brand mit Verletztem als fremd). Gemessen: In 8 von 8 Gefahrmeldungen wird das Werkzeug Eilmeldung aufgerufen (Versand simuliert, kein Mailversand), 3 von 3 Fremdfragen bleiben beim festen Hinweis.
 - Testschalter für Sitzungskennung (`s=`) und Testkennung wirken nur in Test-Ausführungen, wie die übrigen Schalter.
 - Preiszeile im balancierten Prompt: Widerspruch zwischen Tabelle und Verbotsliste aufgelöst, fester Antwortbaustein bei Preisfragen (Q09: 3 von 4 Läufen ohne Kostenaussage).
 - Prüfung des KI-Hinweises im Protokollknoten erkennt nur noch den Hinweis selbst (`KI-Assistent`), nicht jedes Wort mit KI.
@@ -36,7 +70,7 @@ Je Tag, was der Agent kann und was gemessen wurde. Neueste Einträge oben. `v` z
 
 **Messwerte:** Läufe 1479 bis 1696 (1479 bis 1613 erster Stand, 1614 bis 1696 Korrekturen am Endstand). 45 gezählte Vergleichsläufe (15 minimal, 15 strikt, 15 balanciert mit p10; 3 Fassungen, 5 Anfragen, je 3 Läufe; 6 Läufe mit Anbieterfehler wurden wiederholt), Köder-Test mit und ohne Zeile, Rückfrage Ja und Nein (1 und 0 Tickets), Nachricht 21 bekommt den Abschluss, Jev mit und ohne Verlauf in 3 Fällen, Regression 13 von 14 (Q09 erklärt), 2 Testmails. Tabelle: `docs/testtabelle-w06t04-v05.md`.
 
-## V3: Tag 3, Mi 28.10.2026 (Workflow v04)
+## v04 (2026-10-28): Tag 3, Mi 28.10.2026
 
 **Funktion**
 - Werkzeug `K1_Technikwissen`: Supabase Vector Store über die Tabelle `agt_w06_knowledge_chunks` (SQL 004), 22 Stücke aus 3 Dokumenten, Gemini-Vektoren mit 3072 Stellen, die besten 4 Treffer, Metadaten aus, nur lesender Zugang, Wissensstand 30.09.2026 in jeder Quellzeile.
@@ -50,7 +84,7 @@ Je Tag, was der Agent kann und was gemessen wurde. Neueste Einträge oben. `v` z
 
 **Nachtrag Tag 3 (überarbeitet, gleicher Stand v04):** Die Vormerkung (SQL 006) erkennt Dubletten zusätzlich an Auftragsnummer und Kategorie; die Sperre im Code-Knoten wertet Versandbehauptungen satzweise aus (Verneinungen, Bedingungen und Rückfragen zählen nicht); die Prüfregel der Wissensbasis (SQL 004) weist fehlende Modellangaben ab, Vektor, Dokument und Stücknummer sind Pflicht; die FAQ-Antwort zum Laufabbruch nennt die Ausnahmen ohne Protokoll und Hinweis. Zusatzläufe 1468 bis 1476 in der Testtabelle.
 
-## V2: Tag 2, Di 27.10.2026 (Workflow v03)
+## v03 (2026-10-27): Tag 2, Di 27.10.2026
 
 **Funktion**
 - 4 Werkzeuge: `K1_Antwortkatalog`, `Auftragsstand`, `Teamvormerkung`, `Eilmeldung_ans_Team`, jedes mit Zweck, Eingabe, Rückgabe, Fehlerwerten und Grenzen in der Beschreibung.
@@ -61,7 +95,7 @@ Je Tag, was der Agent kann und was gemessen wurde. Neueste Einträge oben. `v` z
 
 **Messwerte:** Läufe 1286 bis 1299. 10 von 10 Anfragen mit dem erwarteten Werkzeug, 8 von 8 erwartete Aufrufe, Gedächtnistest PASS, 2 Mails im Test.
 
-## V1: Tag 1, Mo 26.10.2026 (Workflow v02)
+## v02 (2026-10-26): Tag 1, Mo 26.10.2026
 
 **Funktion**
 - Agent mit Gratismodell, eigenem Systemprompt und dem Werkzeug `K1_Antwortkatalog` (liest die FAQ-Tabelle).

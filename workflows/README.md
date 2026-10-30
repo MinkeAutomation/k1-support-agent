@@ -4,7 +4,11 @@ Hier liegen die n8n-Exporte des Support-Agenten. Dateiname `k1-support-agent_<JJ
 
 Welche Version zu welchem Tag und welcher Tages-Doku gehört, steht in der [Versionstabelle im README](../README.md#versionen).
 
-**Stand 29.10.2026:**
+**Stand 30.10.2026:**
+
+- `k1-support-agent_2026-10-30_v05.1.json`: derselbe Aufbau wie v05 (61 Knoten, 37 ausführbar und 24 Notizen, gleiche Werkzeuge, gleiche Prompts, gleiche Platzhalter und Zugänge) mit korrigiertem Prüfknoten `Werkzeugwahl messen`: Zusagen neben einem Angebot im selben Satz werden erkannt, und eine Ticketaktion entsteht nur aus der bestätigten Rückgabe der Vormerkung. Die Einrichtung nach dem Import ist dieselbe wie unten. Einzelheiten und Läufe im [ChangeLog](../ChangeLog.md).
+
+**Stand 29.10.2026 (Vorgänger):**
 
 Der Export v05 hat 61 Knoten: 37 ausführbare Knoten und 24 Notizen.
 
