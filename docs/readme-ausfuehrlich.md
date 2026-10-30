@@ -79,7 +79,7 @@ Der Export im Repository ist der jeweils aktuelle Stand (v05); der Export von v0
 |---|---|
 | [`faq/`](../faq/) | FAQ-Tabelle `k1-faq.csv` (7 Spalten: `id`, `kategorie`, `frage`, `stichworte`, `antwort`, `eskalation`, `stand`), die das Werkzeug des Agenten liest |
 | [`workflows/`](../workflows/) | n8n-Exporte, nur Platzhalter und keine Schlüssel; Einrichtung nach dem Import |
-| [`docs/`]() | Wochen-Doku `index.html` und Tages-Dokus als Webseite (GitHub Pages), Testtabellen `testtabelle-w06t03-v04.md` und `testtabelle-w06t04-v05.md`, Testfragen der Wissensbasis, Bilder |
+| [`docs/`](./) | Wochen-Doku `index.html` und Tages-Dokus als Webseite (GitHub Pages), Testtabellen `testtabelle-w06t03-v04.md` und `testtabelle-w06t04-v05.md`, Testfragen der Wissensbasis, Bilder |
 | [`docs/plan/`](plan/) | Planskizzen je Tag als Excalidraw und PNG (`plan-w06t01-v02`, `plan-w06t02-v03`, `plan-w06t03-v04`, `plan-w06t04-v05`) |
 | [`docs/sql/`](sql/) | SQL-Schema: Protokolltabelle, Chat-Verlauf, Aufträge und Tickets, Wissensbasis, Auftragsabfrage, Vormerkung (`001` bis `006`), Kennzeichen der Wissensbasis, Weg `limit`, Prüfung der Vormerkung, Testdaten (`011` bis `018`); 14 Dateien |
 | [`ChangeLog.md`](../ChangeLog.md) | Funktion und Messwerte je Tag, neueste oben |
