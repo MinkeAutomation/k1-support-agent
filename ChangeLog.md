@@ -13,6 +13,7 @@ Je Version des Workflows, was der Agent kann und was gemessen wurde. Neueste Ein
 - `Konfiguration`: `workflow_version` ist `v06`. Titelleiste und Versionskarte nennen v06.
 - Unverändert gegenüber v05.1: Prüfknoten `Werkzeugwahl messen` (Code zeichengleich, SHA256 `84162f71417ec67ef6717d9298727e2518e355335c0352cdcb778d02b344513f`), `Protokollzeile bauen`, Systemprompts, Jev-Anweisung, alle 6 Werkzeuge, SQL, Gedächtnis und Ausweichmodell. 59 Knoten (35 ausführbar, 24 Notizen).
 - Die Exporte der beiden Subs liegen unter `workflows/subs/` (`sub-protokollzeile.json`, `sub-jev-weiche.json`), ohne Versionsnummer im Dateinamen und mit Platzhaltern statt Zugängen. Beide Subs starten mit v01 (30.10.2026); die Versionsnummer in ihren Notizen zählt die Subs selbst, nicht den Support-Agenten.
+- In den beiden Aufrufknoten steht statt der Sub-Auswahl ein Platzhalter (`SUB_JEV_WEICHE_NACH_IMPORT_AUSWAEHLEN`, `SUB_PROTOKOLLZEILE_NACH_IMPORT_AUSWAEHLEN`); nach dem Import dort die importierten Subs auswählen.
 - Anordnung: Die Exporte von Support-Agent und beiden Subs tragen die Anordnung der Knoten und die Größe der Notizen, wie sie im Workflow am 31.10.2026 von Hand eingerichtet ist. Inhalt, Verbindungen und Prüfknoten sind davon nicht berührt.
 - Testschalter: `stoer=logfehler` lenkt den Protokollaufruf in der Test-Ausführung auf eine nicht erlaubte Tabelle.
 

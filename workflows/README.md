@@ -32,7 +32,7 @@ Beide Exporte haben einen Chat Trigger beziehungsweise einen manuellen Start ohn
 |---|---|---|
 | `K1-Bezug prüfen`, `K1-Bezug erneut prüfen` (bis v05.1; ab v06 im Sub `SUB Jev-Weiche mit Retry`) | OpenAI-Typ mit Base URL `https://openrouter.ai/api/v1` (OpenRouter-Schlüssel) | Jev über die Decisions API |
 | `Gratismodell [OpenAI Chat Model]`, `Ausweichmodell [OpenAI Chat Model]` | OpenAI-Typ mit Base URL `https://openrouter.ai/api/v1` (OpenRouter-Schlüssel) | Sprachmodell des Agenten und das Ausweichmodell, wenn das Hauptmodell ausfällt |
-| `Verlauf der Sitzung lesen`, `Lauf protokollieren` (bis v05.1; ab v06 im Sub `SUB Protokollzeile schreiben`) | Supabase API mit dem serverseitigen Schlüssel der Rolle `service_role` | Protokolltabelle (Row Level Security ohne INSERT-Policy) |
+| `Verlauf der Sitzung lesen` (auch ab v06 im Hauptworkflow), `Lauf protokollieren` (bis v05.1; ab v06 im Sub `SUB Protokollzeile schreiben`) | Supabase API mit dem serverseitigen Schlüssel der Rolle `service_role` | Protokolltabelle (Row Level Security ohne INSERT-Policy) |
 | `Gesprächsverlauf holen`, `Dialog speichern` | dieselbe Supabase API mit der Rolle `service_role` | liest und schreibt `agt_w06_chat_histories` für den Verlauf von Jev |
 | `Auftragsstand`, `Teamvormerkung` | Supabase API mit dem öffentlichen `anon`-Schlüssel | rufen nur die Funktionen `agt_w06_auftrag_abfragen` und `agt_w06_vormerkung_anlegen` auf |
 | `K1_Technikwissen` | Supabase API mit dem öffentlichen `anon`-Schlüssel (nur lesen) | Suche in `agt_w06_knowledge_chunks` über `match_agt_w06_knowledge_chunks` |
