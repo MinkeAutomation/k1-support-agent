@@ -92,11 +92,11 @@
 <caption id="t-aktueller-stand">Aktueller Stand</caption>
 <thead><tr><th scope="col">Angabe</th><th scope="col">Wert</th></tr></thead>
 <tbody>
-<tr><th scope="row">Workflow-Version</th><td>v05 vom 29.10.2026</td></tr>
-<tr><th scope="row">Fähigkeiten</th><td>Agent mit Systemprompt p11 (3 Fassungen, balanciert im Echtbetrieb, Verbotsliste, Rückfrage vor der Vormerkung, KI-Hinweis), Obergrenze von 20 Nachrichten, Ausweichmodell und 6 Werkzeugen (K1_Antwortkatalog, K1_Technikwissen, Feiertage_nachschlagen, Auftragsstand, Teamvormerkung, Eilmeldung_ans_Team), Gesprächsverlauf in Postgres (Fenster 10), Jev-Weiche j11 mit Verlauf der Sitzung vor dem Agenten, Fehlerwege, Protokoll je Lauf</td></tr>
-<tr><th scope="row">Modelle</th><td>Agent nvidia/nemotron-3-ultra-550b-a55b:free, Weiche typesafe/jev-1.14, beide über OpenRouter</td></tr>
-<tr><th scope="row">Wissensquellen</th><td><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/faq/k1-faq.csv">faq/k1-faq.csv</a> (14 Einträge, Ablauf und feste Regeln), Wissensbasis in Supabase (22 Stücke, Stand 30.09.2026, Technik von K1), Feiertags-Schnittstelle Nager.Date (Kalender)</td></tr>
-<tr><th scope="row">letzter Test</th><td>Test v05 am 29.10.2026 (Läufe 1479 bis 1696, davon 1614 bis 1696 Korrekturen am Endstand): 45 Vergleichsläufe, Rückfrage Ja und Nein, Obergrenze, Köder, Jev mit und ohne Verlauf, Regression 13 von 14 mit 2 Testmails. Test v04 am 28.10.2026 (Läufe 1447 bis 1467): 14 Fälle plus 2 Zusatzfälle, bei 9 von 10 neuen Fragen die erwartete Quelle, 1 Abweichung (Q04) erklärt, Gedächtnistest PASS, 2 Testmails. Gesamttest Tag 2: 10 von 10 Anfragen; Test von Tag 1: 16 von 20 PASS</td></tr>
+<tr><th scope="row" data-label="Angabe">Workflow-Version</th><td data-label="Wert">v05 vom 29.10.2026</td></tr>
+<tr><th scope="row" data-label="Angabe">Fähigkeiten</th><td data-label="Wert">Agent mit Systemprompt p11 (3 Fassungen, balanciert im Echtbetrieb, Verbotsliste, Rückfrage vor der Vormerkung, KI-Hinweis), Obergrenze von 20 Nachrichten, Ausweichmodell und 6 Werkzeugen (K1_Antwortkatalog, K1_Technikwissen, Feiertage_nachschlagen, Auftragsstand, Teamvormerkung, Eilmeldung_ans_Team), Gesprächsverlauf in Postgres (Fenster 10), Jev-Weiche j11 mit Verlauf der Sitzung vor dem Agenten, Fehlerwege, Protokoll je Lauf</td></tr>
+<tr><th scope="row" data-label="Angabe">Modelle</th><td data-label="Wert">Agent nvidia/nemotron-3-ultra-550b-a55b:free, Weiche typesafe/jev-1.14, beide über OpenRouter</td></tr>
+<tr><th scope="row" data-label="Angabe">Wissensquellen</th><td data-label="Wert"><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/faq/k1-faq.csv">faq/k1-faq.csv</a> (14 Einträge, Ablauf und feste Regeln), Wissensbasis in Supabase (22 Stücke, Stand 30.09.2026, Technik von K1), Feiertags-Schnittstelle Nager.Date (Kalender)</td></tr>
+<tr><th scope="row" data-label="Angabe">letzter Test</th><td data-label="Wert">Test v05 am 29.10.2026 (Läufe 1479 bis 1696, davon 1614 bis 1696 Korrekturen am Endstand): 45 Vergleichsläufe, Rückfrage Ja und Nein, Obergrenze, Köder, Jev mit und ohne Verlauf, Regression 13 von 14 mit 2 Testmails. Test v04 am 28.10.2026 (Läufe 1447 bis 1467): 14 Fälle plus 2 Zusatzfälle, bei 9 von 10 neuen Fragen die erwartete Quelle, 1 Abweichung (Q04) erklärt, Gedächtnistest PASS, 2 Testmails. Gesamttest Tag 2: 10 von 10 Anfragen; Test von Tag 1: 16 von 20 PASS</td></tr>
 </tbody>
 </table>
 </div>
@@ -111,11 +111,11 @@
 <caption id="t-woche-6-im-berblick">Woche 6 im Überblick</caption>
 <thead><tr><th scope="col">Tag</th><th scope="col">Datum</th><th scope="col">Thema</th><th scope="col">Stand des Agenten</th><th scope="col">Doku</th></tr></thead>
 <tbody>
-<tr><th scope="row">1</th><td>Mo 26.10.2026</td><td>Der erste Agent</td><td>v02: Agent mit eigenem Prompt, Werkzeug K1_Antwortkatalog, Jev-Weiche, Protokoll</td><td><a href="w06t01.html">Tages-Doku W06T01</a></td></tr>
-<tr><th scope="row">2</th><td>Di 27.10.2026</td><td>Mehr Werkzeuge, Gedächtnis, Eilmeldung</td><td>v03: 4 Werkzeuge, Postgres-Gedächtnis, Jev j5, Eilmeldung, Systemprompt p2</td><td><a href="w06t02.html">Tages-Doku W06T02</a></td></tr>
-<tr><th scope="row">3</th><td>Mi 28.10.2026</td><td>Wissensbasis und Schnittstelle</td><td>v04: 6 Werkzeuge, Wissensbasis mit Stand 30.09.2026, Feiertags-Schnittstelle, Systemprompt p8, Jev j9</td><td><a href="w06t03.html">Tages-Doku W06T03</a></td></tr>
-<tr><th scope="row">4</th><td>Do 29.10.2026</td><td>Prompts und Leitplanken</td><td>v05: 3 Systemprompts im Vergleich, Verbotsliste mit erlaubten Wegen, Rückfrage vor der Vormerkung, KI-Hinweis, Obergrenze, Ausweichmodell, Verlauf für Jev</td><td><a href="w06t04.html">Tages-Doku W06T04</a></td></tr>
-<tr><th scope="row">5</th><td>Fr 30.10.2026</td><td>Agent oder fester Workflow</td><td>folgt</td><td>folgt</td></tr>
+<tr><th scope="row" data-label="Tag">1</th><td data-label="Datum">Mo 26.10.2026</td><td data-label="Thema">Der erste Agent</td><td data-label="Stand des Agenten">v02: Agent mit eigenem Prompt, Werkzeug K1_Antwortkatalog, Jev-Weiche, Protokoll</td><td data-label="Doku"><a href="w06t01.html">Tages-Doku W06T01</a></td></tr>
+<tr><th scope="row" data-label="Tag">2</th><td data-label="Datum">Di 27.10.2026</td><td data-label="Thema">Mehr Werkzeuge, Gedächtnis, Eilmeldung</td><td data-label="Stand des Agenten">v03: 4 Werkzeuge, Postgres-Gedächtnis, Jev j5, Eilmeldung, Systemprompt p2</td><td data-label="Doku"><a href="w06t02.html">Tages-Doku W06T02</a></td></tr>
+<tr><th scope="row" data-label="Tag">3</th><td data-label="Datum">Mi 28.10.2026</td><td data-label="Thema">Wissensbasis und Schnittstelle</td><td data-label="Stand des Agenten">v04: 6 Werkzeuge, Wissensbasis mit Stand 30.09.2026, Feiertags-Schnittstelle, Systemprompt p8, Jev j9</td><td data-label="Doku"><a href="w06t03.html">Tages-Doku W06T03</a></td></tr>
+<tr><th scope="row" data-label="Tag">4</th><td data-label="Datum">Do 29.10.2026</td><td data-label="Thema">Prompts und Leitplanken</td><td data-label="Stand des Agenten">v05: 3 Systemprompts im Vergleich, Verbotsliste mit erlaubten Wegen, Rückfrage vor der Vormerkung, KI-Hinweis, Obergrenze, Ausweichmodell, Verlauf für Jev</td><td data-label="Doku"><a href="w06t04.html">Tages-Doku W06T04</a></td></tr>
+<tr><th scope="row" data-label="Tag">5</th><td data-label="Datum">Fr 30.10.2026</td><td data-label="Thema">Agent oder fester Workflow</td><td data-label="Stand des Agenten">folgt</td><td data-label="Doku">folgt</td></tr>
 </tbody>
 </table>
 </div>
@@ -154,10 +154,10 @@
 <caption id="t-versionsleiter-neueste-oben">Versionsleiter, neueste oben</caption>
 <thead><tr><th scope="col">Version</th><th scope="col">Datum, Tag</th><th scope="col">Was neu ist</th><th scope="col">Ergebnis</th><th scope="col">Export</th><th scope="col">Tages-Doku</th></tr></thead>
 <tbody>
-<tr><th scope="row">v05</th><td>29.10.2026, Tag 4</td><td>3 Systemprompt-Fassungen (minimal, strikt, balanciert), Verbotsliste mit erlaubten Wegen, Rückfrage vor Teamvormerkung, KI-Hinweis in der ersten Antwort, Obergrenze von 20 Nachrichten je Sitzung, Ausweichmodell, Jev mit den letzten 3 Wechseln, Prüfknoten und Vormerkung verschärft (SQL 011 bis 018)</td><td>45 Vergleichsläufe, Rückfrage Ja und Nein 1 und 0 Tickets, Nachricht 21 bekommt den Abschluss, Regression 13 von 14 (Q09 erklärt), 2 Testmails</td><td><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/k1-support-agent_2026-10-29_v05.json">v05 (JSON)</a></td><td><a href="w06t04.html">W06T04</a></td></tr>
-<tr><th scope="row">v04</th><td>28.10.2026, Tag 3</td><td>Werkzeug K1_Technikwissen (Supabase Vector Store, 22 Stücke, Wissensstand 30.09.2026), Werkzeug Feiertage_nachschlagen (Nager.Date), Systemprompt w06t03-p8 (Belegregel, Entscheidungstabelle) trennt die Quellen, Jev j9, Auftragsabfrage agt_w06_auftrag_abfragen (SQL 005) und Vormerkung agt_w06_vormerkung_anlegen (SQL 006), beide mit JSON-Rückgabe, gemessene Werkzeugwahl, Max Tokens 4096, Fehlererkennung für die neuen Werkzeuge; dazu der Einlese-Workflow der Wissensbasis</td><td>14 Fälle plus 2 Zusatzfälle in 19 Läufen (Läufe 1447 bis 1467): 9 von 10 neuen Fragen mit der erwarteten Quelle, Regression 4 von 4 PASS, 2 Testmails</td><td><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/k1-support-agent_2026-10-28_v04.json">v04 (JSON)</a>, <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/k1-wissensbasis-einlesen_2026-10-28_v04.json">Einlese-Workflow</a>, <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/testtabelle-w06t03-v04.md">Testtabelle</a></td><td><a href="w06t03.html">W06T03</a></td></tr>
-<tr><th scope="row">v03</th><td>27.10.2026, Tag 2</td><td>4 Werkzeuge (K1_Antwortkatalog, Auftragsstand, Teamvormerkung, Eilmeldung_ans_Team), Postgres-Dauergedächtnis (Fenster 10), Jev-Anweisung j5, Eilmeldung als HTML, Systemprompt w06t02-p2-j5</td><td>10 von 10 Anfragen mit dem erwarteten Werkzeug, Gedächtnistest PASS</td><td>-</td><td><a href="w06t02.html">W06T02</a></td></tr>
-<tr><th scope="row">v02</th><td>26.10.2026, Tag 1</td><td>Agent mit eigenem Systemprompt (w06t01-p2-j4), Werkzeug K1_Antwortkatalog, Jev-Weiche, Protokoll in Supabase, Fehlerwege; kein Wiederholversuch bei Jev, Status tool_error</td><td>16 von 20 PASS; 18 von 18 gelesene Antworten richtig</td><td>-</td><td><a href="w06t01.html">W06T01</a></td></tr>
+<tr><th scope="row" data-label="Version">v05</th><td data-label="Datum, Tag">29.10.2026, Tag 4</td><td data-label="Was neu ist">3 Systemprompt-Fassungen (minimal, strikt, balanciert), Verbotsliste mit erlaubten Wegen, Rückfrage vor Teamvormerkung, KI-Hinweis in der ersten Antwort, Obergrenze von 20 Nachrichten je Sitzung, Ausweichmodell, Jev mit den letzten 3 Wechseln, Prüfknoten und Vormerkung verschärft (SQL 011 bis 018)</td><td data-label="Ergebnis">45 Vergleichsläufe, Rückfrage Ja und Nein 1 und 0 Tickets, Nachricht 21 bekommt den Abschluss, Regression 13 von 14 (Q09 erklärt), 2 Testmails</td><td data-label="Export"><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/k1-support-agent_2026-10-29_v05.json">v05 (JSON)</a></td><td data-label="Tages-Doku"><a href="w06t04.html">W06T04</a></td></tr>
+<tr><th scope="row" data-label="Version">v04</th><td data-label="Datum, Tag">28.10.2026, Tag 3</td><td data-label="Was neu ist">Werkzeug K1_Technikwissen (Supabase Vector Store, 22 Stücke, Wissensstand 30.09.2026), Werkzeug Feiertage_nachschlagen (Nager.Date), Systemprompt w06t03-p8 (Belegregel, Entscheidungstabelle) trennt die Quellen, Jev j9, Auftragsabfrage agt_w06_auftrag_abfragen (SQL 005) und Vormerkung agt_w06_vormerkung_anlegen (SQL 006), beide mit JSON-Rückgabe, gemessene Werkzeugwahl, Max Tokens 4096, Fehlererkennung für die neuen Werkzeuge; dazu der Einlese-Workflow der Wissensbasis</td><td data-label="Ergebnis">14 Fälle plus 2 Zusatzfälle in 19 Läufen (Läufe 1447 bis 1467): 9 von 10 neuen Fragen mit der erwarteten Quelle, Regression 4 von 4 PASS, 2 Testmails</td><td data-label="Export"><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/k1-support-agent_2026-10-28_v04.json">v04 (JSON)</a>, <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/k1-wissensbasis-einlesen_2026-10-28_v04.json">Einlese-Workflow</a>, <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/testtabelle-w06t03-v04.md">Testtabelle</a></td><td data-label="Tages-Doku"><a href="w06t03.html">W06T03</a></td></tr>
+<tr><th scope="row" data-label="Version">v03</th><td data-label="Datum, Tag">27.10.2026, Tag 2</td><td data-label="Was neu ist">4 Werkzeuge (K1_Antwortkatalog, Auftragsstand, Teamvormerkung, Eilmeldung_ans_Team), Postgres-Dauergedächtnis (Fenster 10), Jev-Anweisung j5, Eilmeldung als HTML, Systemprompt w06t02-p2-j5</td><td data-label="Ergebnis">10 von 10 Anfragen mit dem erwarteten Werkzeug, Gedächtnistest PASS</td><td data-label="Export">-</td><td data-label="Tages-Doku"><a href="w06t02.html">W06T02</a></td></tr>
+<tr><th scope="row" data-label="Version">v02</th><td data-label="Datum, Tag">26.10.2026, Tag 1</td><td data-label="Was neu ist">Agent mit eigenem Systemprompt (w06t01-p2-j4), Werkzeug K1_Antwortkatalog, Jev-Weiche, Protokoll in Supabase, Fehlerwege; kein Wiederholversuch bei Jev, Status tool_error</td><td data-label="Ergebnis">16 von 20 PASS; 18 von 18 gelesene Antworten richtig</td><td data-label="Export">-</td><td data-label="Tages-Doku"><a href="w06t01.html">W06T01</a></td></tr>
 </tbody>
 </table>
 </div>
@@ -173,13 +173,13 @@
 <caption id="t-kennzahlen-je-stand">Kennzahlen je Stand</caption>
 <thead><tr><th scope="col">Kennzahl</th><th scope="col">Tag 1, v02</th><th scope="col">Tag 2, v03</th><th scope="col">Tag 3, v04</th></tr></thead>
 <tbody>
-<tr><th scope="row">Läufe im Test</th><td>20</td><td>14 (Läufe 1286 bis 1299)</td><td>16 Fälle in 19 Läufen (Läufe 1447 bis 1467)</td></tr>
-<tr><th scope="row">Antworten richtig</th><td>18 von 18 gelesen, Z4 und Z5 über Protokoll</td><td>10 von 11 bewerteten Läufen mit Score 2, A04 mit Score 1</td><td>Quelle und Werkzeug nach Erwartung; Inhalt der Antworten stichprobenhaft gelesen</td></tr>
-<tr><th scope="row">PASS</th><td>16 von 20</td><td>14 von 14 nach der Definition von Tag 2, A04 mit Hinweis zum Weg</td><td>Quelle wie erwartet bei 9 von 10 neuen Fragen; Regression 4 von 4 PASS</td></tr>
-<tr><th scope="row">Werkzeug gefunden, wo erwartet</th><td>9 von 12</td><td>8 von 8 erwartete Aufrufe, dazu 1 erlaubter (A05 Teil 1)</td><td>8 von 9 notwendigen Aufrufen (Tool-Recall)</td></tr>
-<tr><th scope="row">Werkzeugaufrufe berechtigt</th><td>12 von 12</td><td>kein unberechtigter Aufruf in den 5 Läufen ohne erwartetes Werkzeug</td><td>8 von 10 Aufrufen wie erwartet, 1 Prüfaufruf (Q08), 1 abweichend (Q04; Tool-Präzision)</td></tr>
-<tr><th scope="row">Jev-Weg wie erwartet (Testläufe)</th><td>15 von 15</td><td>15 von 15</td><td>Jev j9: 0,83 bis 0,99 bei Fragen mit K1-Bezug</td></tr>
-<tr><th scope="row">Kosten je Frage</th><td>Jev rund 0,000017 $, Modell 0 $</td><td>Jev 0,000024 bis 0,000025 $, Modell 0 $</td><td>Jev rund 0,000028 $, Modell 0 $</td></tr>
+<tr><th scope="row" data-label="Kennzahl">Läufe im Test</th><td data-label="Tag 1, v02">20</td><td data-label="Tag 2, v03">14 (Läufe 1286 bis 1299)</td><td data-label="Tag 3, v04">16 Fälle in 19 Läufen (Läufe 1447 bis 1467)</td></tr>
+<tr><th scope="row" data-label="Kennzahl">Antworten richtig</th><td data-label="Tag 1, v02">18 von 18 gelesen, Z4 und Z5 über Protokoll</td><td data-label="Tag 2, v03">10 von 11 bewerteten Läufen mit Score 2, A04 mit Score 1</td><td data-label="Tag 3, v04">Quelle und Werkzeug nach Erwartung; Inhalt der Antworten stichprobenhaft gelesen</td></tr>
+<tr><th scope="row" data-label="Kennzahl">PASS</th><td data-label="Tag 1, v02">16 von 20</td><td data-label="Tag 2, v03">14 von 14 nach der Definition von Tag 2, A04 mit Hinweis zum Weg</td><td data-label="Tag 3, v04">Quelle wie erwartet bei 9 von 10 neuen Fragen; Regression 4 von 4 PASS</td></tr>
+<tr><th scope="row" data-label="Kennzahl">Werkzeug gefunden, wo erwartet</th><td data-label="Tag 1, v02">9 von 12</td><td data-label="Tag 2, v03">8 von 8 erwartete Aufrufe, dazu 1 erlaubter (A05 Teil 1)</td><td data-label="Tag 3, v04">8 von 9 notwendigen Aufrufen (Tool-Recall)</td></tr>
+<tr><th scope="row" data-label="Kennzahl">Werkzeugaufrufe berechtigt</th><td data-label="Tag 1, v02">12 von 12</td><td data-label="Tag 2, v03">kein unberechtigter Aufruf in den 5 Läufen ohne erwartetes Werkzeug</td><td data-label="Tag 3, v04">8 von 10 Aufrufen wie erwartet, 1 Prüfaufruf (Q08), 1 abweichend (Q04; Tool-Präzision)</td></tr>
+<tr><th scope="row" data-label="Kennzahl">Jev-Weg wie erwartet (Testläufe)</th><td data-label="Tag 1, v02">15 von 15</td><td data-label="Tag 2, v03">15 von 15</td><td data-label="Tag 3, v04">Jev j9: 0,83 bis 0,99 bei Fragen mit K1-Bezug</td></tr>
+<tr><th scope="row" data-label="Kennzahl">Kosten je Frage</th><td data-label="Tag 1, v02">Jev rund 0,000017 $, Modell 0 $</td><td data-label="Tag 2, v03">Jev 0,000024 bis 0,000025 $, Modell 0 $</td><td data-label="Tag 3, v04">Jev rund 0,000028 $, Modell 0 $</td></tr>
 </tbody>
 </table>
 </div>
@@ -211,10 +211,10 @@
 <caption id="t-ordner-im-repository">Ordner im Repository</caption>
 <thead><tr><th scope="col">Ordner</th><th scope="col">Inhalt</th></tr></thead>
 <tbody>
-<tr><th scope="row">faq/</th><td>FAQ-Tabelle k1-faq.csv mit Beschreibung der Spalten</td></tr>
-<tr><th scope="row">workflows/</th><td>n8n-Exporte, ohne Zugänge, keine Schlüssel</td></tr>
-<tr><th scope="row">docs/</th><td>diese Wochen-Doku, die Tages-Dokus, Bilder, Planskizzen und das SQL-Schema (Protokolltabelle, Aufträge, Tickets, Chat-Verlauf, Wissensbasis, Auftragsabfrage, Vormerkung)</td></tr>
-<tr><th scope="row">ChangeLog.md</th><td>jede Änderung mit Datum, Funktion und Messwerten, neueste oben</td></tr>
+<tr><th scope="row" data-label="Ordner">faq/</th><td data-label="Inhalt">FAQ-Tabelle k1-faq.csv mit Beschreibung der Spalten</td></tr>
+<tr><th scope="row" data-label="Ordner">workflows/</th><td data-label="Inhalt">n8n-Exporte, ohne Zugänge, keine Schlüssel</td></tr>
+<tr><th scope="row" data-label="Ordner">docs/</th><td data-label="Inhalt">diese Wochen-Doku, die Tages-Dokus, Bilder, Planskizzen und das SQL-Schema (Protokolltabelle, Aufträge, Tickets, Chat-Verlauf, Wissensbasis, Auftragsabfrage, Vormerkung)</td></tr>
+<tr><th scope="row" data-label="Ordner">ChangeLog.md</th><td data-label="Inhalt">jede Änderung mit Datum, Funktion und Messwerten, neueste oben</td></tr>
 </tbody>
 </table>
 </div>
@@ -229,16 +229,16 @@
 <caption id="t-quellen">Genutzte Dienste</caption>
 <thead><tr><th scope="col">Dienst</th><th scope="col">Host</th><th scope="col">Verwendung</th></tr></thead>
 <tbody>
-<tr><th scope="row">n8n</th><td><a href="https://n8n.io">n8n.io</a></td><td>Workflow-Plattform des Agenten</td></tr>
-<tr><th scope="row">OpenRouter</th><td><a href="https://openrouter.ai">openrouter.ai</a></td><td>Zugang zum Gratismodell und zur Decisions API für Jev</td></tr>
-<tr><th scope="row">TypeSafe AI, Jev</th><td><a href="https://typesafe.ai">typesafe.ai</a></td><td>Entscheidungsmodell <code>typesafe/jev-1.14</code> für die Weiche</td></tr>
-<tr><th scope="row">NVIDIA Nemotron</th><td><a href="https://www.nvidia.com">nvidia.com</a></td><td>Sprachmodell des Agenten (<code>nvidia/nemotron-3-ultra-550b-a55b:free</code>)</td></tr>
-<tr><th scope="row">Supabase</th><td><a href="https://supabase.com">supabase.com</a></td><td>Protokolltabelle <code>agt_w06_support_log</code>, seit Tag 2 auch Aufträge, Tickets und Chat-Verlauf (Schema in <code>docs/sql/</code>)</td></tr>
-<tr><th scope="row">Google Gemini API</th><td>generativelanguage.googleapis.com</td><td>Vektoren (<code>gemini-embedding-001</code>, 3072 Stellen) für die Wissensbasis</td></tr>
-<tr><th scope="row">Nager.Date</th><td><a href="https://date.nager.at">date.nager.at</a></td><td>öffentliche Feiertags-Schnittstelle für das Werkzeug <code>Feiertage_nachschlagen</code></td></tr>
-<tr><th scope="row">SMTP-Mailserver</th><td>Host im n8n-Zugang hinterlegt</td><td>Versand der Eskalationsmail an ein Test-Postfach</td></tr>
-<tr><th scope="row">GitHub</th><td><a href="https://github.com/MinkeAutomation/k1-support-agent">github.com</a>, raw.githubusercontent.com, minkeautomation.github.io</td><td>Repository, Raw-Adresse der FAQ, GitHub Pages</td></tr>
-<tr><th scope="row">Google Fonts</th><td>fonts.googleapis.com, fonts.gstatic.com</td><td>Schriften dieser Seite (Bricolage Grotesque, Literata, JetBrains Mono)</td></tr>
+<tr><th scope="row" data-label="Dienst">n8n</th><td data-label="Host"><a href="https://n8n.io">n8n.io</a></td><td data-label="Verwendung">Workflow-Plattform des Agenten</td></tr>
+<tr><th scope="row" data-label="Dienst">OpenRouter</th><td data-label="Host"><a href="https://openrouter.ai">openrouter.ai</a></td><td data-label="Verwendung">Zugang zum Gratismodell und zur Decisions API für Jev</td></tr>
+<tr><th scope="row" data-label="Dienst">TypeSafe AI, Jev</th><td data-label="Host"><a href="https://typesafe.ai">typesafe.ai</a></td><td data-label="Verwendung">Entscheidungsmodell <code>typesafe/jev-1.14</code> für die Weiche</td></tr>
+<tr><th scope="row" data-label="Dienst">NVIDIA Nemotron</th><td data-label="Host"><a href="https://www.nvidia.com">nvidia.com</a></td><td data-label="Verwendung">Sprachmodell des Agenten (<code>nvidia/nemotron-3-ultra-550b-a55b:free</code>)</td></tr>
+<tr><th scope="row" data-label="Dienst">Supabase</th><td data-label="Host"><a href="https://supabase.com">supabase.com</a></td><td data-label="Verwendung">Protokolltabelle <code>agt_w06_support_log</code>, seit Tag 2 auch Aufträge, Tickets und Chat-Verlauf (Schema in <code>docs/sql/</code>)</td></tr>
+<tr><th scope="row" data-label="Dienst">Google Gemini API</th><td data-label="Host">generativelanguage.googleapis.com</td><td data-label="Verwendung">Vektoren (<code>gemini-embedding-001</code>, 3072 Stellen) für die Wissensbasis</td></tr>
+<tr><th scope="row" data-label="Dienst">Nager.Date</th><td data-label="Host"><a href="https://date.nager.at">date.nager.at</a></td><td data-label="Verwendung">öffentliche Feiertags-Schnittstelle für das Werkzeug <code>Feiertage_nachschlagen</code></td></tr>
+<tr><th scope="row" data-label="Dienst">SMTP-Mailserver</th><td data-label="Host">Host im n8n-Zugang hinterlegt</td><td data-label="Verwendung">Versand der Eskalationsmail an ein Test-Postfach</td></tr>
+<tr><th scope="row" data-label="Dienst">GitHub</th><td data-label="Host"><a href="https://github.com/MinkeAutomation/k1-support-agent">github.com</a>, raw.githubusercontent.com, minkeautomation.github.io</td><td data-label="Verwendung">Repository, Raw-Adresse der FAQ, GitHub Pages</td></tr>
+<tr><th scope="row" data-label="Dienst">Google Fonts</th><td data-label="Host">fonts.googleapis.com, fonts.gstatic.com</td><td data-label="Verwendung">Schriften dieser Seite (Bricolage Grotesque, Literata, JetBrains Mono)</td></tr>
 </tbody>
 </table>
 </div>

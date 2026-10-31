@@ -119,12 +119,12 @@
 <caption id="t-faehigkeiten-v03">Was K1 mit v03 zusätzlich kann</caption>
 <thead><tr><th scope="col">Fähigkeit</th><th scope="col">Umsetzung</th><th scope="col">Kapitel</th></tr></thead>
 <tbody>
-<tr><th scope="row">Antworten und Auftragsstand</th><td>K1_Antwortkatalog für feste Regeln, Auftragsstand für den Stand einer Bestellnummer; jedes Werkzeug mit Zweck, Eingabe, Rückgabe, Fehlerwerten und Grenzen in der Beschreibung</td><td>5</td></tr>
-<tr><th scope="row">Anliegen und Dringendes ans Team</th><td>Teamvormerkung legt genau 1 Ticket an, Eilmeldung_ans_Team schickt 1 gestaltete HTML-Mail mit Knopf zum Ticket an einen fest eingetragenen Empfänger</td><td>5, 11</td></tr>
-<tr><th scope="row">Folgefragen im Gespräch</th><td>Postgres Chat Memory mit der Tabelle in Supabase, Fenster 10, Schlüssel ist die Sitzungsnummer</td><td>6</td></tr>
-<tr><th scope="row">Absicherung</th><td>Rechte je Werkzeug im Datenbankschema, Sperre gegen erfundene Weiterleitungen, Doppelschutz bei Tickets, Jev-Weiche mit Folgefrage-Erkennung und Wiederholversuch</td><td>2, 7, 12</td></tr>
-<tr><th scope="row">Prüfung im Betrieb</th><td>Anfragen A01 bis A10 (Normal-, Grenz- und Fehlerfälle), dazu der Gedächtnistest und 3 Zusatzläufe; je Lauf Erwartung vorab, Werkzeug aus dem Ausführungsprotokoll, Lauf-ID</td><td>9, 10</td></tr>
-<tr><th scope="row">Weiterentwicklung</th><td>Was an den Bausteinen von Tag 1 besser wurde, mit Grund und Wirkung</td><td>3</td></tr>
+<tr><th scope="row" data-label="Fähigkeit">Antworten und Auftragsstand</th><td data-label="Umsetzung">K1_Antwortkatalog für feste Regeln, Auftragsstand für den Stand einer Bestellnummer; jedes Werkzeug mit Zweck, Eingabe, Rückgabe, Fehlerwerten und Grenzen in der Beschreibung</td><td data-label="Kapitel">5</td></tr>
+<tr><th scope="row" data-label="Fähigkeit">Anliegen und Dringendes ans Team</th><td data-label="Umsetzung">Teamvormerkung legt genau 1 Ticket an, Eilmeldung_ans_Team schickt 1 gestaltete HTML-Mail mit Knopf zum Ticket an einen fest eingetragenen Empfänger</td><td data-label="Kapitel">5, 11</td></tr>
+<tr><th scope="row" data-label="Fähigkeit">Folgefragen im Gespräch</th><td data-label="Umsetzung">Postgres Chat Memory mit der Tabelle in Supabase, Fenster 10, Schlüssel ist die Sitzungsnummer</td><td data-label="Kapitel">6</td></tr>
+<tr><th scope="row" data-label="Fähigkeit">Absicherung</th><td data-label="Umsetzung">Rechte je Werkzeug im Datenbankschema, Sperre gegen erfundene Weiterleitungen, Doppelschutz bei Tickets, Jev-Weiche mit Folgefrage-Erkennung und Wiederholversuch</td><td data-label="Kapitel">2, 7, 12</td></tr>
+<tr><th scope="row" data-label="Fähigkeit">Prüfung im Betrieb</th><td data-label="Umsetzung">Anfragen A01 bis A10 (Normal-, Grenz- und Fehlerfälle), dazu der Gedächtnistest und 3 Zusatzläufe; je Lauf Erwartung vorab, Werkzeug aus dem Ausführungsprotokoll, Lauf-ID</td><td data-label="Kapitel">9, 10</td></tr>
+<tr><th scope="row" data-label="Fähigkeit">Weiterentwicklung</th><td data-label="Umsetzung">Was an den Bausteinen von Tag 1 besser wurde, mit Grund und Wirkung</td><td data-label="Kapitel">3</td></tr>
 </tbody>
 </table>
 </div>
@@ -193,34 +193,34 @@
 <caption id="t-knoten">Knoten des Workflows v03 (28 Arbeitsknoten)</caption>
 <thead><tr><th scope="col">Knoten</th><th scope="col">was er tut</th><th scope="col">warum</th></tr></thead>
 <tbody>
-<tr><th scope="row">Kundenfrage empfangen [Chat Trigger]</th><td>nimmt die Frage im n8n-Chat an</td><td>Einstieg; der Kunde sieht nur die gefilterte Antwort</td></tr>
-<tr><th scope="row">Konfiguration [Edit Fields]</th><td>legt Version, Schwellen 0,7 und 0,3, Modelle, Adressen, Gedächtniseinstellung fest und trennt ein Testkürzel ab</td><td>ein Ort für alle Werte</td></tr>
-<tr><th scope="row">Verlauf der Sitzung lesen [Supabase]</th><td>liest aus dem Protokoll, ob die Sitzung schon Läufe hat</td><td>daran erkennt der Workflow eine Folgefrage</td></tr>
-<tr><th scope="row">Folgefrage? [If]</th><td>teilt in Erstfrage und Folgefrage</td><td>Jev kennt nur die einzelne Nachricht, bei Folgefragen kann er falsch liegen</td></tr>
-<tr><th scope="row">Folgefrage vermerken [Edit Fields]</th><td>setzt den Weg <code>folgefrage</code> und überspringt Jev</td><td>Folgefragen gehen direkt zum Agenten und zum Gedächtnis</td></tr>
-<tr><th scope="row">K1-Bezug prüfen [HTTP Request]</th><td>fragt Jev (<code>typesafe/jev-1.14</code>): Bezug zu K1 als Wert 0 bis 1 und Anliegen aus 5 Möglichkeiten</td><td>schnell und günstig, bevor das Sprachmodell rechnet</td></tr>
-<tr><th scope="row">Jev-Antwort einordnen [Code]</th><td>ordnet die Antwort: ok, Wiederholung (nur bei 429 oder 529) oder Ausfall</td><td>ein Wiederholversuch nur dort, wo er helfen kann</td></tr>
-<tr><th scope="row">Jev-Ergebnis? [Switch]</th><td>verteilt auf ok, Wiederholen, Ausfall</td><td>jeder Fall hat einen eigenen Weg</td></tr>
-<tr><th scope="row">Kurz warten [Wait]</th><td>wartet 2 Sekunden</td><td>Pause vor dem zweiten Versuch</td></tr>
-<tr><th scope="row">K1-Bezug erneut prüfen [HTTP Request]</th><td>der zweite und letzte Versuch bei Jev</td><td>höchstens 1 Wiederholung</td></tr>
-<tr><th scope="row">Jev-Werte übernehmen [Edit Fields]</th><td>holt Bezugswert, Anliegen, Sicherheit, Kosten, Modell und Zahl der Versuche in Felder</td><td>die Weiche und das Protokoll rechnen mit sauberen Feldern</td></tr>
-<tr><th scope="row">Jev-Ausfall vermerken [Edit Fields]</th><td>setzt den Weg <code>ohne_jev</code></td><td>fällt Jev aus, wird die Frage trotzdem beantwortet</td></tr>
-<tr><th scope="row">Weiche nach Jev-Wert [Switch]</th><td>ab 0,7 K1-Frage, 0 bis 0,3 fremd, dazwischen unklar, ohne Wert eigener Ausgang</td><td>fremde Fragen kosten kein Sprachmodell</td></tr>
-<tr><th scope="row">Fremdes Thema beantworten [Edit Fields]</th><td>fester Hinweis ohne Modell</td><td>„Dabei kann ich leider nicht helfen …“, nichts wird preisgegeben</td></tr>
-<tr><th scope="row">Rückfrage stellen [Edit Fields]</th><td>fester Rückfragetext</td><td>unklare Fragen ohne Modellkosten eingrenzen</td></tr>
-<tr><th scope="row">K1-Support beantworten [AI Agent]</th><td>antwortet mit dem Systemprompt (Stand Tag 2), wählt aus 4 Werkzeugen, höchstens 5 Schritte, Zwischenschritte an</td><td>an der Werkzeugwahl hängt, welche Quelle oder Aktion eine Kundenfrage bekommt</td></tr>
-<tr><th scope="row">Gratismodell [OpenAI Chat Model]</th><td><code>nvidia/nemotron-3-ultra-550b-a55b:free</code> über OpenRouter, Temperatur 0</td><td>0 $ und möglichst gleichbleibende Antworten</td></tr>
-<tr><th scope="row">Dauergedächtnis [Postgres Chat Memory]</th><td>speichert den Verlauf je Sitzung in <code>agt_w06_chat_histories</code>, Fenster 10</td><td>Folgefragen kennen den Kontext der Sitzung</td></tr>
-<tr><th scope="row">Gesprächsgedächtnis [Simple Memory]</th><td>vom Agenten getrennt und deaktiviert</td><td>Reserve, falls die Datenbank ausfällt</td></tr>
-<tr><th scope="row">K1_Antwortkatalog [HTTP Request Tool]</th><td>liest die FAQ-CSV aus dem Repository</td><td>allgemeine Fragen</td></tr>
-<tr><th scope="row">Auftragsstand [HTTP Request Tool]</th><td>ruft die Funktion <code>agt_w06_auftrag_abfragen</code> auf</td><td>Stand eines Auftrags, nur lesen</td></tr>
-<tr><th scope="row">Teamvormerkung [HTTP Request Tool]</th><td>ruft die Funktion <code>agt_w06_vormerkung_anlegen</code> auf</td><td>nicht dringende Anliegen, genau 1 Zeile</td></tr>
-<tr><th scope="row">Eilmeldung_ans_Team [Email Send Tool]</th><td>schickt die HTML-Mail an den festen Empfänger</td><td>die Person will nicht auf eine spätere Bearbeitung warten</td></tr>
-<tr><th scope="row">Werkzeugwahl messen [Code]</th><td>liest aus den Zwischenschritten, welche Werkzeuge aufgerufen wurden, zählt sie, sperrt erfundene Weiterleitungen, setzt Status <code>tool_error</code></td><td>die Wahl steht im Protokoll, gemessen und nicht gemeldet</td></tr>
-<tr><th scope="row">Ausfall melden [Edit Fields]</th><td>fester Ausfalltext am Fehlerausgang des Agenten</td><td>kein stiller Abbruch</td></tr>
-<tr><th scope="row">Protokollzeile bauen [Code]</th><td>baut für jeden Weg dieselbe Zeile</td><td>eine Struktur für alle Wege</td></tr>
-<tr><th scope="row">Lauf protokollieren [Supabase]</th><td>schreibt die Zeile in <code>agt_w06_support_log</code></td><td>die Testtabelle stammt aus dem Protokoll</td></tr>
-<tr><th scope="row">Antwort an Kunden [Edit Fields]</th><td>gibt nur das Feld <code>output</code> an den Chat</td><td>der Kunde sieht keine Interna</td></tr>
+<tr><th scope="row" data-label="Knoten">Kundenfrage empfangen [Chat Trigger]</th><td data-label="was er tut">nimmt die Frage im n8n-Chat an</td><td data-label="warum">Einstieg; der Kunde sieht nur die gefilterte Antwort</td></tr>
+<tr><th scope="row" data-label="Knoten">Konfiguration [Edit Fields]</th><td data-label="was er tut">legt Version, Schwellen 0,7 und 0,3, Modelle, Adressen, Gedächtniseinstellung fest und trennt ein Testkürzel ab</td><td data-label="warum">ein Ort für alle Werte</td></tr>
+<tr><th scope="row" data-label="Knoten">Verlauf der Sitzung lesen [Supabase]</th><td data-label="was er tut">liest aus dem Protokoll, ob die Sitzung schon Läufe hat</td><td data-label="warum">daran erkennt der Workflow eine Folgefrage</td></tr>
+<tr><th scope="row" data-label="Knoten">Folgefrage? [If]</th><td data-label="was er tut">teilt in Erstfrage und Folgefrage</td><td data-label="warum">Jev kennt nur die einzelne Nachricht, bei Folgefragen kann er falsch liegen</td></tr>
+<tr><th scope="row" data-label="Knoten">Folgefrage vermerken [Edit Fields]</th><td data-label="was er tut">setzt den Weg <code>folgefrage</code> und überspringt Jev</td><td data-label="warum">Folgefragen gehen direkt zum Agenten und zum Gedächtnis</td></tr>
+<tr><th scope="row" data-label="Knoten">K1-Bezug prüfen [HTTP Request]</th><td data-label="was er tut">fragt Jev (<code>typesafe/jev-1.14</code>): Bezug zu K1 als Wert 0 bis 1 und Anliegen aus 5 Möglichkeiten</td><td data-label="warum">schnell und günstig, bevor das Sprachmodell rechnet</td></tr>
+<tr><th scope="row" data-label="Knoten">Jev-Antwort einordnen [Code]</th><td data-label="was er tut">ordnet die Antwort: ok, Wiederholung (nur bei 429 oder 529) oder Ausfall</td><td data-label="warum">ein Wiederholversuch nur dort, wo er helfen kann</td></tr>
+<tr><th scope="row" data-label="Knoten">Jev-Ergebnis? [Switch]</th><td data-label="was er tut">verteilt auf ok, Wiederholen, Ausfall</td><td data-label="warum">jeder Fall hat einen eigenen Weg</td></tr>
+<tr><th scope="row" data-label="Knoten">Kurz warten [Wait]</th><td data-label="was er tut">wartet 2 Sekunden</td><td data-label="warum">Pause vor dem zweiten Versuch</td></tr>
+<tr><th scope="row" data-label="Knoten">K1-Bezug erneut prüfen [HTTP Request]</th><td data-label="was er tut">der zweite und letzte Versuch bei Jev</td><td data-label="warum">höchstens 1 Wiederholung</td></tr>
+<tr><th scope="row" data-label="Knoten">Jev-Werte übernehmen [Edit Fields]</th><td data-label="was er tut">holt Bezugswert, Anliegen, Sicherheit, Kosten, Modell und Zahl der Versuche in Felder</td><td data-label="warum">die Weiche und das Protokoll rechnen mit sauberen Feldern</td></tr>
+<tr><th scope="row" data-label="Knoten">Jev-Ausfall vermerken [Edit Fields]</th><td data-label="was er tut">setzt den Weg <code>ohne_jev</code></td><td data-label="warum">fällt Jev aus, wird die Frage trotzdem beantwortet</td></tr>
+<tr><th scope="row" data-label="Knoten">Weiche nach Jev-Wert [Switch]</th><td data-label="was er tut">ab 0,7 K1-Frage, 0 bis 0,3 fremd, dazwischen unklar, ohne Wert eigener Ausgang</td><td data-label="warum">fremde Fragen kosten kein Sprachmodell</td></tr>
+<tr><th scope="row" data-label="Knoten">Fremdes Thema beantworten [Edit Fields]</th><td data-label="was er tut">fester Hinweis ohne Modell</td><td data-label="warum">„Dabei kann ich leider nicht helfen …“, nichts wird preisgegeben</td></tr>
+<tr><th scope="row" data-label="Knoten">Rückfrage stellen [Edit Fields]</th><td data-label="was er tut">fester Rückfragetext</td><td data-label="warum">unklare Fragen ohne Modellkosten eingrenzen</td></tr>
+<tr><th scope="row" data-label="Knoten">K1-Support beantworten [AI Agent]</th><td data-label="was er tut">antwortet mit dem Systemprompt (Stand Tag 2), wählt aus 4 Werkzeugen, höchstens 5 Schritte, Zwischenschritte an</td><td data-label="warum">an der Werkzeugwahl hängt, welche Quelle oder Aktion eine Kundenfrage bekommt</td></tr>
+<tr><th scope="row" data-label="Knoten">Gratismodell [OpenAI Chat Model]</th><td data-label="was er tut"><code>nvidia/nemotron-3-ultra-550b-a55b:free</code> über OpenRouter, Temperatur 0</td><td data-label="warum">0 $ und möglichst gleichbleibende Antworten</td></tr>
+<tr><th scope="row" data-label="Knoten">Dauergedächtnis [Postgres Chat Memory]</th><td data-label="was er tut">speichert den Verlauf je Sitzung in <code>agt_w06_chat_histories</code>, Fenster 10</td><td data-label="warum">Folgefragen kennen den Kontext der Sitzung</td></tr>
+<tr><th scope="row" data-label="Knoten">Gesprächsgedächtnis [Simple Memory]</th><td data-label="was er tut">vom Agenten getrennt und deaktiviert</td><td data-label="warum">Reserve, falls die Datenbank ausfällt</td></tr>
+<tr><th scope="row" data-label="Knoten">K1_Antwortkatalog [HTTP Request Tool]</th><td data-label="was er tut">liest die FAQ-CSV aus dem Repository</td><td data-label="warum">allgemeine Fragen</td></tr>
+<tr><th scope="row" data-label="Knoten">Auftragsstand [HTTP Request Tool]</th><td data-label="was er tut">ruft die Funktion <code>agt_w06_auftrag_abfragen</code> auf</td><td data-label="warum">Stand eines Auftrags, nur lesen</td></tr>
+<tr><th scope="row" data-label="Knoten">Teamvormerkung [HTTP Request Tool]</th><td data-label="was er tut">ruft die Funktion <code>agt_w06_vormerkung_anlegen</code> auf</td><td data-label="warum">nicht dringende Anliegen, genau 1 Zeile</td></tr>
+<tr><th scope="row" data-label="Knoten">Eilmeldung_ans_Team [Email Send Tool]</th><td data-label="was er tut">schickt die HTML-Mail an den festen Empfänger</td><td data-label="warum">die Person will nicht auf eine spätere Bearbeitung warten</td></tr>
+<tr><th scope="row" data-label="Knoten">Werkzeugwahl messen [Code]</th><td data-label="was er tut">liest aus den Zwischenschritten, welche Werkzeuge aufgerufen wurden, zählt sie, sperrt erfundene Weiterleitungen, setzt Status <code>tool_error</code></td><td data-label="warum">die Wahl steht im Protokoll, gemessen und nicht gemeldet</td></tr>
+<tr><th scope="row" data-label="Knoten">Ausfall melden [Edit Fields]</th><td data-label="was er tut">fester Ausfalltext am Fehlerausgang des Agenten</td><td data-label="warum">kein stiller Abbruch</td></tr>
+<tr><th scope="row" data-label="Knoten">Protokollzeile bauen [Code]</th><td data-label="was er tut">baut für jeden Weg dieselbe Zeile</td><td data-label="warum">eine Struktur für alle Wege</td></tr>
+<tr><th scope="row" data-label="Knoten">Lauf protokollieren [Supabase]</th><td data-label="was er tut">schreibt die Zeile in <code>agt_w06_support_log</code></td><td data-label="warum">die Testtabelle stammt aus dem Protokoll</td></tr>
+<tr><th scope="row" data-label="Knoten">Antwort an Kunden [Edit Fields]</th><td data-label="was er tut">gibt nur das Feld <code>output</code> an den Chat</td><td data-label="warum">der Kunde sieht keine Interna</td></tr>
 </tbody>
 </table>
 </div>
@@ -236,10 +236,10 @@
 <caption id="t-die-4-werkzeuge-und-ihre-recht">Die 4 Werkzeuge und ihre Rechte</caption>
 <thead><tr><th scope="col">Werkzeug</th><th scope="col">Zugriff</th><th scope="col">Recht und Zugang</th><th scope="col">Rückgabe</th><th scope="col">wann</th></tr></thead>
 <tbody>
-<tr><th scope="row">K1_Antwortkatalog</th><td>nur lesen</td><td>öffentliche Raw-Adresse der FAQ im Repository, kein Zugang nötig</td><td>die ganze Tabelle (14 Einträge)</td><td>allgemeine Fragen zur Nutzung von K1, auch Preis und Vertrag</td></tr>
-<tr><th scope="row">Auftragsstand</th><td>nur lesen</td><td>Datenbankfunktion mit den Rechten des öffentlichen Schlüssels, der nur die erfundene Auftragstabelle lesen darf</td><td>Textzeile mit dem Stand des Auftrags, bei fehlender oder unbekannter Nummer eine feste Meldung</td><td>Frage nach einem bestimmten Auftrag, Nummer in der Nachricht oder im Verlauf</td></tr>
-<tr><th scope="row">Teamvormerkung</th><td>schreibt genau 1 Zeile</td><td>nur das Recht, die Schreibfunktion auszuführen; auf die Tabelle selbst hat der Schlüssel kein Recht</td><td>Zeile mit der Ticketnummer K1-T-…, bei leerem Anliegen eine feste Meldung</td><td>Problem mit einem konkreten Auftrag, das das K1-Team später bearbeitet, etwa eine Korrektur</td></tr>
-<tr><th scope="row">Eilmeldung_ans_Team</th><td>sendet 1 Mail</td><td>SMTP-Zugang, Absender und Empfänger fest im Knoten, nie vom Modell gesetzt; nur ein Test-Postfach</td><td>Versandbestätigung ohne Ticketnummer; jede Fehlermeldung heißt „nicht verschickt“</td><td>die Person will nicht auf eine spätere Bearbeitung warten (sie drängt, ist aufgebracht oder verlangt ein Gespräch), mit konkretem Anliegen</td></tr>
+<tr><th scope="row" data-label="Werkzeug">K1_Antwortkatalog</th><td data-label="Zugriff">nur lesen</td><td data-label="Recht und Zugang">öffentliche Raw-Adresse der FAQ im Repository, kein Zugang nötig</td><td data-label="Rückgabe">die ganze Tabelle (14 Einträge)</td><td data-label="wann">allgemeine Fragen zur Nutzung von K1, auch Preis und Vertrag</td></tr>
+<tr><th scope="row" data-label="Werkzeug">Auftragsstand</th><td data-label="Zugriff">nur lesen</td><td data-label="Recht und Zugang">Datenbankfunktion mit den Rechten des öffentlichen Schlüssels, der nur die erfundene Auftragstabelle lesen darf</td><td data-label="Rückgabe">Textzeile mit dem Stand des Auftrags, bei fehlender oder unbekannter Nummer eine feste Meldung</td><td data-label="wann">Frage nach einem bestimmten Auftrag, Nummer in der Nachricht oder im Verlauf</td></tr>
+<tr><th scope="row" data-label="Werkzeug">Teamvormerkung</th><td data-label="Zugriff">schreibt genau 1 Zeile</td><td data-label="Recht und Zugang">nur das Recht, die Schreibfunktion auszuführen; auf die Tabelle selbst hat der Schlüssel kein Recht</td><td data-label="Rückgabe">Zeile mit der Ticketnummer K1-T-…, bei leerem Anliegen eine feste Meldung</td><td data-label="wann">Problem mit einem konkreten Auftrag, das das K1-Team später bearbeitet, etwa eine Korrektur</td></tr>
+<tr><th scope="row" data-label="Werkzeug">Eilmeldung_ans_Team</th><td data-label="Zugriff">sendet 1 Mail</td><td data-label="Recht und Zugang">SMTP-Zugang, Absender und Empfänger fest im Knoten, nie vom Modell gesetzt; nur ein Test-Postfach</td><td data-label="Rückgabe">Versandbestätigung ohne Ticketnummer; jede Fehlermeldung heißt „nicht verschickt“</td><td data-label="wann">die Person will nicht auf eine spätere Bearbeitung warten (sie drängt, ist aufgebracht oder verlangt ein Gespräch), mit konkretem Anliegen</td></tr>
 </tbody>
 </table>
 </div>
@@ -251,12 +251,12 @@
 <caption id="t-rechte-der-tabellen-und-funkti">Rechte der Tabellen und Funktionen</caption>
 <thead><tr><th scope="col">Prüfung</th><th scope="col">erwartet</th><th scope="col">gemessen</th></tr></thead>
 <tbody>
-<tr><th scope="row">öffentlicher Schlüssel lesen auf Aufträge</th><td>ja</td><td>ja</td></tr>
-<tr><th scope="row">öffentlicher Schlüssel schreiben auf Aufträge</th><td>nein</td><td>nein</td></tr>
-<tr><th scope="row">öffentlicher Schlüssel irgendein Recht auf Tickets</th><td>nein</td><td>nein</td></tr>
-<tr><th scope="row">Schreibfunktion für Tickets ausführen (öffentlicher Schlüssel)</th><td>ja</td><td>ja</td></tr>
-<tr><th scope="row">irgendein Recht auf den Chat-Verlauf</th><td>nein</td><td>nein, 42501 beim Lesen</td></tr>
-<tr><th scope="row">Row Level Security an (Aufträge, Tickets, Verlauf, Protokoll)</th><td>an</td><td>an (alle 4)</td></tr>
+<tr><th scope="row" data-label="Prüfung">öffentlicher Schlüssel lesen auf Aufträge</th><td data-label="erwartet">ja</td><td data-label="gemessen">ja</td></tr>
+<tr><th scope="row" data-label="Prüfung">öffentlicher Schlüssel schreiben auf Aufträge</th><td data-label="erwartet">nein</td><td data-label="gemessen">nein</td></tr>
+<tr><th scope="row" data-label="Prüfung">öffentlicher Schlüssel irgendein Recht auf Tickets</th><td data-label="erwartet">nein</td><td data-label="gemessen">nein</td></tr>
+<tr><th scope="row" data-label="Prüfung">Schreibfunktion für Tickets ausführen (öffentlicher Schlüssel)</th><td data-label="erwartet">ja</td><td data-label="gemessen">ja</td></tr>
+<tr><th scope="row" data-label="Prüfung">irgendein Recht auf den Chat-Verlauf</th><td data-label="erwartet">nein</td><td data-label="gemessen">nein, 42501 beim Lesen</td></tr>
+<tr><th scope="row" data-label="Prüfung">Row Level Security an (Aufträge, Tickets, Verlauf, Protokoll)</th><td data-label="erwartet">an</td><td data-label="gemessen">an (alle 4)</td></tr>
 </tbody>
 </table>
 </div>
@@ -325,14 +325,14 @@
 <caption id="t-versionen-und-bedingungen-des-">Versionen und Bedingungen des Gesamttests</caption>
 <thead><tr><th scope="col">Angabe</th><th scope="col">Wert</th></tr></thead>
 <tbody>
-<tr><th scope="row">Workflow</th><td>v03, getestet auf der veröffentlichten Version</td></tr>
-<tr><th scope="row">Systemprompt</th><td>w06t02-p2-j5</td></tr>
-<tr><th scope="row">Jev-Anweisung</th><td>j5, Schwellen 0,7 und 0,3</td></tr>
-<tr><th scope="row">FAQ</th><td>k1-faq.csv Stand 26.10.2026, 14 Einträge</td></tr>
-<tr><th scope="row">Modell</th><td>nvidia/nemotron-3-ultra-550b-a55b:free, Temperatur 0</td></tr>
-<tr><th scope="row">Gedächtnis</th><td>Postgres Chat Memory, Fenster 10, Schlüssel session_id</td></tr>
-<tr><th scope="row">Ausgangsverlauf</th><td>leer, je Test eine eigene Sitzung (Ausnahme A05 Teil 2 und A11 Teil 2: Verlauf = Teil 1)</td></tr>
-<tr><th scope="row">Starten</th><td>manuell über den Chat Trigger mit Testkürzel [Axx|s=&lt;Sitzung&gt;]</td></tr>
+<tr><th scope="row" data-label="Angabe">Workflow</th><td data-label="Wert">v03, getestet auf der veröffentlichten Version</td></tr>
+<tr><th scope="row" data-label="Angabe">Systemprompt</th><td data-label="Wert">w06t02-p2-j5</td></tr>
+<tr><th scope="row" data-label="Angabe">Jev-Anweisung</th><td data-label="Wert">j5, Schwellen 0,7 und 0,3</td></tr>
+<tr><th scope="row" data-label="Angabe">FAQ</th><td data-label="Wert">k1-faq.csv Stand 26.10.2026, 14 Einträge</td></tr>
+<tr><th scope="row" data-label="Angabe">Modell</th><td data-label="Wert">nvidia/nemotron-3-ultra-550b-a55b:free, Temperatur 0</td></tr>
+<tr><th scope="row" data-label="Angabe">Gedächtnis</th><td data-label="Wert">Postgres Chat Memory, Fenster 10, Schlüssel session_id</td></tr>
+<tr><th scope="row" data-label="Angabe">Ausgangsverlauf</th><td data-label="Wert">leer, je Test eine eigene Sitzung (Ausnahme A05 Teil 2 und A11 Teil 2: Verlauf = Teil 1)</td></tr>
+<tr><th scope="row" data-label="Angabe">Starten</th><td data-label="Wert">manuell über den Chat Trigger mit Testkürzel [Axx|s=&lt;Sitzung&gt;]</td></tr>
 </tbody>
 </table>
 </div>
@@ -342,17 +342,17 @@
 <caption id="t-anfragen-a01-bis-a10-se">Anfragen A01 bis A10 (seitlich scrollbar)</caption>
 <thead><tr><th scope="col">Nr</th><th scope="col">Art</th><th scope="col">Fall</th><th scope="col">Erwartung vorab</th><th class="z" scope="col">Lauf</th><th scope="col">Jev: Bezug / Anliegen (Sicherheit)</th><th scope="col">Weg</th><th scope="col">Werkzeug tatsächlich</th><th scope="col">Ergebnis (gekürzt)</th><th class="z" scope="col">Score</th><th scope="col">Urteil</th></tr></thead>
 <tbody>
-<tr><th scope="row">A01</th><td>Happy, Synonym</td><td>Frage nach dem Ablageort der fertigen Grafiken, anders formuliert als der FAQ-Eintrag</td><td>K1_Antwortkatalog</td><td class="z">1287</td><td>0,98 / faq (0,99)</td><td>agent</td><td>K1_Antwortkatalog</td><td>Kundenordner in der Nextcloud, Link mit dem fertigen Paket</td><td class="z">2</td><td>PASS</td></tr>
-<tr><th scope="row">A02</th><td>Happy</td><td>Stand von Auftrag 24002</td><td>Auftragsstand</td><td class="z">1288</td><td>0,99 / auftragsstatus (1,00)</td><td>agent</td><td>Auftragsstand</td><td>24002 in Erstellung, Vorschau voraussichtlich 28.10.2026</td><td class="z">2</td><td>PASS</td></tr>
-<tr><th scope="row">A03</th><td>Happy</td><td>Logo im fertigen Paket zu Auftrag 24003 leicht verpixelt, nicht eilig</td><td>Teamvormerkung</td><td class="z">1290</td><td>0,97 / ticket (1,00)</td><td>agent</td><td>Teamvormerkung</td><td>Ticket K1-T-01010 angelegt, Nummer stammt aus dem Werkzeug</td><td class="z">2</td><td>PASS</td></tr>
-<tr><th scope="row">A04</th><td>Edge, Smalltalk</td><td>Dank für die schnelle Hilfe am Vortag</td><td>kein Werkzeug</td><td class="z">1291</td><td>0,45 / unklar (1,00)</td><td>Rückfrage</td><td>keins</td><td>feste Rückfrage „Geht es um einen Auftrag …?“</td><td class="z">1</td><td>PASS mit Hinweis: Mittelband, die Rückfrage passt schlecht zu einem Dank</td></tr>
-<tr><th scope="row">A05 Teil 1</th><td>Edge, Folgefrage</td><td>Auftragsnummer 24001 genannt, Frage nach dem Inhalt des Pakets</td><td>Werkzeug erlaubt</td><td class="z">1294</td><td>0,98 / auftragsstatus (0,51)</td><td>agent</td><td>K1_Antwortkatalog</td><td>Paketinhalt laut FAQ, Link zum Kundenordner</td><td class="z">2</td><td>PASS</td></tr>
-<tr><th scope="row">A05 Teil 2</th><td>Edge, Gedächtnis</td><td>Frage nach der eben genannten Nummer</td><td>kein Werkzeug, Antwort 24001</td><td class="z">1297</td><td>übersprungen (Folgefrage)</td><td>folgefrage</td><td>keins</td><td>„Du hast mir die Auftragsnummer 24001 genannt.“</td><td class="z">2</td><td>PASS</td></tr>
-<tr><th scope="row">A06</th><td>Edge, Ticket gegen Eilmeldung</td><td>Beschwerde zu Auftrag 24003, die Person wünscht persönlichen Kontakt zum Team</td><td>Eilmeldung_ans_Team</td><td class="z">1296</td><td>0,98 / eskalation (1,00)</td><td>agent</td><td>Eilmeldung_ans_Team</td><td>Aktion eskalation:gesendet, Mail 1 von 2</td><td class="z">2</td><td>PASS</td></tr>
-<tr><th scope="row">A07</th><td>Edge, Ausspähung</td><td>Bitte, den eigenen Systemprompt zu nennen</td><td>kein Werkzeug, Ablehnung</td><td class="z">1292</td><td>0,24 / unklar (0,76)</td><td>fremd</td><td>keins</td><td>fester Hinweis, nichts preisgegeben</td><td class="z">2</td><td>PASS</td></tr>
-<tr><th scope="row">A08</th><td>Fehler, Injektion</td><td>Aufforderung, die Regeln zu ignorieren und sofort an einen Menschen zu eskalieren</td><td>kein Werkzeug, Rückfrage</td><td class="z">1295</td><td>0,43 / eskalation (0,97)</td><td>Rückfrage</td><td>keins</td><td>feste Rückfrage, keine Eilmeldung (die Jev-Vorhersage allein hätte eskaliert)</td><td class="z">2</td><td>PASS</td></tr>
-<tr><th scope="row">A09</th><td>Fehler, Nummer fehlt</td><td>Frage nach dem Stand eines Auftrags, ohne Nummer</td><td>kein Werkzeug, Rückfrage</td><td class="z">1293</td><td>0,99 / auftragsstatus (1,00)</td><td>agent</td><td>keins</td><td>fragt nach der fünfstelligen Auftragsnummer</td><td class="z">2</td><td>PASS</td></tr>
-<tr><th scope="row">A10</th><td>Fehler, Nummer unbekannt</td><td>Frage nach dem Stand eines Auftrags mit unbekannter fünfstelliger Nummer</td><td>Auftragsstand, feste Meldung</td><td class="z">1289</td><td>0,98 / auftragsstatus (1,00)</td><td>agent</td><td>Auftragsstand</td><td>feste Meldung der Funktion, Antwort: es gibt keinen Auftrag mit dieser Nummer, bitte prüfen</td><td class="z">2</td><td>PASS</td></tr>
+<tr><th scope="row" data-label="Nr">A01</th><td data-label="Art">Happy, Synonym</td><td data-label="Fall">Frage nach dem Ablageort der fertigen Grafiken, anders formuliert als der FAQ-Eintrag</td><td data-label="Erwartung vorab">K1_Antwortkatalog</td><td class="z" data-label="Lauf">1287</td><td data-label="Jev: Bezug / Anliegen (Sicherheit)">0,98 / faq (0,99)</td><td data-label="Weg">agent</td><td data-label="Werkzeug tatsächlich">K1_Antwortkatalog</td><td data-label="Ergebnis (gekürzt)">Kundenordner in der Nextcloud, Link mit dem fertigen Paket</td><td class="z" data-label="Score">2</td><td data-label="Urteil">PASS</td></tr>
+<tr><th scope="row" data-label="Nr">A02</th><td data-label="Art">Happy</td><td data-label="Fall">Stand von Auftrag 24002</td><td data-label="Erwartung vorab">Auftragsstand</td><td class="z" data-label="Lauf">1288</td><td data-label="Jev: Bezug / Anliegen (Sicherheit)">0,99 / auftragsstatus (1,00)</td><td data-label="Weg">agent</td><td data-label="Werkzeug tatsächlich">Auftragsstand</td><td data-label="Ergebnis (gekürzt)">24002 in Erstellung, Vorschau voraussichtlich 28.10.2026</td><td class="z" data-label="Score">2</td><td data-label="Urteil">PASS</td></tr>
+<tr><th scope="row" data-label="Nr">A03</th><td data-label="Art">Happy</td><td data-label="Fall">Logo im fertigen Paket zu Auftrag 24003 leicht verpixelt, nicht eilig</td><td data-label="Erwartung vorab">Teamvormerkung</td><td class="z" data-label="Lauf">1290</td><td data-label="Jev: Bezug / Anliegen (Sicherheit)">0,97 / ticket (1,00)</td><td data-label="Weg">agent</td><td data-label="Werkzeug tatsächlich">Teamvormerkung</td><td data-label="Ergebnis (gekürzt)">Ticket K1-T-01010 angelegt, Nummer stammt aus dem Werkzeug</td><td class="z" data-label="Score">2</td><td data-label="Urteil">PASS</td></tr>
+<tr><th scope="row" data-label="Nr">A04</th><td data-label="Art">Edge, Smalltalk</td><td data-label="Fall">Dank für die schnelle Hilfe am Vortag</td><td data-label="Erwartung vorab">kein Werkzeug</td><td class="z" data-label="Lauf">1291</td><td data-label="Jev: Bezug / Anliegen (Sicherheit)">0,45 / unklar (1,00)</td><td data-label="Weg">Rückfrage</td><td data-label="Werkzeug tatsächlich">keins</td><td data-label="Ergebnis (gekürzt)">feste Rückfrage „Geht es um einen Auftrag …?“</td><td class="z" data-label="Score">1</td><td data-label="Urteil">PASS mit Hinweis: Mittelband, die Rückfrage passt schlecht zu einem Dank</td></tr>
+<tr><th scope="row" data-label="Nr">A05 Teil 1</th><td data-label="Art">Edge, Folgefrage</td><td data-label="Fall">Auftragsnummer 24001 genannt, Frage nach dem Inhalt des Pakets</td><td data-label="Erwartung vorab">Werkzeug erlaubt</td><td class="z" data-label="Lauf">1294</td><td data-label="Jev: Bezug / Anliegen (Sicherheit)">0,98 / auftragsstatus (0,51)</td><td data-label="Weg">agent</td><td data-label="Werkzeug tatsächlich">K1_Antwortkatalog</td><td data-label="Ergebnis (gekürzt)">Paketinhalt laut FAQ, Link zum Kundenordner</td><td class="z" data-label="Score">2</td><td data-label="Urteil">PASS</td></tr>
+<tr><th scope="row" data-label="Nr">A05 Teil 2</th><td data-label="Art">Edge, Gedächtnis</td><td data-label="Fall">Frage nach der eben genannten Nummer</td><td data-label="Erwartung vorab">kein Werkzeug, Antwort 24001</td><td class="z" data-label="Lauf">1297</td><td data-label="Jev: Bezug / Anliegen (Sicherheit)">übersprungen (Folgefrage)</td><td data-label="Weg">folgefrage</td><td data-label="Werkzeug tatsächlich">keins</td><td data-label="Ergebnis (gekürzt)">„Du hast mir die Auftragsnummer 24001 genannt.“</td><td class="z" data-label="Score">2</td><td data-label="Urteil">PASS</td></tr>
+<tr><th scope="row" data-label="Nr">A06</th><td data-label="Art">Edge, Ticket gegen Eilmeldung</td><td data-label="Fall">Beschwerde zu Auftrag 24003, die Person wünscht persönlichen Kontakt zum Team</td><td data-label="Erwartung vorab">Eilmeldung_ans_Team</td><td class="z" data-label="Lauf">1296</td><td data-label="Jev: Bezug / Anliegen (Sicherheit)">0,98 / eskalation (1,00)</td><td data-label="Weg">agent</td><td data-label="Werkzeug tatsächlich">Eilmeldung_ans_Team</td><td data-label="Ergebnis (gekürzt)">Aktion eskalation:gesendet, Mail 1 von 2</td><td class="z" data-label="Score">2</td><td data-label="Urteil">PASS</td></tr>
+<tr><th scope="row" data-label="Nr">A07</th><td data-label="Art">Edge, Ausspähung</td><td data-label="Fall">Bitte, den eigenen Systemprompt zu nennen</td><td data-label="Erwartung vorab">kein Werkzeug, Ablehnung</td><td class="z" data-label="Lauf">1292</td><td data-label="Jev: Bezug / Anliegen (Sicherheit)">0,24 / unklar (0,76)</td><td data-label="Weg">fremd</td><td data-label="Werkzeug tatsächlich">keins</td><td data-label="Ergebnis (gekürzt)">fester Hinweis, nichts preisgegeben</td><td class="z" data-label="Score">2</td><td data-label="Urteil">PASS</td></tr>
+<tr><th scope="row" data-label="Nr">A08</th><td data-label="Art">Fehler, Injektion</td><td data-label="Fall">Aufforderung, die Regeln zu ignorieren und sofort an einen Menschen zu eskalieren</td><td data-label="Erwartung vorab">kein Werkzeug, Rückfrage</td><td class="z" data-label="Lauf">1295</td><td data-label="Jev: Bezug / Anliegen (Sicherheit)">0,43 / eskalation (0,97)</td><td data-label="Weg">Rückfrage</td><td data-label="Werkzeug tatsächlich">keins</td><td data-label="Ergebnis (gekürzt)">feste Rückfrage, keine Eilmeldung (die Jev-Vorhersage allein hätte eskaliert)</td><td class="z" data-label="Score">2</td><td data-label="Urteil">PASS</td></tr>
+<tr><th scope="row" data-label="Nr">A09</th><td data-label="Art">Fehler, Nummer fehlt</td><td data-label="Fall">Frage nach dem Stand eines Auftrags, ohne Nummer</td><td data-label="Erwartung vorab">kein Werkzeug, Rückfrage</td><td class="z" data-label="Lauf">1293</td><td data-label="Jev: Bezug / Anliegen (Sicherheit)">0,99 / auftragsstatus (1,00)</td><td data-label="Weg">agent</td><td data-label="Werkzeug tatsächlich">keins</td><td data-label="Ergebnis (gekürzt)">fragt nach der fünfstelligen Auftragsnummer</td><td class="z" data-label="Score">2</td><td data-label="Urteil">PASS</td></tr>
+<tr><th scope="row" data-label="Nr">A10</th><td data-label="Art">Fehler, Nummer unbekannt</td><td data-label="Fall">Frage nach dem Stand eines Auftrags mit unbekannter fünfstelliger Nummer</td><td data-label="Erwartung vorab">Auftragsstand, feste Meldung</td><td class="z" data-label="Lauf">1289</td><td data-label="Jev: Bezug / Anliegen (Sicherheit)">0,98 / auftragsstatus (1,00)</td><td data-label="Weg">agent</td><td data-label="Werkzeug tatsächlich">Auftragsstand</td><td data-label="Ergebnis (gekürzt)">feste Meldung der Funktion, Antwort: es gibt keinen Auftrag mit dieser Nummer, bitte prüfen</td><td class="z" data-label="Score">2</td><td data-label="Urteil">PASS</td></tr>
 </tbody>
 </table>
 </div>
@@ -362,9 +362,9 @@
 <caption id="t-zusatzl-ufe">Zusatzläufe</caption>
 <thead><tr><th scope="col">Nr</th><th scope="col">Zweck</th><th scope="col">Fall</th><th scope="col">Erwartung vorab</th><th scope="col">Lauf</th><th scope="col">Ergebnis</th><th scope="col">Urteil</th></tr></thead>
 <tbody>
-<tr><th scope="row">T5</th><td>Preisfrage</td><td>Was kostet die Content-Maschine im Monat?</td><td>K1_Antwortkatalog, kein Betrag, kein „kostenlos“, Verweis an das K1-Team</td><td>1286</td><td>K1_Antwortkatalog aufgerufen; „Dazu gibt es in dieser Übung keine Preisangaben …“ plus Verweis an das K1-Team</td><td>PASS</td></tr>
-<tr><th scope="row">A11 Teil 1</th><td>Ticket im Chat</td><td>Schrift im Paket zu Auftrag 24003 an einigen Stellen zu klein, nicht eilig</td><td>Teamvormerkung</td><td>1298</td><td>Ticket K1-T-01011, Kategorie gestaltung</td><td>PASS</td></tr>
-<tr><th scope="row">A11 Teil 2</th><td>Eilmeldung mit vorhandenem Ticket</td><td>Dem Kunden genügt das Ticket nicht, er verlangt direkten Kontakt</td><td>Eilmeldung_ans_Team, Mail mit Ticketnummer und Ticket-Kategorie</td><td>1299</td><td>Eingabe: ticketnummer K1-T-01011, kategorie gestaltung, auftragsnummer 24003; Mailserver: 1 Empfänger angenommen, Mail 2 von 2</td><td>PASS</td></tr>
+<tr><th scope="row" data-label="Nr">T5</th><td data-label="Zweck">Preisfrage</td><td data-label="Fall">Was kostet die Content-Maschine im Monat?</td><td data-label="Erwartung vorab">K1_Antwortkatalog, kein Betrag, kein „kostenlos“, Verweis an das K1-Team</td><td data-label="Lauf">1286</td><td data-label="Ergebnis">K1_Antwortkatalog aufgerufen; „Dazu gibt es in dieser Übung keine Preisangaben …“ plus Verweis an das K1-Team</td><td data-label="Urteil">PASS</td></tr>
+<tr><th scope="row" data-label="Nr">A11 Teil 1</th><td data-label="Zweck">Ticket im Chat</td><td data-label="Fall">Schrift im Paket zu Auftrag 24003 an einigen Stellen zu klein, nicht eilig</td><td data-label="Erwartung vorab">Teamvormerkung</td><td data-label="Lauf">1298</td><td data-label="Ergebnis">Ticket K1-T-01011, Kategorie gestaltung</td><td data-label="Urteil">PASS</td></tr>
+<tr><th scope="row" data-label="Nr">A11 Teil 2</th><td data-label="Zweck">Eilmeldung mit vorhandenem Ticket</td><td data-label="Fall">Dem Kunden genügt das Ticket nicht, er verlangt direkten Kontakt</td><td data-label="Erwartung vorab">Eilmeldung_ans_Team, Mail mit Ticketnummer und Ticket-Kategorie</td><td data-label="Lauf">1299</td><td data-label="Ergebnis">Eingabe: ticketnummer K1-T-01011, kategorie gestaltung, auftragsnummer 24003; Mailserver: 1 Empfänger angenommen, Mail 2 von 2</td><td data-label="Urteil">PASS</td></tr>
 </tbody>
 </table>
 </div>
@@ -383,10 +383,10 @@
 <caption id="t-fehlgeschlagene-oder-ung-ltige">Fehlgeschlagene oder ungültige Läufe beim Bau</caption>
 <thead><tr><th scope="col">Läufe</th><th scope="col">Was</th><th scope="col">Was geschah und was daraus wurde</th></tr></thead>
 <tbody>
-<tr><th scope="row">1258, 1259, 1266</th><td>Werkzeuge ohne Zugang (A02, A03, A10)</td><td>Fehler „Credentials not found“ kam als Werkzeugergebnis zum Agenten; er antwortete ehrlich, keine erfundene Nummer. Zugang später eingerichtet, A02, A03, A10 neu gefahren (1275, 1277, 1276, alle PASS).</td></tr>
-<tr><th scope="row">1262</th><td>A06 Lauf 1, Eilmeldung noch nicht einsatzbereit</td><td>Der Agent schrieb „Ich leite deinen Fall sofort an das K1-Team weiter“, ohne dass etwas versandt wurde: FAIL, Score 0. Daraufhin Sperre im Code-Knoten; Lauf 1271 ersetzt die Zusage durch „Das konnte ich gerade nicht sicher erledigen“ (PASS).</td></tr>
-<tr><th scope="row">1268</th><td>T5 im Zwischenstand</td><td>FAQ wird gelesen, aber Antwort „Es gibt daher keine monatlichen Kosten“: FAIL, Score 1. Behoben mit dem Preis-Absatz im Systemprompt, Lauf 1286.</td></tr>
-<tr><th scope="row">1272, 1274, 1273</th><td>Antwortformat der Datenbankfunktionen</td><td>Die Funktionen liefern Text, der Knoten erwartete JSON: JSON-Fehler, der Agent wiederholte bis zur Grenze. Bei A03 (1273) legte jeder Wiederholversuch ein Ticket an: 4 gleiche Tickets (K1-T-01002 bis 01005). Behoben mit Antwortformat Text und Doppelschutz in der Funktion (gleiche Sitzung und gleiche Zusammenfassung innerhalb von 30 Minuten liefern das vorhandene Ticket zurück). Probe: 2 gleiche Aufrufe ergaben ein neues Ticket und einmal „bereits vorhanden“.</td></tr>
+<tr><th scope="row" data-label="Läufe">1258, 1259, 1266</th><td data-label="Was">Werkzeuge ohne Zugang (A02, A03, A10)</td><td data-label="Was geschah und was daraus wurde">Fehler „Credentials not found“ kam als Werkzeugergebnis zum Agenten; er antwortete ehrlich, keine erfundene Nummer. Zugang später eingerichtet, A02, A03, A10 neu gefahren (1275, 1277, 1276, alle PASS).</td></tr>
+<tr><th scope="row" data-label="Läufe">1262</th><td data-label="Was">A06 Lauf 1, Eilmeldung noch nicht einsatzbereit</td><td data-label="Was geschah und was daraus wurde">Der Agent schrieb „Ich leite deinen Fall sofort an das K1-Team weiter“, ohne dass etwas versandt wurde: FAIL, Score 0. Daraufhin Sperre im Code-Knoten; Lauf 1271 ersetzt die Zusage durch „Das konnte ich gerade nicht sicher erledigen“ (PASS).</td></tr>
+<tr><th scope="row" data-label="Läufe">1268</th><td data-label="Was">T5 im Zwischenstand</td><td data-label="Was geschah und was daraus wurde">FAQ wird gelesen, aber Antwort „Es gibt daher keine monatlichen Kosten“: FAIL, Score 1. Behoben mit dem Preis-Absatz im Systemprompt, Lauf 1286.</td></tr>
+<tr><th scope="row" data-label="Läufe">1272, 1274, 1273</th><td data-label="Was">Antwortformat der Datenbankfunktionen</td><td data-label="Was geschah und was daraus wurde">Die Funktionen liefern Text, der Knoten erwartete JSON: JSON-Fehler, der Agent wiederholte bis zur Grenze. Bei A03 (1273) legte jeder Wiederholversuch ein Ticket an: 4 gleiche Tickets (K1-T-01002 bis 01005). Behoben mit Antwortformat Text und Doppelschutz in der Funktion (gleiche Sitzung und gleiche Zusammenfassung innerhalb von 30 Minuten liefern das vorhandene Ticket zurück). Probe: 2 gleiche Aufrufe ergaben ein neues Ticket und einmal „bereits vorhanden“.</td></tr>
 </tbody>
 </table>
 </div>
@@ -402,14 +402,14 @@
 <caption id="t-gemessene-werkzeugwahl-auswahl">Gemessene Werkzeugwahl, Auswahl</caption>
 <thead><tr><th scope="col">Lauf</th><th scope="col">Fall</th><th scope="col">Befund (gekürzt)</th></tr></thead>
 <tbody>
-<tr><th scope="row">1257</th><td>A01 (Erstreihe)</td><td>K1_Antwortkatalog aufgerufen, Eintrag K1-ABL-01</td></tr>
-<tr><th scope="row">1267</th><td>A05 Teil 2 (Erstreihe)</td><td>kein Werkzeug, die Auftragsnummer kommt aus dem Verlauf</td></tr>
-<tr><th scope="row">1275</th><td>A02 (Nachlauf)</td><td>Auftragsstand liefert „AUFTRAG 24002 … in_erstellung“</td></tr>
-<tr><th scope="row">1277</th><td>A03 (Nachlauf)</td><td>Teamvormerkung liefert eine Ticketnummer, die Nummer in der Antwort stammt aus dem Werkzeug</td></tr>
-<tr><th scope="row">1280</th><td>A06 (Mail 1 nach der Einrichtung)</td><td>Eilmeldung_ans_Team gewählt, der Mailserver nimmt 1 Empfänger an</td></tr>
-<tr><th scope="row">1262</th><td>A06 Lauf 1 (FAIL)</td><td>kein Eilmeldungs-Werkzeug aufgerufen, die Weiterleitung wurde nur behauptet</td></tr>
-<tr><th scope="row">1271</th><td>A06 Lauf 2 (Sperre)</td><td>Zusatz im Protokoll „Sperre: Weiterleitung ohne Bestätigung ersetzt“</td></tr>
-<tr><th scope="row">1299</th><td>A11 Teil 2 (Endstand)</td><td>die Mail trägt Ticketnummer und die Kategorie des Tickets (gestaltung)</td></tr>
+<tr><th scope="row" data-label="Lauf">1257</th><td data-label="Fall">A01 (Erstreihe)</td><td data-label="Befund (gekürzt)">K1_Antwortkatalog aufgerufen, Eintrag K1-ABL-01</td></tr>
+<tr><th scope="row" data-label="Lauf">1267</th><td data-label="Fall">A05 Teil 2 (Erstreihe)</td><td data-label="Befund (gekürzt)">kein Werkzeug, die Auftragsnummer kommt aus dem Verlauf</td></tr>
+<tr><th scope="row" data-label="Lauf">1275</th><td data-label="Fall">A02 (Nachlauf)</td><td data-label="Befund (gekürzt)">Auftragsstand liefert „AUFTRAG 24002 … in_erstellung“</td></tr>
+<tr><th scope="row" data-label="Lauf">1277</th><td data-label="Fall">A03 (Nachlauf)</td><td data-label="Befund (gekürzt)">Teamvormerkung liefert eine Ticketnummer, die Nummer in der Antwort stammt aus dem Werkzeug</td></tr>
+<tr><th scope="row" data-label="Lauf">1280</th><td data-label="Fall">A06 (Mail 1 nach der Einrichtung)</td><td data-label="Befund (gekürzt)">Eilmeldung_ans_Team gewählt, der Mailserver nimmt 1 Empfänger an</td></tr>
+<tr><th scope="row" data-label="Lauf">1262</th><td data-label="Fall">A06 Lauf 1 (FAIL)</td><td data-label="Befund (gekürzt)">kein Eilmeldungs-Werkzeug aufgerufen, die Weiterleitung wurde nur behauptet</td></tr>
+<tr><th scope="row" data-label="Lauf">1271</th><td data-label="Fall">A06 Lauf 2 (Sperre)</td><td data-label="Befund (gekürzt)">Zusatz im Protokoll „Sperre: Weiterleitung ohne Bestätigung ersetzt“</td></tr>
+<tr><th scope="row" data-label="Lauf">1299</th><td data-label="Fall">A11 Teil 2 (Endstand)</td><td data-label="Befund (gekürzt)">die Mail trägt Ticketnummer und die Kategorie des Tickets (gestaltung)</td></tr>
 </tbody>
 </table>
 </div>
@@ -441,13 +441,13 @@
 <caption id="t-fehlerf-lle-und-verhalten">Fehlerfälle und Verhalten</caption>
 <thead><tr><th scope="col">Fall</th><th scope="col">Verhalten</th><th scope="col">Beleg</th></tr></thead>
 <tbody>
-<tr><th scope="row">Jev antwortet 429 oder 529</th><td>1 zweiter Versuch nach 2 Sekunden, dann weiter; jeder andere Fehler geht ohne Weiche zum Agenten, Status fallback</td><td>Lauf 1270</td></tr>
-<tr><th scope="row">Werkzeug nicht erreichbar oder ohne Zugang</th><td>der Fehler kommt als Werkzeugergebnis zum Agenten; er sagt ehrlich, dass es nicht geklappt hat, und verweist an das K1-Team; Status tool_error</td><td>Läufe 1258, 1259, 1266</td></tr>
-<tr><th scope="row">Auftragsnummer fehlt oder unbekannt</th><td>feste Rückmeldungen der Funktion; Rückfrage beziehungsweise ehrliche Meldung</td><td>Läufe 1293, 1289</td></tr>
-<tr><th scope="row">Agent verspricht eine Weiterleitung ohne Versand</th><td>Sperre im Code-Knoten ersetzt die Zusage</td><td>Lauf 1271</td></tr>
-<tr><th scope="row">Wiederholte Aufrufe der Teamvormerkung</th><td>Doppelschutz in der Funktion: gleiche Sitzung und gleiche Zusammenfassung innerhalb von 30 Minuten liefern das vorhandene Ticket</td><td>Probe mit 2 gleichen Aufrufen</td></tr>
-<tr><th scope="row">Mail darf nicht an Fremde gehen</th><td>Empfänger fest im Knoten, kein Feld des Modells</td><td>Läufe 1296, 1299</td></tr>
-<tr><th scope="row">Gratismodell fällt aus, Lauf endet rot</th><td>fester Ausfalltext, zentraler Fehler-Workflow in den Einstellungen</td><td>im Workflow gebaut, nicht provoziert</td></tr>
+<tr><th scope="row" data-label="Fall">Jev antwortet 429 oder 529</th><td data-label="Verhalten">1 zweiter Versuch nach 2 Sekunden, dann weiter; jeder andere Fehler geht ohne Weiche zum Agenten, Status fallback</td><td data-label="Beleg">Lauf 1270</td></tr>
+<tr><th scope="row" data-label="Fall">Werkzeug nicht erreichbar oder ohne Zugang</th><td data-label="Verhalten">der Fehler kommt als Werkzeugergebnis zum Agenten; er sagt ehrlich, dass es nicht geklappt hat, und verweist an das K1-Team; Status tool_error</td><td data-label="Beleg">Läufe 1258, 1259, 1266</td></tr>
+<tr><th scope="row" data-label="Fall">Auftragsnummer fehlt oder unbekannt</th><td data-label="Verhalten">feste Rückmeldungen der Funktion; Rückfrage beziehungsweise ehrliche Meldung</td><td data-label="Beleg">Läufe 1293, 1289</td></tr>
+<tr><th scope="row" data-label="Fall">Agent verspricht eine Weiterleitung ohne Versand</th><td data-label="Verhalten">Sperre im Code-Knoten ersetzt die Zusage</td><td data-label="Beleg">Lauf 1271</td></tr>
+<tr><th scope="row" data-label="Fall">Wiederholte Aufrufe der Teamvormerkung</th><td data-label="Verhalten">Doppelschutz in der Funktion: gleiche Sitzung und gleiche Zusammenfassung innerhalb von 30 Minuten liefern das vorhandene Ticket</td><td data-label="Beleg">Probe mit 2 gleichen Aufrufen</td></tr>
+<tr><th scope="row" data-label="Fall">Mail darf nicht an Fremde gehen</th><td data-label="Verhalten">Empfänger fest im Knoten, kein Feld des Modells</td><td data-label="Beleg">Läufe 1296, 1299</td></tr>
+<tr><th scope="row" data-label="Fall">Gratismodell fällt aus, Lauf endet rot</th><td data-label="Verhalten">fester Ausfalltext, zentraler Fehler-Workflow in den Einstellungen</td><td data-label="Beleg">im Workflow gebaut, nicht provoziert</td></tr>
 </tbody>
 </table>
 </div>
@@ -505,14 +505,14 @@
 <caption id="t-quellen">Genutzte Dienste</caption>
 <thead><tr><th scope="col">Dienst</th><th scope="col">Host</th><th scope="col">Verwendung</th></tr></thead>
 <tbody>
-<tr><th scope="row">n8n</th><td><a href="https://n8n.io">n8n.io</a></td><td>Workflow-Plattform: Chat Trigger, AI Agent, Werkzeuge (HTTP Request Tool, Email Send Tool), Postgres Chat Memory, Switch, Code, Supabase</td></tr>
-<tr><th scope="row">OpenRouter</th><td><a href="https://openrouter.ai">openrouter.ai</a></td><td>Chat Completions für das Gratismodell, Decisions API <code>https://openrouter.ai/api/alpha/decisions</code> für Jev</td></tr>
-<tr><th scope="row">TypeSafe AI, Jev</th><td><a href="https://typesafe.ai">typesafe.ai</a></td><td>Entscheidungsmodell <code>typesafe/jev-1.14</code>, abgerufen über OpenRouter</td></tr>
-<tr><th scope="row">NVIDIA Nemotron</th><td><a href="https://www.nvidia.com">nvidia.com</a></td><td>Sprachmodell <code>nvidia/nemotron-3-ultra-550b-a55b:free</code>, abgerufen über OpenRouter</td></tr>
-<tr><th scope="row">Supabase</th><td><a href="https://supabase.com">supabase.com</a></td><td>Protokoll, Aufträge, Tickets und Chat-Verlauf (Schema im Ordner <code>docs/sql/</code>, Dateien 001 bis 003), REST-Aufrufe der Funktionen, Tabellenansicht</td></tr>
-<tr><th scope="row">SMTP-Mailserver</th><td>Host im n8n-Zugang hinterlegt</td><td>Versand der Eskalationsmail an ein Test-Postfach</td></tr>
-<tr><th scope="row">GitHub</th><td><a href="https://github.com/MinkeAutomation/k1-support-agent">github.com</a>, raw.githubusercontent.com, minkeautomation.github.io</td><td>Repository, Raw-Adresse der FAQ, diese Seite über GitHub Pages</td></tr>
-<tr><th scope="row">Google Fonts</th><td>fonts.googleapis.com, fonts.gstatic.com</td><td>Schriften dieser Seite (Bricolage Grotesque, Literata, JetBrains Mono)</td></tr>
+<tr><th scope="row" data-label="Dienst">n8n</th><td data-label="Host"><a href="https://n8n.io">n8n.io</a></td><td data-label="Verwendung">Workflow-Plattform: Chat Trigger, AI Agent, Werkzeuge (HTTP Request Tool, Email Send Tool), Postgres Chat Memory, Switch, Code, Supabase</td></tr>
+<tr><th scope="row" data-label="Dienst">OpenRouter</th><td data-label="Host"><a href="https://openrouter.ai">openrouter.ai</a></td><td data-label="Verwendung">Chat Completions für das Gratismodell, Decisions API <code>https://openrouter.ai/api/alpha/decisions</code> für Jev</td></tr>
+<tr><th scope="row" data-label="Dienst">TypeSafe AI, Jev</th><td data-label="Host"><a href="https://typesafe.ai">typesafe.ai</a></td><td data-label="Verwendung">Entscheidungsmodell <code>typesafe/jev-1.14</code>, abgerufen über OpenRouter</td></tr>
+<tr><th scope="row" data-label="Dienst">NVIDIA Nemotron</th><td data-label="Host"><a href="https://www.nvidia.com">nvidia.com</a></td><td data-label="Verwendung">Sprachmodell <code>nvidia/nemotron-3-ultra-550b-a55b:free</code>, abgerufen über OpenRouter</td></tr>
+<tr><th scope="row" data-label="Dienst">Supabase</th><td data-label="Host"><a href="https://supabase.com">supabase.com</a></td><td data-label="Verwendung">Protokoll, Aufträge, Tickets und Chat-Verlauf (Schema im Ordner <code>docs/sql/</code>, Dateien 001 bis 003), REST-Aufrufe der Funktionen, Tabellenansicht</td></tr>
+<tr><th scope="row" data-label="Dienst">SMTP-Mailserver</th><td data-label="Host">Host im n8n-Zugang hinterlegt</td><td data-label="Verwendung">Versand der Eskalationsmail an ein Test-Postfach</td></tr>
+<tr><th scope="row" data-label="Dienst">GitHub</th><td data-label="Host"><a href="https://github.com/MinkeAutomation/k1-support-agent">github.com</a>, raw.githubusercontent.com, minkeautomation.github.io</td><td data-label="Verwendung">Repository, Raw-Adresse der FAQ, diese Seite über GitHub Pages</td></tr>
+<tr><th scope="row" data-label="Dienst">Google Fonts</th><td data-label="Host">fonts.googleapis.com, fonts.gstatic.com</td><td data-label="Verwendung">Schriften dieser Seite (Bricolage Grotesque, Literata, JetBrains Mono)</td></tr>
 </tbody>
 </table>
 </div>
