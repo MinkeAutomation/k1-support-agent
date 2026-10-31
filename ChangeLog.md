@@ -6,7 +6,7 @@ Je Version des Workflows, was der Agent kann und was gemessen wurde. Neueste Ein
 
 **Funktion**
 - Die Jev-Weiche läuft jetzt als eigener Workflow `SUB Jev-Weiche mit Retry`. Im Support-Agenten steht nur noch der Aufruf `Jev-Weiche aufrufen`. Der Sub fragt Jev, wiederholt bei 429 und 529 genau 1 Mal und liefert bei gültiger Eingabe immer ein Ergebnis (`status` ok oder fallback), bei fehlender Frage oder Anweisung stoppt er mit einem Fehler. Grund: Zugang, Guthaben und Wiederholung liegen an einer Stelle, und der Ausfallweg ist dort einzeln getestet.
-- Die Protokollzeile schreibt der Workflow `SUB Protokollzeile schreiben` (Tabelle, Zeile und Lauf-Kennung als Eingabe, feste Erlaubnisliste von 2 Tabellen). Im Agenten ersetzt `Protokollzeile aufrufen` den bisherigen Supabase-Knoten. Der Schreibzugang liegt nur im Sub. Grund: eine Stelle für den Schreibweg, kein Retry am Insert, ein Protokollfehler hält die Antwort an die Person nie auf.
+- Die Protokollzeile schreibt der Workflow `SUB Protokollzeile schreiben` (Tabelle, Zeile und Lauf-Kennung als Eingabe, feste Erlaubnisliste von 2 Tabellen). Im Agenten ersetzt `Protokollzeile aufrufen` den bisherigen Supabase-Knoten. Das Schreiben der Support-Protokollzeile ist im Sub gebündelt; den Gesprächsverlauf (`Dialog speichern`) schreibt weiter der Hauptworkflow. Grund: eine Stelle für den Schreibweg, kein Retry am Insert, ein Protokollfehler hält die Antwort an die Person nie auf.
 - Neu im Agenten: `Protokoll geschrieben?` wertet die Rückgabe des Subs aus. Bei einem Fehler vermerkt `Protokollfehler vermerken` den Grund, die Antwort geht trotzdem raus.
 - Der Fehlerausgang des Jev-Aufrufs führt wie bisher in `Jev-Ausfall vermerken` und von dort ohne Weiche zum Agenten.
 - `Jev-Werte übernehmen` liest jetzt die Rückgabe des Subs. Der Name bleibt, weil der Prüfknoten die Route daran erkennt.
@@ -76,7 +76,7 @@ Nachtrag Satzende mit derselben Paarerkennung: Knotentest jetzt 289 Fälle (die 
 
 Grenze in die andere Richtung (unnötige Ersetzung, sichere Richtung): Jede Vollzugsform wird ersetzt, auch wenn sie nur beschreibt, was passieren würde oder passiert wäre ("Wenn dein Ticket angelegt ist, ..."), und jeder Klammerinhalt oder jedes Zitat wird zusätzlich allein geprüft, auch eine Rückfrage mit Zusage in der Klammer ("Soll ich dir helfen (dein Ticket ist angelegt)?"). Ein korrektes Angebot mit geteiltem Modalverb wie "Ich kann dein Anliegen vormerken und an das K1-Team weiterleiten." oder "Dein Ticket kann geprüft und an das Team weitergeleitet werden." wird ersetzt, ebenso eine Frage mit "und" und zwei Vollzugsformen ("Wurde das Ticket angelegt und das Team informiert?"). Die Person bekommt dann den Hinweis, sich an das K1-Team zu wenden.
 
-**Feature-Liste:** Ab v06 werden Ticket- und Versandzusagen aus der strukturierten Rückgabe der Werkzeuge geprüft statt per Wortliste: Eine Aussage über ein Ticket oder einen Versand ist dann nur frei, wenn die Rückgabe des Werkzeugs sie belegt.
+**Feature-Liste (geplant, in v06 noch nicht umgesetzt):** Künftig sollen Ticket- und Versandzusagen aus der strukturierten Rückgabe der Werkzeuge statt per Wortliste geprüft werden: Eine Aussage über ein Ticket oder einen Versand wäre dann nur frei, wenn die Rückgabe des Werkzeugs sie belegt.
 
 **Gültige Läufe dieses Stands**
 
