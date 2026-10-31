@@ -6,8 +6,8 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.3,
       "position": [
-        0,
-        450
+        16,
+        464
       ],
       "parameters": {
         "inputSource": "workflowInputs",
@@ -46,8 +46,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        320,
-        450
+        336,
+        464
       ],
       "parameters": {
         "mode": "runOnceForAllItems",
@@ -59,8 +59,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        640,
-        450
+        608,
+        464
       ],
       "parameters": {
         "conditions": {
@@ -89,8 +89,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        960,
-        450
+        944,
+        464
       ],
       "parameters": {
         "method": "POST",
@@ -118,7 +118,7 @@
       "typeVersion": 2,
       "position": [
         1280,
-        450
+        464
       ],
       "parameters": {
         "mode": "runOnceForAllItems",
@@ -131,7 +131,7 @@
       "typeVersion": 3.2,
       "position": [
         1600,
-        450
+        464
       ],
       "parameters": {
         "rules": {
@@ -196,7 +196,7 @@
       "typeVersion": 3.5,
       "position": [
         1920,
-        450
+        464
       ],
       "parameters": {
         "mode": "manual",
@@ -249,7 +249,7 @@
       "typeVersion": 3.5,
       "position": [
         2240,
-        450
+        464
       ],
       "parameters": {
         "mode": "manual",
@@ -278,7 +278,7 @@
       "typeVersion": 1.1,
       "position": [
         1920,
-        650
+        848
       ],
       "parameters": {
         "resume": "timeInterval",
@@ -292,7 +292,7 @@
       "typeVersion": 4.4,
       "position": [
         2240,
-        650
+        832
       ],
       "parameters": {
         "method": "POST",
@@ -320,7 +320,7 @@
       "typeVersion": 3.5,
       "position": [
         1920,
-        850
+        1168
       ],
       "parameters": {
         "mode": "manual",
@@ -384,8 +384,8 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        640,
-        880
+        672,
+        896
       ],
       "parameters": {
         "errorType": "errorMessage",
@@ -397,13 +397,13 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -40,
-        -260
+        -48,
+        -256
       ],
       "parameters": {
         "content": "# SUB Jev-Weiche mit Retry\nFragt das Entscheidungsmodell Jev, ob eine Nachricht zum Dienst gehört. Bei 429 oder 529 gibt es einen zweiten Versuch. Bei gültiger Eingabe liefert der Sub immer ein Ergebnis (ok oder fallback), bei fehlender Frage oder Anweisung stoppt er mit einem Fehler.",
         "color": 5,
-        "width": 3300,
+        "width": 1764,
         "height": 110
       }
     },
@@ -412,13 +412,13 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -40,
-        -110
+        -48,
+        -112
       ],
       "parameters": {
         "content": "",
-        "width": 1440,
-        "height": 270
+        "width": 1760,
+        "height": 286
       }
     },
     {
@@ -426,14 +426,14 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -20,
-        -90
+        -32,
+        -96
       ],
       "parameters": {
-        "content": "# 📋 Workflow-Beschreibung\n🎯 **Zweck:** Jev bewertet, ob eine Nachricht zu K1 gehört (Wert 0 bis 1), bei Überlastung folgt ein zweiter Versuch, fällt Jev aus, kommt ein Ausfallwert zurück.\n👥 **Für wen:** Workflows mit Weiche vor einem Agenten (heute der Support-Agent).\n🕹️ **So nutzt du ihn:** Execute-Sub-workflow-Knoten, Felder question, instruction, state_prefix füllen, status auswerten.\n## Status: 🟢 gebaut und getestet, nicht veröffentlicht\n🧾 **Version:** v01 vom 30.10.2026 (siehe ChangeLog)",
+        "content": "# 📋 Workflow-Beschreibung\n🎯 **Zweck:** Jev bewertet, ob eine Nachricht zu K1 gehört (Wert 0 bis 1), bei Überlastung folgt ein zweiter Versuch, fällt Jev aus, kommt ein Ausfallwert zurück.\n👥 **Für wen:** Workflows mit Weiche vor einem Agenten (heute der Support-Agent).\n🕹️ **So nutzt du ihn:** Execute-Sub-workflow-Knoten, Felder question, instruction, state_prefix füllen, status auswerten.\n## Status: 🟢 gebaut und getestet, nicht veröffentlicht\n🧾 **Version:** v01 vom 30.10.2026, mit Support-Agent v06 eingeführt (siehe ChangeLog)",
         "color": 7,
-        "width": 640,
-        "height": 230
+        "width": 768,
+        "height": 246
       }
     },
     {
@@ -441,14 +441,14 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        640,
-        -90
+        752,
+        -96
       ],
       "parameters": {
         "content": "# 🧪 Jev-Weiche\n**Aufgabe:** Jev fragen, Antwort einordnen, einmal wiederholen.\n**Die Idee:** Anweisung und Zustand kommen vom Aufrufer, der Sub kennt nur den Ablauf.\n**Warum so?** Zugang mit Guthaben und Retry an einer Stelle.\n**Hinweis:** Wiederholt wird nur bei 429 und 529, höchstens 1 Mal.",
         "color": 7,
-        "width": 360,
-        "height": 230
+        "width": 376,
+        "height": 246
       }
     },
     {
@@ -456,14 +456,14 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1010,
-        -90
+        1152,
+        -96
       ],
       "parameters": {
         "content": "## Ablauf\n① Aufruf empfangen\n② Eingabe prüfen\n③ Jev fragen\n④ Antwort einordnen\n⑤ Werte übernehmen\n⑥ Wiederholen\n⑦ Ausfall vermerken",
         "color": 7,
         "width": 190,
-        "height": 230
+        "height": 246
       }
     },
     {
@@ -471,14 +471,14 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1210,
-        -90
+        1360,
+        -96
       ],
       "parameters": {
         "content": "## Status\n🟢 fertig: Weiche, Retry, Ausfallwert\n🟡 Hinweis: Frage Anliegen ist K1-bezogen\n🔴 Pflicht: Aufrufer wertet status aus\n🔵 Info: Weiche nach Wert bleibt im Aufrufer",
         "color": 7,
-        "width": 180,
-        "height": 230
+        "width": 340,
+        "height": 246
       }
     },
     {
@@ -486,13 +486,13 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -20,
-        190
+        -48,
+        208
       ],
       "parameters": {
         "content": "## ① Aufruf empfangen\nEingaben: question, instruction, state_prefix, model, retry_wait_ms, fault_test.\n\n🟡 Felder sind am Aufrufer nicht Pflicht.\n\n🩺 **Wenn es hakt:** Feldnamen abgleichen.",
         "color": 1,
-        "width": 290,
+        "width": 274,
         "height": 220
       }
     },
@@ -501,8 +501,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        300,
-        190
+        256,
+        208
       ],
       "parameters": {
         "content": "## ② Eingabe prüfen\nQuestion und instruction sind Pflicht. Der Sub baut die Anfrage an Jev.\n\n🔴 Fehlt eines, stoppt der Sub mit einer Meldung.\n\n🩺 **Wenn es hakt:** Meldung im Aufrufer lesen.",
@@ -516,8 +516,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        940,
-        190
+        864,
+        208
       ],
       "parameters": {
         "content": "## ③ Jev fragen\nPOST an die OpenRouter Decisions API, Zugang <Zugang OpenRouter Jev>.\n\n🟡 Jev ist kein Gratismodell, die Nutzung kostet Guthaben.\n\n🩺 **Wenn es hakt:** Guthaben und Modellname prüfen.",
@@ -531,8 +531,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1260,
-        190
+        1200,
+        208
       ],
       "parameters": {
         "content": "## ④ Antwort einordnen\nok bei Status 200, Wiederholung nur bei 429 und 529 im 1. Versuch, sonst Ausfall.\n\n🟢 Ausfall ist ein normales Ergebnis.\n\n🩺 **Wenn es hakt:** jev_attempts und error_text lesen.",
@@ -546,8 +546,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1900,
-        190
+        1840,
+        208
       ],
       "parameters": {
         "content": "## ⑤ Werte übernehmen\nGültiger Wert von 0 bis 1, sonst -1. Dazu Anliegen, Kosten, Modell, Versuche.\n\n🟡 Ohne gültigen Wert ist status fallback.\n\n🩺 **Wenn es hakt:** Antwort von Jev in ④ ansehen.",
@@ -561,14 +561,14 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1900,
-        530
+        1856,
+        624
       ],
       "parameters": {
         "content": "## ⑥ Wiederholen\nKurz warten, dann derselbe Aufruf noch einmal. Danach wieder ④.\n\n🔴 Höchstens 1 Wiederholung, sonst Kostenschleife.\n\n🩺 **Wenn es hakt:** retry_wait_ms prüfen.",
         "color": 1,
         "width": 290,
-        "height": 100
+        "height": 196
       }
     },
     {
@@ -576,14 +576,14 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1900,
-        740
+        1888,
+        1024
       ],
       "parameters": {
         "content": "## ⑦ Ausfall vermerken\nstatus fallback, jev_noul -1, Grund in error_text. Der Aufrufer leitet ohne Weiche zum Agenten.",
         "color": 1,
         "width": 290,
-        "height": 100
+        "height": 116
       }
     },
     {
@@ -591,8 +591,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        600,
-        660
+        608,
+        672
       ],
       "parameters": {
         "content": "",
@@ -606,8 +606,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        620,
-        680
+        624,
+        688
       ],
       "parameters": {
         "content": "## ② Eingabe ungültig\nFehlt question oder instruction, stoppt der Sub mit Stop and Error. Der Aufrufer nimmt seinen Fehlerausgang.\n\n🔴 Der Aufrufer braucht einen Fehlerausgang (On Error: continueErrorOutput).",
@@ -621,14 +621,14 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2640,
-        -110
+        2512,
+        144
       ],
       "parameters": {
         "content": "",
         "color": 5,
-        "width": 560,
-        "height": 1200
+        "width": 528,
+        "height": 1040
       }
     },
     {
@@ -636,13 +636,13 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2660,
-        -90
+        2528,
+        160
       ],
       "parameters": {
         "content": "# ✅ Setup-Checkliste\n✅ Zugang <Zugang OpenRouter Jev> in beiden Jev-Knoten\n✅ Guthaben auf dem Schlüssel prüfen\n✅ Modell fest setzen (typesafe/jev-1.14), nie jev-latest\n✅ Aufrufrecht: nur Workflows desselben Eigentümers\n⏳ Erst mit einem eigenen Test-Workflow aufrufen, dann im Support-Agenten mit echten Daten",
         "color": 7,
-        "width": 520,
+        "width": 488,
         "height": 300
       }
     },
@@ -651,13 +651,13 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2660,
-        230
+        2528,
+        480
       ],
       "parameters": {
         "content": "# 🌐 Plattform-Hinweise\n**n8n (eigene Instanz):** Erlaubt: Aufruf nur durch Workflows desselben Eigentümers. 🟡 Besonderheit: der Sub ist nicht veröffentlicht.\n**OpenRouter Decisions API:** Erlaubt: Schlüssel mit Guthaben. 🟡 Besonderheit: Alpha-Schnittstelle, Kontext 32.000 Token, kein Gratis-Ersatz.",
         "color": 7,
-        "width": 520,
+        "width": 488,
         "height": 330
       }
     },
@@ -666,13 +666,13 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2660,
-        580
+        2528,
+        832
       ],
       "parameters": {
         "content": "# 🩺 Fehlerbehebung\n👉 status fallback: error_text lesen (HTTP 402 heißt kein Guthaben).\n👉 jev_attempts 2: der erste Versuch war überlastet.\n👉 Sub stoppt: question oder instruction fehlt im Aufrufer.\n👉 Nichts passiert: Ausführung über View sub-execution öffnen.",
         "color": 7,
-        "width": 520,
+        "width": 488,
         "height": 330
       }
     }

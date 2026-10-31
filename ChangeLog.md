@@ -12,7 +12,8 @@ Je Version des Workflows, was der Agent kann und was gemessen wurde. Neueste Ein
 - `Jev-Werte übernehmen` liest jetzt die Rückgabe des Subs. Der Name bleibt, weil der Prüfknoten die Route daran erkennt.
 - `Konfiguration`: `workflow_version` ist `v06`. Titelleiste und Versionskarte nennen v06.
 - Unverändert gegenüber v05.1: Prüfknoten `Werkzeugwahl messen` (Code zeichengleich, SHA256 `84162f71417ec67ef6717d9298727e2518e355335c0352cdcb778d02b344513f`), `Protokollzeile bauen`, Systemprompts, Jev-Anweisung, alle 6 Werkzeuge, SQL, Gedächtnis und Ausweichmodell. 59 Knoten (35 ausführbar, 24 Notizen).
-- Die Exporte der beiden Subs liegen unter `workflows/subs/` (`sub-protokollzeile.json`, `sub-jev-weiche.json`), ohne Versionsnummer im Dateinamen und mit Platzhaltern statt Zugängen.
+- Die Exporte der beiden Subs liegen unter `workflows/subs/` (`sub-protokollzeile.json`, `sub-jev-weiche.json`), ohne Versionsnummer im Dateinamen und mit Platzhaltern statt Zugängen. Beide Subs starten mit v01 (30.10.2026); die Versionsnummer in ihren Notizen zählt die Subs selbst, nicht den Support-Agenten.
+- Anordnung: Die Exporte von Support-Agent und beiden Subs tragen die Anordnung der Knoten und die Größe der Notizen, wie sie im Workflow am 31.10.2026 von Hand eingerichtet ist. Inhalt, Verbindungen und Prüfknoten sind davon nicht berührt.
 - Testschalter: `stoer=logfehler` lenkt den Protokollaufruf in der Test-Ausführung auf eine nicht erlaubte Tabelle.
 
 **Messwerte:** Knotentest des Prüfknotens 289 Fälle, 0 Abweichungen (derselbe Code wie v05.1). Läufe am 30.10.2026, nacheinander, ohne Mail und ohne Stop and Error: Q03 mit Jev-Wert 0,99 und einer inhaltlich gleichen Antwort wie im v05-Lauf RG-Q03 (Wortlaut kürzer; Weg agent, Werkzeug K1_Antwortkatalog), Folgefrage in derselben Sitzung (Weg folgefrage, Jev-Wert 0,98), Jev-Ausfall (Weg ohne_jev, Status fallback), erzwungener Protokollfehler (Antwort kam an, keine Zeile).
@@ -22,7 +23,7 @@ Je Version des Workflows, was der Agent kann und was gemessen wurde. Neueste Ein
 - Lauf 1770, Folgefrage `Und wie lange dauert das danach?` in derselben Sitzung: Weg folgefrage, Jev-Wert 0,98, Protokollzeile 560, Unterläufe 1771 und 1772.
 - Lauf 1773, Jev-Ausfall mit `stoer=jevaus`: Jev-Aufruf liefert fallback, die Weiche nimmt den Zweig "Kein Jev-Wert", Weg ohne_jev, Antwort vom Agenten mit Werkzeug K1_Antwortkatalog, Protokollzeile 561 (Status fallback, Jev-Werte leer), Unterläufe 1774 und 1775.
 - Lauf 1776, erzwungener Protokollfehler mit `stoer=logfehler`: der Sub lehnt die Tabelle ab ("Tabelle nicht erlaubt"), `Protokollfehler vermerken` läuft, die Antwort an die Person kommt, es entsteht keine Zeile. Unterläufe 1777 und 1779.
-- Die Subs wurden vorher einzeln getestet: Protokollzeile Läufe 1735 (Unterläufe 1736 bis 1743, 7 erwartete PASS und 1 beabsichtigter FAIL), Jev-Weiche Lauf 1747 (Unterläufe 1748 bis 1755, 6 erwartete PASS und 1 beabsichtigter FAIL).
+- Die Subs wurden vorher einzeln getestet: Protokollzeile Läufe 1735 (Unterläufe 1736 bis 1743, 7 erwartete PASS und 1 beabsichtigter FAIL), Jev-Weiche Lauf 1747 (Unterläufe 1748 bis 1753 und 1755, 6 erwartete PASS und 1 beabsichtigter FAIL; die Nummer 1754 ist kein Unterlauf, sondern der Lauf des Fehler-Workflows, den der Stop and Error im Fall mit leerer Frage auslöste).
 
 **Bekannte Grenzen:**
 - Prüfknoten: Ein Leerzeichen vor dem schließenden Apostroph in einem Zitat kann das Ticket-Nomen vom Partizip trennen, sodass eine Zusage nicht erkannt wird. Der Fall ist konstruiert und kam in 190 echten Antworten nicht vor.
