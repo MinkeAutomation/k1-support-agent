@@ -11,6 +11,7 @@ n8n-Agent für Fragen zur Content-Maschine K1: ein Orchestrator verteilt jede An
 - [Wochen-Doku](https://minkeautomation.github.io/k1-support-agent/) mit allen Tagen
 - [Tages-Doku Woche 7 Tag 1 (v07)](https://minkeautomation.github.io/k1-support-agent/w07t01.html)
 - [ChangeLog](ChangeLog.md)
+- [Versionsmatrix](docs/versionsmatrix.md): je Version Plan, Testtabelle, Tages-Doku und Export, Lücken ausdrücklich als „gab es nicht“
 - [Einrichten und Nachbauen](workflows/README.md)
 - [Ausführliche Fassung des README, Archiv, Stand v05 (nicht auf v07 nachgezogen)](docs/readme-ausfuehrlich.md); für v07 gelten dieses README, [Einrichten und Nachbauen](workflows/README.md) und die [Tages-Doku](https://minkeautomation.github.io/k1-support-agent/w07t01.html)
 
@@ -21,8 +22,8 @@ Je Version Plan, Tests, Workflow-Export und Tages-Doku. Ein Strich heißt: für 
 | Version | Datum | Plan | Tests | Workflow | Tages-Doku | Git-Tag |
 |---|---|---|---|---|---|---|
 | v07 | 02.11.2026 | [Plan v07](docs/plan/plan-w07t01-v07.png) | [Testtabelle v07](docs/testtabelle-w07t01-v07.md) (10 Testfälle), [Knotentest](docs/knotentest-pruefknoten.md) | [Export](workflows/k1-support-agent_2026-11-02_v07.json), [Auskunft](workflows/subs/sub-auskunfts-agent-k1.json), [Aktion](workflows/subs/sub-aktions-agent-k1.json) | [Woche 7 Tag 1](https://minkeautomation.github.io/k1-support-agent/w07t01.html) | `v07` |
-| v06 | 30.10.2026 | - | [Knotentest](docs/knotentest-pruefknoten.md), Läufe im [ChangeLog](ChangeLog.md) | [Export](workflows/k1-support-agent_2026-10-30_v06.json), [Subs](workflows/subs/) | [ChangeLog](ChangeLog.md) | `v06` |
-| v05.1 | 30.10.2026 | - | [Knotentest](docs/knotentest-pruefknoten.md) | [Export](workflows/k1-support-agent_2026-10-30_v05.1.json) | [ChangeLog](ChangeLog.md) | `v05.1` |
+| v06 | 30.10.2026 | gab es nicht, siehe [Versionsmatrix](docs/versionsmatrix.md) | [Testtabelle v06](docs/testtabelle-w06t05-v06.md) (4 Testfälle), [Knotentest](docs/knotentest-pruefknoten.md) | [Export](workflows/k1-support-agent_2026-10-30_v06.json), [Subs](workflows/subs/) | [Woche 6 Tag 5](https://minkeautomation.github.io/k1-support-agent/w06t05.html) | `v06` |
+| v05.1 | 30.10.2026 | gab es nicht, siehe [Versionsmatrix](docs/versionsmatrix.md) | keine eigene Testtabelle, [Knotentest](docs/knotentest-pruefknoten.md) | [Export](workflows/k1-support-agent_2026-10-30_v05.1.json) | [Woche 6 Tag 5](https://minkeautomation.github.io/k1-support-agent/w06t05.html) | `v05.1` |
 | v05 | 29.10.2026 | [Plan v05](docs/plan/plan-w06t04-v05.png) | [Testtabelle v05](docs/testtabelle-w06t04-v05.md) | [Export](workflows/k1-support-agent_2026-10-29_v05.json) | [Tag 4](https://minkeautomation.github.io/k1-support-agent/w06t04.html) | `v05` |
 | v04 | 28.10.2026 | [Plan v04](docs/plan/plan-w06t03-v04.png) | [Testtabelle v04](docs/testtabelle-w06t03-v04.md), [Testfragen](docs/testfragen-w06t03.md) | [Export](workflows/k1-support-agent_2026-10-28_v04.json) | [Tag 3](https://minkeautomation.github.io/k1-support-agent/w06t03.html) | `v04` |
 | v03 | 27.10.2026 | [Plan v03](docs/plan/plan-w06t02-v03.png) | in der Tages-Doku | - | [Tag 2](https://minkeautomation.github.io/k1-support-agent/w06t02.html) | - |
@@ -39,6 +40,7 @@ Zwei Arten, bewusst getrennt benannt:
 |---|---|---|---|
 | [docs/testtabelle-w07t01-v07.md](docs/testtabelle-w07t01-v07.md) | v07 | Testfälle Orchestrator mit Spezialisten, Chat-Antwort ungekürzt, Startzeiten der Unterläufe | Testreihe 10 Testfälle, 10 bestanden; Kontrolle 14 Läufe, 12 bestanden |
 | [docs/knotentest-pruefknoten.md](docs/knotentest-pruefknoten.md) | v05.1, v06, v07 | Knotentest Prüfknoten, je Eingabesatz Kennung, Eingabe, Erwartung, Ergebnis | 289 Prüffälle (198 ersetzt, 91 bleiben stehen), 0 Abweichungen |
+| [docs/testtabelle-w06t05-v06.md](docs/testtabelle-w06t05-v06.md) | v06 | Testfälle Jev-Weiche und Protokollzeile als Subs, Chat-Antwort dort nicht im Wortlaut festgehalten, Einzeltests der Subs | 4 Testfälle, 4 bestanden |
 | [docs/testtabelle-w06t04-v05.md](docs/testtabelle-w06t04-v05.md) | v05 | Vergleich von 3 Prompt-Fassungen und Nachmessung, Antworten dort auf 230 Zeichen gekürzt | siehe Datei |
 | [docs/testtabelle-w06t03-v04.md](docs/testtabelle-w06t03-v04.md) | v04 | Werkzeugwahl mit 6 Werkzeugen | siehe Datei |
 | [docs/testfragen-w06t03.md](docs/testfragen-w06t03.md) | v04 | die Testfragen von Tag 3 mit Erwartung | siehe Datei |

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="#FAFAF8" media="(prefers-color-scheme: light)" name="theme-color"/>
+<meta content="#121416" media="(prefers-color-scheme: dark)" name="theme-color"/>
+<title>W06T05 Prüfknoten und Sub-Workflows</title>
+<meta content="Tages-Doku W06T05: der Prüfknoten des K1 Support-Agenten wird geschärft (v05.1), die Jev-Weiche und die Protokollzeile werden zu Sub-Workflows (v06)." name="description"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&amp;display=swap" rel="stylesheet"/>
+<link href="assets/doku.css" rel="stylesheet"/>
+</head>
+<body>
+<a class="sprung" href="#inhalt">Zum Inhalt springen</a>
+<div class="huelle">
+<header class="leiste">
+<span>K1 Support-Agent · Woche 6</span>
+<nav aria-label="Seiten">
+<a href="index.html">Wochen-Doku</a>
+<a href="w06t01.html">W6 Tag 1</a>
+<a href="w06t02.html">W6 Tag 2</a>
+<a href="w06t03.html">W6 Tag 3</a>
+<a href="w06t04.html">W6 Tag 4</a>
+<a aria-current="page" href="w06t05.html">W6 Tag 5</a>
+<a href="w07t01.html">W7 Tag 1</a>
+<a href="https://github.com/MinkeAutomation/k1-support-agent">Repository</a>
+</nav>
+</header>
+<div class="titelkopf">
+<div>
+<p class="oberzeile"><span aria-hidden="true" class="marke"></span>Tages-Doku W06T05 · Fr 30.10.2026 · Workflow v05.1 und v06</p>
+<h1>Prüfknoten <span class="leise">und</span> Sub-Workflows</h1>
+<p class="untertitel">Der Prüfknoten des Support-Agenten erkennt unbestätigte Zusagen jetzt auf dem ganzen Text (v05.1), und die Jev-Weiche und die Protokollzeile laufen als eigene Sub-Workflows (v06).</p>
+</div>
+</div>
+<dl aria-label="Kennzahlen v06" class="messleiste">
+<div><dt>Testfälle v06</dt><dd>4 von 4<small>am ganzen Agenten</small></dd></div><div><dt>Knotentest</dt><dd>289 / 0<small>Prüffälle / Abweichungen</small></dd></div><div><dt>Sub-Workflows</dt><dd>2<small>Jev-Weiche, Protokollzeile</small></dd></div><div><dt>Plan</dt><dd>keiner<small>für v05.1 und v06 gezeichnet</small></dd></div>
+</dl>
+<div class="knoepfe">
+<a class="knopf zweit" href="w06t04.html">Tages-Doku W6 Tag 4 <span aria-hidden="true" class="pfeil">→</span></a>
+<a class="knopf" href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/testtabelle-w06t05-v06.md">Testtabelle v06 <span aria-hidden="true" class="pfeil">↗</span></a>
+<a class="knopf" href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/knotentest-pruefknoten.md">Knotentest Prüfknoten <span aria-hidden="true" class="pfeil">↗</span></a>
+<a class="knopf" href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/k1-support-agent_2026-10-30_v06.json">Workflow-Export v06 (JSON) <span aria-hidden="true" class="pfeil">↗</span></a>
+<a class="knopf zweit" href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/ChangeLog.md">ChangeLog <span aria-hidden="true" class="pfeil">↗</span></a>
+<a class="knopf zweit" href="index.html">Wochen-Doku <span aria-hidden="true" class="pfeil">→</span></a>
+</div>
+<main class="inhalt" id="inhalt">
+<div class="merksatz einminute" id="in-1-minute"><span class="ktag">In 1 Minute</span>
+<ul>
+<li><strong>Ziel:</strong> Den Prüfknoten gegen Zusagen in Klammern, Zitaten und Einschüben härten (v05.1) und die Jev-Weiche und die Protokollzeile in Sub-Workflows auslagern (v06).</li>
+<li><strong>Ergebnis:</strong> Der Prüfknoten ersetzt unbestätigte Zusagen auf dem ganzen Text. Der Agent ruft die beiden Subs nur noch auf, ein Protokollfehler hält die Antwort nicht auf.</li>
+<li><strong>Zahl:</strong> 4 von 4 Testfällen am ganzen Agenten bestanden; Knotentest des Prüfknotens 289 Prüffälle, 0 Abweichungen (<a href="knotentest-pruefknoten.md">Einzelliste</a>).</li>
+<li><strong>Lücke:</strong> Für v05.1 und v06 wurde kein Plan gezeichnet, die Chat-Antworten der v06-Läufe sind nicht im Wortlaut festgehalten.</li>
+<li><strong>Link:</strong> <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/testtabelle-w06t05-v06.md">Testtabelle v06</a>.</li>
+</ul></div>
+
+<section aria-labelledby="k1-t" class="kapitel" id="k1">
+<div class="kkopf"><div aria-hidden="true" class="knum">01</div><div>
+<p class="kklein">Kapitel 1</p><h2 id="k1-t">Ziele des Tages</h2>
+<p class="klede">Zwei Aufträge an einem Tag: den Prüfknoten schärfen und die Jev-Weiche und die Protokollzeile in Sub-Workflows auslagern.</p>
+</div></div>
+<ul>
+<li>v05.1: den Prüfknoten <code>Werkzeugwahl messen</code> so schärfen, dass er unbestätigte Zusagen („Ticket ist angelegt“, „Team wurde informiert“) auch in Klammern, Zitaten und Einschüben erkennt und ersetzt.</li>
+<li>v06: die Jev-Weiche mit einer Wiederholung bei 429 und 529 und das Schreiben der Protokollzeile je als eigenen Sub-Workflow bauen; der Support-Agent ruft sie nur noch auf.</li>
+<li>Jede Änderung mit Lauf belegen und die Doku auf den Stand bringen.</li>
+</ul>
+<p>Ich baue auf v05 (Tag 4) auf. Systemprompt, Werkzeuge, Gedächtnis und Ausweichmodell bleiben.</p>
+</section>
+
+<section aria-labelledby="k2-t" class="kapitel" id="k2">
+<div class="kkopf"><div aria-hidden="true" class="knum">02</div><div>
+<p class="kklein">Kapitel 2</p><h2 id="k2-t">Plan: für v05.1 und v06 gab es keinen</h2>
+<p class="klede">Ehrlich festgehalten, was es nicht gibt.</p>
+</div></div>
+<p>Für v05.1 und v06 wurde kein Plan auf dem Endstand gezeichnet. v05.1 ändert nur den Prüfknoten, v06 ersetzt im Aufbau von Plan v05 die Jev-Weiche und das Schreiben der Protokollzeile durch je einen Aufruf eines Sub-Workflows. Als Übersicht dienen die beiden Gesamtansichten aus n8n, der Plan von Tag 4 ist der letzte gezeichnete Plan vor v07.</p>
+<figure><img alt="Gesamtansicht Workflow v05.1 mit 61 Knoten in 4 Phasen, Chat-Fenster unten offen" src="bilder/w06t05-n8n-workflow-gesamt-v05-1.png"/><figcaption>Gesamtansicht v05.1 im n8n-Editor: 61 Knoten, 4 Phasen, Chat-Fenster unten offen.</figcaption></figure>
+<figure><img alt="Gesamtansicht Workflow v06 mit 59 Knoten, Aufruf der Jev-Weiche und der Protokollzeile" src="bilder/w06t05-n8n-workflow-gesamt-v06.png"/><figcaption>Gesamtansicht v06 im n8n-Editor: 59 Knoten, aufgenommen vor der letzten Positionsänderung von <code>Protokollfehler vermerken</code>.</figcaption></figure>
+<p>Der Plan von Tag 4: <a href="plan/plan-w06t04-v05.png">Plan v05</a>. Die Zeile „gab es nicht“ steht auch in der <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/versionsmatrix.md">Versionsmatrix</a>.</p>
+</section>
+
+<section aria-labelledby="k3-t" class="kapitel" id="k3">
+<div class="kkopf"><div aria-hidden="true" class="knum">03</div><div>
+<p class="kklein">Kapitel 3</p><h2 id="k3-t">v05.1: der Prüfknoten wird geschärft</h2>
+<p class="klede">Der Prüfknoten ersetzt Zusagen, die kein Werkzeug belegt. An Tag 5 kamen die Schritte 7 bis 7h dazu.</p>
+</div></div>
+<p>Der Prüfknoten <code>Werkzeugwahl messen [Code]</code> liest die Antwort des Agenten und die Werkzeugschritte des Laufs. Behauptet die Antwort eine Handlung („Ticket angelegt“, „Team informiert“), die kein Werkzeug in diesem Lauf bestätigt hat, ersetzt er die Antwort durch einen Hinweis, setzt <code>action</code> auf leer und den Status auf <code>tool_error</code>. Die Prüfung arbeitet mit einer Liste fester Formulierungen und erkennt keine Bedeutung.</p>
+<p>Zwei Randfälle vor den Schritten: Eine Ticketaktion entsteht nur aus der strukturierten Rückgabe der Vormerkung mit Status <code>erfasst</code> und gültigem Feld <code>vorgang</code> (kein Treffer aus einem Fehlertext); und die Satzteile einer Antwort werden auch an „und“ und „sowie“ getrennt, damit ein „kann“ im ersten Satzteil keine Zusage im zweiten verdeckt.</p>
+<p>Jeder Schritt unten hat dazu Prüffälle bekommen. Alle Prüffälle stehen in der Einzelliste <a href="knotentest-pruefknoten.md">Knotentest Prüfknoten</a>: 289 Prüffälle, davon 198, die ersetzt werden sollen, und 91, die stehen bleiben sollen; Ergebnis 289 PASS, 0 Abweichungen. Dazu kamen Läufe am ganzen Agenten, jeweils ohne Testmail.</p>
+<figure><img alt="Ausführung 1712: Eilfall mit Testmail, Eilmeldung ans Team bestätigt" src="bilder/w06t05-n8n-lauf-1712-eilmeldung-v05-1.png"/><figcaption>Ausführung 1712 (Eilfall mit einer Testmail): Das Werkzeug <code>Eilmeldung_ans_Team</code> bestätigt die Meldung, die Antwort „Das K1-Team wurde informiert.“ bleibt deshalb stehen.</figcaption></figure>
+<p>Läufe mit der Endfassung des Prüfknotens: 1724 bis 1726 (Fall A03 mit Rückfrage und echter Vormerkung, Fall Q03).</p>
+<h3>Schritt 7: Modalverb-Ausnahme gestrichen</h3>
+<p>Ein Modalverb („kann“, „soll“) hebt nur den Satzteil auf, in dem es steht, nie den nächsten. Jeder Satzteil mit einer Zusage wird geprüft, im Zweifel ersetzt.</p>
+<figure><img alt="Knoten Werkzeugwahl messen, Schritt 7: Modalverb-Ausnahme gestrichen" src="bilder/w06t05-n8n-pruefknoten-schritt7-modalverb-gestrichen-v05-1.png"/><figcaption>Der Knoten <code>Werkzeugwahl messen [Code]</code> geöffnet, rot umrandet die Stelle des Schritts 7.</figcaption></figure>
+<h3>Schritt 7a: Klammern als Satzteilgrenze</h3>
+<p>Klammern und Anführungszeichen trennen Satzteile. „Ich kann dir helfen (dein Ticket ist angelegt)“ wird ersetzt.</p>
+<figure><img alt="Knoten Werkzeugwahl messen, Schritt 7a: Klammern als Satzteilgrenze" src="bilder/w06t05-n8n-pruefknoten-schritt7a-klammern-v05-1.png"/><figcaption>Der Knoten <code>Werkzeugwahl messen [Code]</code> geöffnet, rot umrandet die Stelle des Schritts 7a.</figcaption></figure>
+<figure><img alt="Ausführung 1728: Antwort ersetzt" src="bilder/w06t05-n8n-pruefknoten-schritt7a-lauf-1728-klammer-ersetzt-v05-1.png"/><figcaption>Ausführung 1728: links rot umrandet die Eingabe, rechts der Ausgang des Prüfknotens mit ersetzter Antwort, Status <code>tool_error</code>, <code>action</code> leer.</figcaption></figure>
+<h3>Schritt 7b: Klammerinhalt und Zitate als eigener Satz</h3>
+<p>Der Inhalt jeder Klammer und jedes Zitats wird zusätzlich als eigener Satz geprüft, ohne den äußeren Kontext.</p>
+<figure><img alt="Knoten Werkzeugwahl messen, Schritt 7b: Klammerinhalt und Zitate als eigener Satz" src="bilder/w06t05-n8n-pruefknoten-schritt7b-klammerinhalt-v05-1.png"/><figcaption>Der Knoten <code>Werkzeugwahl messen [Code]</code> geöffnet, rot umrandet die Stelle des Schritts 7b.</figcaption></figure>
+<figure><img alt="Ausführung 1731: Antwort ersetzt" src="bilder/w06t05-n8n-pruefknoten-schritt7b-lauf-1731-zitat-ersetzt-v05-1.png"/><figcaption>Ausführung 1731: links rot umrandet die Eingabe, rechts der Ausgang des Prüfknotens mit ersetzter Antwort, Status <code>tool_error</code>, <code>action</code> leer.</figcaption></figure>
+<h3>Schritt 7b: Klammer nach „wenn“</h3>
+<p>Dieselbe Regel, geprüft mit einer Klammer hinter „wenn“: „Wenn du weitere Fragen hast (dein Ticket ist angelegt), helfe ich dir.“ wird ersetzt.</p>
+<figure><img alt="Ausführung 1733: Antwort ersetzt" src="bilder/w06t05-n8n-pruefknoten-schritt7b-lauf-1733-klammer-nach-wenn-ersetzt-v05-1.png"/><figcaption>Ausführung 1733: links rot umrandet die Eingabe, rechts der Ausgang des Prüfknotens mit ersetzter Antwort, Status <code>tool_error</code>, <code>action</code> leer.</figcaption></figure>
+<h3>Schritt 7c: Grundregel Vollzug auf dem ganzen Text</h3>
+<p>Jede Zusage in Vergangenheit oder Vollzug wird auf dem ganzen Text ersetzt, ohne Zerlegung in Sätze oder Klammern. Frei bleiben nur eine dicht stehende Verneinung, eine Frage und offene Angebote.</p>
+<figure><img alt="Knoten Werkzeugwahl messen, Schritt 7c: Grundregel Vollzug auf dem ganzen Text" src="bilder/w06t05-n8n-pruefknoten-schritt7c-grundregel-vollzug-v05-1.png"/><figcaption>Der Knoten <code>Werkzeugwahl messen [Code]</code> geöffnet, rot umrandet die Stelle des Schritts 7c.</figcaption></figure>
+<figure><img alt="Ausführung 1744: Antwort ersetzt" src="bilder/w06t05-n8n-pruefknoten-schritt7c-lauf-1744-vollzug-ersetzt-v05-1.png"/><figcaption>Ausführung 1744: links rot umrandet die Eingabe, rechts der Ausgang des Prüfknotens mit ersetzter Antwort, Status <code>tool_error</code>, <code>action</code> leer.</figcaption></figure>
+<h3>Schritt 7d: Grundregel ohne Abstandsfenster</h3>
+<p>Das Partizip der Wortliste allein genügt, es gibt keine Abstandsfenster mehr. Auch ein langer Einschub („das gestern sehr genau beschriebene Problem“) schützt eine Zusage nicht.</p>
+<figure><img alt="Knoten Werkzeugwahl messen, Schritt 7d: Grundregel ohne Abstandsfenster" src="bilder/w06t05-n8n-pruefknoten-schritt7d-grundregel-ohne-abstandsfenster-v05-1.png"/><figcaption>Der Knoten <code>Werkzeugwahl messen [Code]</code> geöffnet, rot umrandet die Stelle des Schritts 7d.</figcaption></figure>
+<figure><img alt="Ausführung 1756: Antwort ersetzt" src="bilder/w06t05-n8n-pruefknoten-schritt7d-lauf-1756-langer-einschub-ersetzt-v05-1.png"/><figcaption>Ausführung 1756: links rot umrandet die Eingabe, rechts der Ausgang des Prüfknotens mit ersetzter Antwort, Status <code>tool_error</code>, <code>action</code> leer.</figcaption></figure>
+<h3>Schritt 7e: Zukunft nur vor dem Partizip</h3>
+<p>Zukunft befreit nur mit „wird, werden, würde“ vor dem Partizip. Ein „wird“ hinter dem Partizip („ist angelegt und wird nun bearbeitet“) befreit nie.</p>
+<figure><img alt="Knoten Werkzeugwahl messen, Schritt 7e: Zukunft nur vor dem Partizip" src="bilder/w06t05-n8n-pruefknoten-schritt7e-zukunft-nur-vor-dem-partizip-v05-1.png"/><figcaption>Der Knoten <code>Werkzeugwahl messen [Code]</code> geöffnet, rot umrandet die Stelle des Schritts 7e.</figcaption></figure>
+<figure><img alt="Ausführung 1758: Antwort ersetzt" src="bilder/w06t05-n8n-pruefknoten-schritt7e-lauf-1758-zukunftsnachsatz-ersetzt-v05-1.png"/><figcaption>Ausführung 1758: links rot umrandet die Eingabe, rechts der Ausgang des Prüfknotens mit ersetzter Antwort, Status <code>tool_error</code>, <code>action</code> leer.</figcaption></figure>
+<h3>Schritt 7f: Ticket-Nomen vor Doppelpunkt</h3>
+<p>Die Ausnahme für „dass“ und Doppelpunkt gilt nur, wenn im selben Satzteil vor dem Partizip kein Ticket-Nomen steht.</p>
+<figure><img alt="Knoten Werkzeugwahl messen, Schritt 7f: Ticket-Nomen vor Doppelpunkt" src="bilder/w06t05-n8n-pruefknoten-schritt7f-ticket-nomen-vor-doppelpunkt-v05-1.png"/><figcaption>Der Knoten <code>Werkzeugwahl messen [Code]</code> geöffnet, rot umrandet die Stelle des Schritts 7f.</figcaption></figure>
+<figure><img alt="Ausführung 1760: Antwort ersetzt" src="bilder/w06t05-n8n-pruefknoten-schritt7f-lauf-1760-doppelpunkt-ersetzt-v05-1.png"/><figcaption>Ausführung 1760: links rot umrandet die Eingabe, rechts der Ausgang des Prüfknotens mit ersetzter Antwort, Status <code>tool_error</code>, <code>action</code> leer.</figcaption></figure>
+<h3>Schritt 7g: Schwache Partizipien nach Satz</h3>
+<p>Das Ticket-Nomen im selben Satz entscheidet, Klammern und Zitate trennen den Satz dafür nicht. Die Ausnahme für „dass“ und Doppelpunkt entfällt.</p>
+<figure><img alt="Knoten Werkzeugwahl messen, Schritt 7g: Schwache Partizipien nach Satz" src="bilder/w06t05-n8n-pruefknoten-schritt7g-schwache-partizipien-nach-satz-v05-1.png"/><figcaption>Der Knoten <code>Werkzeugwahl messen [Code]</code> geöffnet, rot umrandet die Stelle des Schritts 7g.</figcaption></figure>
+<figure><img alt="Ausführung 1762: Antwort ersetzt" src="bilder/w06t05-n8n-pruefknoten-schritt7g-lauf-1762-doppelklammer-ersetzt-v05-1.png"/><figcaption>Ausführung 1762: links rot umrandet die Eingabe, rechts der Ausgang des Prüfknotens mit ersetzter Antwort, Status <code>tool_error</code>, <code>action</code> leer.</figcaption></figure>
+<h3>Schritt 7h: Satzende mit derselben Paarerkennung</h3>
+<p>Ein Satzzeichen zählt nur als Satzende, wenn es in keinem Klammer- oder Zitatpaar liegt und der Stapel leer ist.</p>
+<figure><img alt="Knoten Werkzeugwahl messen, Schritt 7h: Satzende mit derselben Paarerkennung" src="bilder/w06t05-n8n-pruefknoten-schritt7h-satzende-mit-pairsof-v05-1.png"/><figcaption>Der Knoten <code>Werkzeugwahl messen [Code]</code> geöffnet, rot umrandet die Stelle des Schritts 7h.</figcaption></figure>
+<figure><img alt="Ausführung 1764: Antwort ersetzt" src="bilder/w06t05-n8n-pruefknoten-schritt7h-lauf-1764-einfache-zitate-ersetzt-v05-1.png"/><figcaption>Ausführung 1764: links rot umrandet die Eingabe, rechts der Ausgang des Prüfknotens mit ersetzter Antwort, Status <code>tool_error</code>, <code>action</code> leer.</figcaption></figure>
+</section>
+
+<section aria-labelledby="k4-t" class="kapitel" id="k4">
+<div class="kkopf"><div aria-hidden="true" class="knum">04</div><div>
+<p class="kklein">Kapitel 4</p><h2 id="k4-t">v06: Jev-Weiche und Protokollzeile als Sub-Workflows</h2>
+<p class="klede">Aus Knotengruppen werden zwei Workflows, der Agent ruft sie auf.</p>
+</div></div>
+<div aria-labelledby="t-v06" class="tabelle" role="region" tabindex="0">
+<table class="breit">
+<caption id="t-v06">Änderungen in v06 gegenüber v05.1</caption>
+<thead><tr><th scope="col">Änderung</th><th scope="col">was sie tut</th><th scope="col">warum</th></tr></thead>
+<tbody>
+<tr><th data-label="Änderung" scope="row"><code>Jev-Weiche aufrufen [Execute Sub-workflow]</code></th><td data-label="was sie tut">ruft den Sub <code>SUB Jev-Weiche mit Retry</code> auf, ersetzt 6 Knoten; Frage, Anweisung, Sitzungsstand und Modell gehen als Eingaben mit</td><td data-label="warum">Zugang, Guthaben und Wiederholung bei 429 und 529 liegen an einer Stelle, der Ausfallweg ist dort einzeln getestet</td></tr>
+<tr><th data-label="Änderung" scope="row"><code>Protokollzeile aufrufen [Execute Sub-workflow]</code></th><td data-label="was sie tut">ruft <code>SUB Protokollzeile schreiben</code> auf; Tabelle, Zeile und Lauf-Kennung sind Eingaben, im Sub steht eine Erlaubnisliste von 2 Tabellen</td><td data-label="warum">eine Stelle für den Schreibweg, kein Retry am Insert</td></tr>
+<tr><th data-label="Änderung" scope="row"><code>Protokoll geschrieben?</code> und <code>Protokollfehler vermerken</code></th><td data-label="was sie tut">werten die Rückgabe des Subs aus; bei einem Fehler wird der Grund vermerkt, die Antwort geht trotzdem raus</td><td data-label="warum">ein Protokollfehler hält die Antwort an die Person nie auf</td></tr>
+<tr><th data-label="Änderung" scope="row"><code>Jev-Werte übernehmen</code></th><td data-label="was sie tut">liest jetzt die Rückgabe des Subs, der Name bleibt</td><td data-label="warum">der Prüfknoten erkennt die Route an diesem Knotennamen und bleibt deshalb zeichengleich</td></tr>
+<tr><th data-label="Änderung" scope="row"><code>Jev-Ausfall vermerken</code></th><td data-label="was sie tut">zählt Versuche ohne Verweis auf den entfernten Knoten</td><td data-label="warum">der Knoten <code>K1-Bezug erneut prüfen</code> existiert nicht mehr</td></tr>
+<tr><th data-label="Änderung" scope="row"><code>Konfiguration</code></th><td data-label="was sie tut"><code>workflow_version</code> ist <code>v06</code></td><td data-label="warum">Kennzeichnung</td></tr>
+</tbody>
+</table>
+</div>
+<p>Der Prüfknoten ist unverändert: Code zeichengleich zu v05.1, SHA256 <code>84162f71417ec67ef6717d9298727e2518e355335c0352cdcb778d02b344513f</code>. Der Workflow hat 59 Knoten (35 ausführbar, 24 Notizen). Die Exporte der beiden Subs liegen unter <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/subs">workflows/subs</a>, ohne Zugänge und ohne Versionsnummer im Dateinamen.</p>
+<figure><img alt="Aufrufknoten Jev-Weiche aufrufen im Workflow v06" src="bilder/w06t05-n8n-aufruf-jev-weiche-v06.png"/><figcaption>Der Aufrufknoten <code>Jev-Weiche aufrufen</code> (Ausschnitt aus der Gesamtansicht, niedrige Auflösung; ein Foto des geöffneten Knotens fehlt).</figcaption></figure>
+<figure><img alt="Aufrufknoten Protokollzeile aufrufen im Workflow v06" src="bilder/w06t05-n8n-aufruf-protokollzeile-v06.png"/><figcaption>Der Aufrufknoten <code>Protokollzeile aufrufen</code> (Ausschnitt aus der Gesamtansicht, niedrige Auflösung).</figcaption></figure>
+<figure><img alt="Sub-Workflow SUB Jev-Weiche mit Retry in n8n" src="bilder/w06t05-n8n-sub-jev-weiche-gesamt.png"/><figcaption>Der Sub <code>SUB Jev-Weiche mit Retry</code>: fragt Jev, wiederholt bei 429 und 529 genau 1 Mal und liefert bei gültiger Eingabe immer ein Ergebnis (<code>status</code> ok oder fallback), bei fehlender Frage oder Anweisung stoppt er mit einem Fehler.</figcaption></figure>
+<figure><img alt="Sub-Workflow SUB Protokollzeile schreiben in n8n" src="bilder/w06t05-n8n-sub-protokollzeile-gesamt.png"/><figcaption>Der Sub <code>SUB Protokollzeile schreiben</code>: prüft die Tabelle gegen die Erlaubnisliste und schreibt die Zeile.</figcaption></figure>
+</section>
+
+<section aria-labelledby="k5-t" class="kapitel" id="k5">
+<div class="kkopf"><div aria-hidden="true" class="knum">05</div><div>
+<p class="kklein">Kapitel 5</p><h2 id="k5-t">Tests von v06</h2>
+<p class="klede">4 Testfälle am ganzen Agenten, dazu die Einzeltests der Subs und der Knotentest.</p>
+</div></div>
+<div aria-labelledby="t-tests" class="tabelle" role="region" tabindex="0">
+<table class="breit">
+<caption id="t-tests">Testfälle am ganzen Agenten, 30.10.2026</caption>
+<thead><tr><th scope="col">Fall</th><th scope="col">Eingabe</th><th scope="col">Erwartung</th><th scope="col">Lauf</th><th scope="col">Ergebnis</th></tr></thead>
+<tbody>
+<tr><th data-label="Fall" scope="row">Q03 mit Spaltenvergleich</th><td data-label="Eingabe">Wie lange wartet K1 auf meine Freigabe?</td><td data-label="Erwartung">Weg agent, K1_Antwortkatalog, Jev wie in v05, Protokollzeile gleich zur v05-Zeile 455</td><td data-label="Lauf">1767</td><td data-label="Ergebnis">PASS: Jev-Wert 0,99, Zeile 559, alle 27 Spalten gleich bis auf Kennungen, Zeit, Dauer und Antworttext</td></tr>
+<tr><th data-label="Fall" scope="row">J8b Folgefrage</th><td data-label="Eingabe">Und wie lange dauert das danach?</td><td data-label="Erwartung">Weg folgefrage, Jev-Werte aus dem Sub</td><td data-label="Lauf">1770</td><td data-label="Ergebnis">PASS: Jev-Wert 0,98, Zeile 560</td></tr>
+<tr><th data-label="Fall" scope="row">J9 Jev fällt aus</th><td data-label="Eingabe">wie Q03, mit <code>stoer=jevaus</code></td><td data-label="Erwartung">Sub liefert fallback, Weiche nimmt den Zweig „Kein Jev-Wert“, Agent antwortet ohne Weiche</td><td data-label="Lauf">1773</td><td data-label="Ergebnis">PASS: Weg ohne_jev, Status fallback, Zeile 561; der Zweig war bis dahin ungetestet</td></tr>
+<tr><th data-label="Fall" scope="row">L9 Protokollfehler</th><td data-label="Eingabe">wie Q03, mit <code>stoer=logfehler</code></td><td data-label="Erwartung">Sub blockiert die nicht erlaubte Tabelle, Antwort kommt an, keine Zeile</td><td data-label="Lauf">1776</td><td data-label="Ergebnis">PASS: „Tabelle nicht erlaubt“, Antwort vollständig, keine Zeile</td></tr>
+</tbody>
+</table>
+</div>
+<p>Die Chat-Antworten dieser Läufe sind an diesem Tag nicht im Wortlaut festgehalten worden; belegt sind Weg, Werkzeug, Jev-Werte und die Protokollzeile. Alle Einzelheiten, der Spaltenvergleich und die Einzeltests der beiden Subs stehen in der <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/testtabelle-w06t05-v06.md">Testtabelle v06</a>.</p>
+<p>Die Subs wurden vorher einzeln getestet: Protokollzeile Lauf 1735 mit 7 erwarteten PASS und 1 beabsichtigten FAIL, Jev-Weiche Lauf 1747 mit 6 erwarteten PASS und 1 beabsichtigten FAIL. Der Knotentest des Prüfknotens lief gegen den Code aus v06: 289 Prüffälle, 0 Abweichungen (<a href="knotentest-pruefknoten.md">Einzelliste</a>).</p>
+</section>
+
+<section aria-labelledby="k6-t" class="kapitel" id="k6">
+<div class="kkopf"><div aria-hidden="true" class="knum">06</div><div>
+<p class="kklein">Kapitel 6</p><h2 id="k6-t">Grenzen</h2>
+<p class="klede">Was nicht gemessen ist und was bekannt offen bleibt.</p>
+</div></div>
+<ul>
+<li>Prüfknoten: Die Prüfung arbeitet mit einer Liste fester Formulierungen. Eine Zusage ohne Wort der Liste („Dein Anliegen liegt dem Team vor.“) oder eine Umschreibung außerhalb der erkannten Formen wird nicht erkannt.</li>
+<li>Prüfknoten: Ein Leerzeichen vor dem schließenden Apostroph in einem Zitat kann das Ticket-Nomen vom Partizip trennen, sodass eine Zusage nicht erkannt wird. Der Fall ist konstruiert und kam in 190 echten Antworten nicht vor.</li>
+<li>Die Subs sind nicht veröffentlicht und laufen aus manuell gestarteten Testläufen. Der Betrieb aus einem veröffentlichten Aufrufer ist nicht gemessen.</li>
+<li>Die Wege fremd, rueckfrage, limit und ausfall laufen ebenfalls durch den neuen Aufruf <code>Protokollzeile aufrufen</code>, sind in v06 aber nicht gemessen.</li>
+<li>Protokoll-Sub: <code>Zeile speichern</code> gibt auch dann ein leeres Ergebnis aus, wenn die Datenbank keine Zeile zurückliefert. Dann meldet der Sub <code>status</code> ok mit leerer <code>log_id</code>, ohne dass die Zeile sicher steht; ein Abgleich mit der Tabelle bleibt nötig. Diese Lage ist nicht getestet.</li>
+<li>Die Bilder der beiden Aufrufknoten sind nur Ausschnitte aus der Gesamtansicht, ein Foto der geöffneten Knoten fehlt.</li>
+</ul>
+</section>
+
+<section aria-labelledby="k7-t" class="kapitel" id="k7">
+<div class="kkopf"><div aria-hidden="true" class="knum">07</div><div>
+<p class="kklein">Kapitel 7</p><h2 id="k7-t">ChangeLog und Belege</h2>
+<p class="klede">Alle Änderungen und gültigen Läufe.</p>
+</div></div>
+<p>Die Abschnitte v05.1 und v06 im <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/ChangeLog.md">ChangeLog</a> nennen jede Änderung mit Grund und alle gültigen Läufe. Welche Datei zu welcher Version gehört, zeigt die <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/versionsmatrix.md">Versionsmatrix</a>.</p>
+</section>
+
+</main>
+<footer class="fuss">
+<span>Patrick Minkler · K1 Support-Agent</span>
+<span>Stand 30.10.2026 · v06</span>
+</footer>
+</div>
+</body>
+</html>
