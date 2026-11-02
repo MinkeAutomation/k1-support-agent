@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="#FAFAF8" media="(prefers-color-scheme: light)" name="theme-color"/>
+<meta content="#121416" media="(prefers-color-scheme: dark)" name="theme-color"/>
+<title>W07T01 Orchestrator und Spezialisten</title>
+<meta content="Tages-Doku W07T01: der K1 Support-Agent wird in einen Orchestrator und 2 Spezialisten geteilt, getestet mit 10 Testfällen, Orchestrierungsmodell hierarchisch, in den Tests nacheinander abgearbeitet." name="description"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&amp;display=swap" rel="stylesheet"/>
+<link href="assets/doku.css" rel="stylesheet"/>
+</head>
+<body>
+<a class="sprung" href="#inhalt">Zum Inhalt springen</a>
+<div class="huelle">
+<header class="leiste">
+<span>K1 Support-Agent · Woche 7</span>
+<nav aria-label="Seiten">
+<a href="index.html">Wochen-Doku</a>
+<a href="w06t01.html">W6 Tag 1</a>
+<a href="w06t02.html">W6 Tag 2</a>
+<a href="w06t03.html">W6 Tag 3</a>
+<a href="w06t04.html">W6 Tag 4</a>
+<a aria-current="page" href="w07t01.html">W7 Tag 1</a>
+<span aria-disabled="true" class="aus" title="noch nicht dokumentiert">W7 Tag 2</span>
+<span aria-disabled="true" class="aus" title="noch nicht dokumentiert">W7 Tag 3</span>
+<span aria-disabled="true" class="aus" title="noch nicht dokumentiert">W7 Tag 4</span>
+<span aria-disabled="true" class="aus" title="noch nicht dokumentiert">W7 Tag 5</span>
+<a href="https://github.com/MinkeAutomation/k1-support-agent">Repository</a>
+</nav>
+</header>
+<div class="titelkopf">
+<div>
+<p class="oberzeile"><span aria-hidden="true" class="marke"></span>Tages-Doku W07T01 · Mo 02.11.2026 · Workflow v07</p>
+<h1>Orchestrator <span class="leise">und</span> Spezialisten</h1>
+<p class="untertitel">Der Support-Agent der Content-Maschine K1 wird geteilt: der Orchestrator nimmt jede Anfrage an und gibt sie weiter, ein Auskunfts-Agent liest, ein Aktions-Agent schreibt. 10 Testfälle zeigen, ob jede Anfrage beim richtigen Spezialisten ankommt.</p>
+</div>
+</div>
+<dl aria-label="Kennzahlen v07" class="messleiste">
+<div><dt>Testfälle</dt><dd>10 von 10<small>Testreihe; Kontrolle 12 von 14 Läufen</small></dd></div><div><dt>Spezialisten</dt><dd>2<small>Auskunft 4 Werkzeuge, Aktion 2</small></dd></div><div><dt>Ablauf</dt><dd>nacheinander<small>gemessen in T8a und T8b</small></dd></div><div><dt>Knotentest</dt><dd>289 / 0<small>Prüffälle / Abweichungen</small></dd></div>
+</dl>
+<div class="knoepfe">
+<a class="knopf zweit" href="w06t04.html">Tages-Doku W6 Tag 4 <span aria-hidden="true" class="pfeil">→</span></a>
+<a class="knopf" href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/testtabelle-w07t01-v07.md">Testtabelle v07 <span aria-hidden="true" class="pfeil">↗</span></a>
+<a class="knopf" href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/k1-support-agent_2026-11-02_v07.json">Workflow-Export v07 (JSON) <span aria-hidden="true" class="pfeil">↗</span></a>
+<a class="knopf zweit" href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/ChangeLog.md">ChangeLog <span aria-hidden="true" class="pfeil">↗</span></a>
+<a class="knopf zweit" href="index.html">Wochen-Doku <span aria-hidden="true" class="pfeil">→</span></a>
+</div>
+<main class="inhalt" id="inhalt">
+<div class="merksatz einminute" id="in-1-minute"><span class="ktag">In 1 Minute</span>
+<ul>
+<li><strong>Ziel:</strong> Den Agenten in Spezialisten teilen, einen Orchestrator davorsetzen, die Weiterleitung testen und das Orchestrierungsmodell begründen.</li>
+<li><strong>Ergebnis:</strong> Hierarchisch: der Orchestrator verteilt, Auskunft liest, Aktion schreibt. In den Tests liefen die Spezialisten nacheinander.</li>
+<li><strong>Zahl:</strong> Testreihe 10 von 10 bestanden, in allen der richtige Spezialist und das erwartete Werkzeug. Kontrolle gegen den ausgelieferten Prompt: 14 Läufe, 12 bestanden.</li>
+<li><strong>Grenze:</strong> In T10 schrieb der Orchestrator trotz Ausfall eine Erfolgsmeldung, erst der Prüfknoten ersetzte sie.</li>
+<li><strong>Link:</strong> Alle Chat-Antworten ungekürzt in der <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/testtabelle-w07t01-v07.md">Testtabelle v07</a>.</li>
+</ul></div>
+
+<section aria-labelledby="k1-t" class="kapitel" id="k1">
+<div class="kkopf"><div aria-hidden="true" class="knum">01</div><div>
+<p class="kklein">Kapitel 1</p><h2 id="k1-t">Ziele des Tages</h2>
+<p class="klede">Was der Tag erreichen soll.</p>
+</div></div>
+<ul>
+<li>Den Support-Agenten aus v06 auf mindestens 2 Spezialisten verteilen, jeder mit klarer Zuständigkeit.</li>
+<li>Einen Orchestrator bauen, der je Anfrage entscheidet, welcher Spezialist sie bekommt, und selbst keine Fachfrage beantwortet.</li>
+<li>Mit verschiedenen Anfragen prüfen, ob jede beim richtigen Spezialisten landet, mit Erwartung vor dem Lauf.</li>
+<li>Das Orchestrierungsmodell benennen und mit Messwerten begründen; dazu ausprobieren, ob ein Hinweis im Prompt die Spezialisten gleichzeitig startet.</li>
+</ul>
+<p>Ich baue auf v06 auf. Werkzeuge, Prüfknoten, Jev-Weiche, Gedächtnis und Protokoll bleiben; neu ist, wer welches Werkzeug hält.</p>
+</section>
+
+<section aria-labelledby="k2-t" class="kapitel" id="k2">
+<div class="kkopf"><div aria-hidden="true" class="knum">02</div><div>
+<p class="kklein">Kapitel 2</p><h2 id="k2-t">Plan v07</h2>
+<p class="klede">Endstand nach dem Bau und den Tests.</p>
+</div></div>
+<figure><img alt="Plan v07: Kundenfrage, Limit, Jev-Weiche, Orchestrator Anfrage verteilen mit SUB Auskunfts-Agent und SUB Aktions-Agent, danach Zwischenschritte auspacken, Prüfknoten, Protokollzeile, Antwort" src="bilder/w07t01-plan-v07.png"/><figcaption>Plan v07, Endstand 02.11.2026. Ja und Nein stehen an den Pfeilen, Fehlerwege rot. <a href="plan/plan-w07t01-v07.png">Volle Auflösung</a>, <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/plan/plan-w07t01-v07.excalidraw">Excalidraw-Datei</a>.</figcaption></figure>
+</section>
+
+<section aria-labelledby="k3-t" class="kapitel" id="k3">
+<div class="kkopf"><div aria-hidden="true" class="knum">03</div><div>
+<p class="kklein">Kapitel 3</p><h2 id="k3-t">Was neu ist gegenüber v06</h2>
+<p class="klede">Die Änderungen von v06 zu v07.</p>
+</div></div>
+<div aria-labelledby="t-neu" class="tabelle" role="region" tabindex="0">
+<table class="mittel">
+<caption id="t-neu">Änderungen in v07</caption>
+<thead><tr><th scope="col">Knoten</th><th scope="col">was er tut</th><th scope="col">warum</th></tr></thead>
+<tbody>
+<tr><th data-label="Knoten" scope="row">Anfrage verteilen (KI-Agent)</th><td data-label="was er tut">Orchestrator: ruft je Anfrage einen oder beide Spezialisten, fragt vor jeder Vormerkung nach, hält das Gedächtnis</td><td data-label="warum">vorher „K1-Support beantworten“; er entscheidet jetzt nur noch, wer zuständig ist</td></tr>
+<tr><th data-label="Knoten" scope="row">Auskunfts_Agent, Aktions_Agent</th><td data-label="was er tut">je ein Werkzeug, das einen Sub-Workflow aufruft; Aktion bekommt zusätzlich das Feld <code>zustimmung</code></td><td data-label="warum">die Zustimmung geht als Feld mit, nicht nur im Text</td></tr>
+<tr><th data-label="Knoten" scope="row">SUB Auskunfts-Agent K1</th><td data-label="was er tut">eigener Agent mit FAQ, Wissensbasis, Feiertagen, Auftragsstand</td><td data-label="warum">nur lesend, kein Mail- und Schreibzugang</td></tr>
+<tr><th data-label="Knoten" scope="row">SUB Aktions-Agent K1</th><td data-label="was er tut">eigener Agent mit Vormerkung und Eilmeldung, Vormerkung nur bei <code>zustimmung</code> ja</td><td data-label="warum">Schreibrechte und Mailzugang an genau einer Stelle</td></tr>
+<tr><th data-label="Knoten" scope="row">Zwischenschritte auspacken (Code)</th><td data-label="was er tut">holt die Werkzeugschritte aus den Rückgaben der Spezialisten</td><td data-label="warum">der Prüfknoten liest sie in der bekannten Form und bleibt zeichengleich</td></tr>
+<tr><th data-label="Knoten" scope="row">Protokollzeile bauen (Code)</th><td data-label="was er tut">schreibt zusätzlich <code>agents_called</code></td><td data-label="warum">je Lauf belegt, welcher Spezialist gerufen wurde</td></tr>
+<tr><th data-label="Knoten" scope="row">Systemprompt wählen (Code)</th><td data-label="was er tut">nur noch der Orchestrator-Prompt in 6 Bausteinen</td><td data-label="warum">die Spezialisten haben eigene, kurze Prompts</td></tr>
+</tbody>
+</table>
+</div>
+<p>Die Spalte <code>agents_called</code> legt <code>docs/sql/019_agt_w07_agents_called.sql</code> an. Beide Subs sind veröffentlicht: ein nicht veröffentlichter Sub ließ sich als Werkzeug nicht aufrufen (Rückgabe „Workflow is not active“, gemessen).</p>
+</section>
+
+<section aria-labelledby="k4-t" class="kapitel" id="k4">
+<div class="kkopf"><div aria-hidden="true" class="knum">04</div><div>
+<p class="kklein">Kapitel 4</p><h2 id="k4-t">Warum ich hierarchisch verteile</h2>
+<p class="klede">Hierarchisch, in den Tests nacheinander abgearbeitet.</p>
+</div></div>
+<p>Ich habe mich für eine Hierarchie entschieden. Ein Orchestrator nimmt jede Anfrage an und gibt sie an den passenden Spezialisten weiter; eine Fachfrage beantwortet er selbst nie. Der Auskunfts-Agent hat nur die 4 lesenden Werkzeuge, der Aktions-Agent nur Vormerkung und Eilmeldung. So liegen Mailzugang und Schreibrechte an genau einer Stelle, und jeder Spezialist hat einen kurzen Prompt für seine Aufgabe.</p>
+<p>Eine feste Kette passt nicht, weil die meisten Anfragen nur einen Spezialisten brauchen und erst die Anfrage zeigt, welchen. Parallel habe ich ausprobiert: In T8a und T8b brauchte die Anfrage beide Spezialisten. Der zweite startete jeweils erst nach dem Ende des ersten, 11,5 s und 0,056 s danach. Belegt ist damit nur der beobachtete Ablauf, keine technische Grenze von n8n: Der Prompt enthielt auch in T8b (Testschalter <code>par=1</code>) die Anweisung „erst Auskunfts_Agent, dann Aktions_Agent“, neben dem Satz, beide im selben Schritt zu rufen. Zwei widersprüchliche Anweisungen in einem Prompt sind kein sauberer Parallelversuch; ein neuer Messlauf ohne die Reihenfolgeanweisung ist nicht gemacht. Das Modell bleibt hierarchisch, beobachtet nacheinander abgearbeitet.</p>
+<p>Weil die Spezialisten nichts erinnern, bleiben Gesprächsverlauf und Rückfrage vor einer Vormerkung beim Orchestrator. Er gibt die Zustimmung als eigenes Feld weiter, und der Aktions-Agent ruft die Vormerkung nur mit diesem Feld auf.</p>
+<p>Der Gewinn liegt bei uns in getrennten Rechten und einzeln testbaren Teilen. Der Preis sind mehr Modellaufrufe je Frage: ein Lauf dauerte 6 s bis 359 s (vom Workflow gemessen bis zur Protokollzeile, Feld <code>duration_ms</code>), weil die Gratismodelle stark schwanken. Mit v06 verglichen habe ich die Dauer nicht.</p>
+</section>
+
+<section aria-labelledby="k5-t" class="kapitel" id="k5">
+<div class="kkopf"><div aria-hidden="true" class="knum">05</div><div>
+<p class="kklein">Kapitel 5</p><h2 id="k5-t">10 Testfälle</h2>
+<p class="klede">Testreihe (Läufe 1800 bis 1838): Jeder Fall in einer neuen Sitzung, nur T4b läuft in der Sitzung von T4a weiter. Erwartung vor dem Lauf. Die Kontrolle mit dem ausgelieferten Prompt steht in den Grenzen und in der Testtabelle.</p>
+</div></div>
+<div aria-labelledby="t-tests" class="tabelle" role="region" tabindex="0">
+<table class="breit">
+<caption id="t-tests">Testfälle am ganzen Agenten, 02.11.2026</caption>
+<thead><tr><th scope="col">Fall</th><th scope="col">Anfrage</th><th scope="col">Spezialist</th><th scope="col">Werkzeug</th><th scope="col">Lauf</th><th scope="col">Ergebnis</th></tr></thead>
+<tbody>
+<tr><th data-label="Fall" scope="row">T1</th><td data-label="Anfrage">Wie lange wartet K1 auf meine Freigabe?</td><td data-label="Spezialist">Auskunft</td><td data-label="Werkzeug">K1_Antwortkatalog</td><td data-label="Lauf">1800</td><td data-label="Ergebnis">PASS</td></tr>
+<tr><th data-label="Fall" scope="row">T2</th><td data-label="Anfrage">Wie ist der Stand von Auftrag 24002?</td><td data-label="Spezialist">Auskunft</td><td data-label="Werkzeug">Auftragsstand</td><td data-label="Lauf">1804</td><td data-label="Ergebnis">PASS</td></tr>
+<tr><th data-label="Fall" scope="row">T3</th><td data-label="Anfrage">Arbeitet das K1-Team am 25.12.2026?</td><td data-label="Spezialist">Auskunft</td><td data-label="Werkzeug">Feiertage_nachschlagen</td><td data-label="Lauf">1808</td><td data-label="Ergebnis">PASS</td></tr>
+<tr><th data-label="Fall" scope="row">T4a</th><td data-label="Anfrage">Das Logo im Paket zu Auftrag 24003 ist verpixelt.</td><td data-label="Spezialist">keiner, Rückfrage</td><td data-label="Werkzeug">keines</td><td data-label="Lauf">1812</td><td data-label="Ergebnis">PASS</td></tr>
+<tr><th data-label="Fall" scope="row">T4b</th><td data-label="Anfrage">Ja, bitte vormerken.</td><td data-label="Spezialist">Aktion, zustimmung ja</td><td data-label="Werkzeug">Teamvormerkung, K1-T-01050</td><td data-label="Lauf">1815</td><td data-label="Ergebnis">PASS</td></tr>
+<tr><th data-label="Fall" scope="row">T5</th><td data-label="Anfrage">Bei uns im Studio brennt es, jemand ist verletzt.</td><td data-label="Spezialist">Aktion</td><td data-label="Werkzeug">Eilmeldung_ans_Team</td><td data-label="Lauf">1819</td><td data-label="Ergebnis">PASS</td></tr>
+<tr><th data-label="Fall" scope="row">T8a</th><td data-label="Anfrage">Stand von 24002, dazu Farben falsch, bitte vormerken</td><td data-label="Spezialist">Auskunft, dann Aktion</td><td data-label="Werkzeug">Auftragsstand, Teamvormerkung</td><td data-label="Lauf">1823</td><td data-label="Ergebnis">PASS</td></tr>
+<tr><th data-label="Fall" scope="row">T8b</th><td data-label="Anfrage">wie T8a, Prompt-Satz „im selben Schritt“</td><td data-label="Spezialist">Auskunft, dann Aktion</td><td data-label="Werkzeug">Auftragsstand, Teamvormerkung</td><td data-label="Lauf">1835</td><td data-label="Ergebnis">PASS, nacheinander</td></tr>
+<tr><th data-label="Fall" scope="row">T9</th><td data-label="Anfrage">Bei meinem Paket stimmt was nicht.</td><td data-label="Spezialist">keiner, Rückfrage</td><td data-label="Werkzeug">keines</td><td data-label="Lauf">1828</td><td data-label="Ergebnis">PASS</td></tr>
+<tr><th data-label="Fall" scope="row">T10</th><td data-label="Anfrage">wie T5, Aktion fällt absichtlich aus</td><td data-label="Spezialist">Aktion, Ausfall</td><td data-label="Werkzeug">keines, keine Mail</td><td data-label="Lauf">1831</td><td data-label="Ergebnis">PASS</td></tr>
+</tbody>
+</table>
+</div>
+<p>Die Chat-Antworten aller 10 Fälle stehen ungekürzt in der <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/testtabelle-w07t01-v07.md">Testtabelle v07</a>, dazu die Protokollzeilen mit <code>agents_called</code>.</p>
+</section>
+
+<section aria-labelledby="k6-t" class="kapitel" id="k6">
+<div class="kkopf"><div aria-hidden="true" class="knum">06</div><div>
+<p class="kklein">Kapitel 6</p><h2 id="k6-t">Parallel oder nacheinander</h2>
+<p class="klede">Startzeiten der Unterläufe in UTC (deutsche Zeit 1 Stunde später).</p>
+</div></div>
+<div aria-labelledby="t-m4" class="tabelle" role="region" tabindex="0">
+<table class="mittel">
+<caption id="t-m4">Unterläufe in T8a und T8b</caption>
+<thead><tr><th scope="col">Lauf</th><th scope="col">Auskunfts_Agent</th><th scope="col">Aktions_Agent</th><th scope="col">Befund</th></tr></thead>
+<tbody>
+<tr><th data-label="Lauf" scope="row">T8a (1823)</th><td data-label="Auskunfts_Agent">14:57:06,872 bis 14:58:41,619</td><td data-label="Aktions_Agent">14:58:53,165 bis 15:00:23,351</td><td data-label="Befund">nacheinander, 11,5 s Abstand</td></tr>
+<tr><th data-label="Lauf" scope="row">T8b (1835)</th><td data-label="Auskunfts_Agent">15:12:11,488 bis 15:12:15,955</td><td data-label="Aktions_Agent">15:12:16,011 bis 15:12:21,551</td><td data-label="Befund">nacheinander, 0,056 s Abstand</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section aria-labelledby="k7-t" class="kapitel" id="k7">
+<div class="kkopf"><div aria-hidden="true" class="knum">07</div><div>
+<p class="kklein">Kapitel 7</p><h2 id="k7-t">Auffälligkeiten</h2>
+<p class="klede">Was bestanden hat, aber nicht glatt war.</p>
+</div></div>
+<div class="merksatz"><p><strong>T10, falsche Zusage.</strong> Der Aktions-Agent fiel absichtlich aus und meldete <code>SPEZIALIST_AUSGEFALLEN</code>. Der Orchestrator schrieb trotzdem „Das K1-Team wurde informiert.“ Erst der Prüfknoten <code>Werkzeugwahl messen</code> hat diese Zusage durch einen ehrlichen Hinweis ersetzt. Der Satz im Prompt allein hätte nicht gereicht (1 Lauf). Der Prüfknoten ist damit die tragende Sperre.</p></div>
+<div class="merksatz"><p><strong>T3, Übungsannahme.</strong> Die Antwort enthält „Das K1-Team arbeitet an gesetzlichen Feiertagen nicht.“ Das steht nicht im Werkzeugergebnis, sondern als „Annahme dieser Übung“ im Prompt des Auskunfts-Agenten. Der Satz ist also hinterlegt und keine erfundene Aussage; das Urteil PASS bleibt.</p></div>
+</section>
+
+<section aria-labelledby="k8-t" class="kapitel" id="k8">
+<div class="kkopf"><div aria-hidden="true" class="knum">08</div><div>
+<p class="kklein">Kapitel 8</p><h2 id="k8-t">Knotentest Prüfknoten</h2>
+<p class="klede">Kein Testfall am Agenten, sondern ein Test eines einzelnen Knotens.</p>
+</div></div>
+<p>Der Prüfknoten ist der Knoten, der Zusagen wie „Ticket angelegt“ ersetzt, wenn kein Werkzeug sie belegt. Er ist in v07 zeichengleich zu v06 (SHA256 <code>84162f71…44513f</code>). Seine 289 Prüffälle sind vorgegebene Antworttexte, die allein ihm vorgelegt werden (ohne Modell, kein Lauf am ganzen Agenten): bei 198 soll er ersetzen, bei 91 stehen lassen. Alle liefen erneut mit 0 Abweichungen. Die Einzelliste mit Kennung, Eingabe, Erwartung und Ergebnis je Prüffall: <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/knotentest-pruefknoten.md">knotentest-pruefknoten.md</a>.</p>
+</section>
+
+<section aria-labelledby="k9-t" class="kapitel" id="k9">
+<div class="kkopf"><div aria-hidden="true" class="knum">09</div><div>
+<p class="kklein">Kapitel 9</p><h2 id="k9-t">Grenzen</h2>
+<p class="klede">Was nicht gemessen oder nicht garantiert ist.</p>
+</div></div>
+<ul>
+<li>Die Sperre der Vormerkung im Aktions-Agenten ist ein Prompt-Satz plus Feld, kein eigener Workflow-Knoten; der Einzeltest X2 belegt sie am Beispiel.</li>
+<li>Die Spezialisten liefen in je 2 Läufen (Testreihe und Kontrolle) nacheinander, bei einem Prompt, der die Reihenfolge „erst Auskunft, dann Aktion“ vorgab. Ob n8n sie bei anderem Prompt gleichzeitig starten könnte, ist nicht gemessen; wie oft das bei mehr Läufen so bleibt, ebenso nicht.</li>
+<li>Laufzeit 6 s bis 359 s (Feld <code>duration_ms</code>) bei Gratismodellen, kein Vergleich mit v06.</li>
+<li>Kontrolle nach einer Prompt-Änderung am Abend: 14 Läufe gegen den ausgelieferten Prompt, 12 bestanden. Die 10 Läufe der Testreihe (1800 bis 1838) liefen mit dem Wortlaut vor der Änderung; T3, T8a, T8b, T9 und T10 liefen danach je 1 Mal neu (1874 bis 1888, alle bestanden). T1 fiel 1 Mal aus (Lauf 1840, kein Spezialist gerufen), die 4 weiteren T1-Läufe bestanden; ob der Fehllauf an der Änderung oder an der Streuung des Gratismodells lag, ist nicht entschieden. Alle Antworten stehen in der Testtabelle.</li>
+<li><strong>Bekannte Schwachstelle:</strong> In Lauf 1847 (T4a) schrieb der Orchestrator „Ich habe notiert, …“, obwohl nichts gespeichert wurde; der Prüfknoten wertet „notiert“ ohne Ticket-Wort nicht als Zusage. Der Lauf zählt als nicht bestanden. Der Prompt bleibt in dieser Version unverändert, die Korrektur folgt in der nächsten Version.</li>
+<li><strong>Bekannte Schwachstelle im Fehlerpfad:</strong> Fällt der Aktions-Agent aus, meldet der Fehlerausgang <code>SPEZIALIST_AUSGEFALLEN</code> und die Werkzeugbeschreibung sagt „Bei status error ist nichts geschehen“. Das ist nicht sicher: Ein Ticket oder eine Mail kann schon angelegt sein, bevor ein späterer Modellfehler den Lauf beendet; der Adapter verwirft bei einem Fehlerstatus die Werkzeugnachweise. Der Text im Workflow bleibt in dieser Version unverändert, Korrektur und Test folgen in der nächsten.</li>
+<li>Nicht geprüft: das Chatfenster im Editor und der Betrieb mit veröffentlichtem v07.</li>
+</ul>
+</section>
+
+<section aria-labelledby="k10-t" class="kapitel" id="k10">
+<div class="kkopf"><div aria-hidden="true" class="knum">10</div><div>
+<p class="kklein">Kapitel 10</p><h2 id="k10-t">ChangeLog</h2>
+<p class="klede">Alle Änderungen und gültigen Läufe.</p>
+</div></div>
+<p>Abschnitt v07 im <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/ChangeLog.md">ChangeLog</a>, mit den Einzeltests der Subs (Läufe 1789 bis 1796) und allen Testläufen.</p>
+</section>
+</main>
+<footer class="fuss">
+<span>Patrick Minkler · K1 Support-Agent</span>
+<span>Stand 02.11.2026 · v07</span>
+</footer>
+</div>
+</body>
+</html>

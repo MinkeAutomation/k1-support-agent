@@ -4,7 +4,30 @@ Hier liegen die n8n-Exporte des Support-Agenten. Dateiname `k1-support-agent_<JJ
 
 Welche Version zu welchem Tag und welcher Tages-Doku gehört, steht in der [Versionstabelle im README](../README.md#versionen).
 
-**Stand 30.10.2026:**
+**Stand 02.11.2026:**
+
+- `k1-support-agent_2026-11-02_v07.json`: der Agent ist in einen Orchestrator und 2 Spezialisten geteilt. Der Orchestrator `Anfrage verteilen [AI Agent]` hat kein eigenes Fachwerkzeug mehr, er ruft nur `Auskunfts_Agent` und `Aktions_Agent` auf. Beide sind Werkzeuge, die je einen Sub-Workflow starten. Jev-Weiche, Protokoll-Sub, Prüfknoten, Gedächtnis und Ausweichmodell bleiben wie in v06. 58 Knoten (31 ausführbar und 27 Notizen).
+- `subs/sub-auskunfts-agent-k1.json` (`SUB Auskunfts-Agent K1`): lesender Spezialist mit `K1_Antwortkatalog`, `K1_Technikwissen`, `Feiertage_nachschlagen` und `Auftragsstand`, kein Schreibzugriff, kein Mailzugang.
+- `subs/sub-aktions-agent-k1.json` (`SUB Aktions-Agent K1`): schreibender Spezialist mit `Teamvormerkung` und `Eilmeldung_ans_Team`. Die Vormerkung läuft nur, wenn der Orchestrator das Feld `zustimmung` mit ja übergibt.
+- Neue Spalte im Protokoll: `agents_called`, angelegt mit `docs/sql/019_agt_w07_agents_called.sql`.
+
+**Reihenfolge für v07:**
+
+1. `docs/sql/019_agt_w07_agents_called.sql` im SQL-Editor ausführen (nach den Dateien unten unter „Nach dem Import einrichten“).
+2. Die 4 Subs importieren: `sub-jev-weiche.json`, `sub-protokollzeile.json`, `sub-auskunfts-agent-k1.json`, `sub-aktions-agent-k1.json`. Ihre Zugänge setzen (Tabelle unten) und die Platzhalter ersetzen.
+3. **Die beiden neuen Subs veröffentlichen** (Publish). Ein nicht veröffentlichter Sub lässt sich als Werkzeug des Orchestrators nicht aufrufen, der Aufruf liefert dann „Workflow is not active“. Die beiden Subs dürfen nur von Workflows desselben Eigentümers aufgerufen werden.
+4. v07 importieren. In 4 Knoten steht statt der Sub-Auswahl ein Platzhalter, dort jeweils den importierten Sub auswählen:
+
+| Knoten im Hauptworkflow | Platzhalter | Sub auswählen |
+|---|---|---|
+| `Jev-Weiche aufrufen [Execute Sub-workflow]` | `SUB_JEV_WEICHE_NACH_IMPORT_AUSWAEHLEN` | `SUB Jev-Weiche mit Retry` |
+| `Protokollzeile aufrufen [Execute Sub-workflow]` | `SUB_PROTOKOLLZEILE_NACH_IMPORT_AUSWAEHLEN` | `SUB Protokollzeile schreiben` |
+| `Auskunfts_Agent` | `SUB_AUSKUNFTS_AGENT_NACH_IMPORT_AUSWAEHLEN` | `SUB Auskunfts-Agent K1` |
+| `Aktions_Agent` | `SUB_AKTIONS_AGENT_NACH_IMPORT_AUSWAEHLEN` | `SUB Aktions-Agent K1` |
+
+Jeder der beiden neuen Subs hat einen Testzweig (`Testeingang (Test) [Manual Trigger]` mit festen Werten), damit er sich einzeln starten lässt. Im Aufruf durch den Orchestrator läuft dieser Zweig nicht.
+
+**Stand 30.10.2026 (Vorgänger):**
 
 - `k1-support-agent_2026-10-30_v06.json`: derselbe Aufbau wie v05.1, aber die Jev-Weiche und die Protokollzeile laufen als Aufrufe von 2 eigenen Sub-Workflows (`SUB Jev-Weiche mit Retry`, `SUB Protokollzeile schreiben`). 59 Knoten (35 ausführbar und 24 Notizen). Die beiden Subs liegen als Export unter `workflows/subs/` (`sub-protokollzeile.json` und `sub-jev-weiche.json`, ohne Versionsnummer im Namen, mit Platzhaltern statt Zugängen). Sie zuerst importieren und ihre Zugänge setzen, danach v06 importieren und in beiden Aufrufknoten die Workflow-Auswahl neu setzen; die Subs dürfen nur von Workflows desselben Eigentümers aufgerufen werden. Der Jev-Sub trägt den OpenRouter-Zugang, der Protokoll-Sub den Supabase-Schreibzugang. Zusätzlich zur Tabelle `agt_w06_support_log` kennt die Erlaubnisliste des Protokoll-Subs eine Testtabelle `agt_w06_sub_test` (nur für Tests, nicht Teil des Nachbaus, ein Schema dafür liegt nicht im Repo).
 
@@ -25,23 +48,23 @@ Beide Exporte haben einen Chat Trigger beziehungsweise einen manuellen Start ohn
 
 ## Nach dem Import einrichten
 
-1. **Datenbank:** in Supabase im SQL-Editor nacheinander ausführen: `docs/sql/001_agt_w06_support_log.sql`, `002_agt_w06_chat_histories.sql`, `003_agt_w06_auftraege_tickets.sql`, `004_agt_w06_wissensbasis.sql`, `005_agt_w06_auftrag_abfragen.sql` und `006_agt_w06_vormerkung_anlegen.sql`, für v05 danach `011`, `013`, `014` und `016` (Kennzeichen in der Wissensbasis, Weg `limit`, Prüfung der Vormerkung, Antworttext im Protokoll; `012`, `015`, `017` und `018` gehören zu den Tests). Anschließend den Einlese-Workflow einmal ausführen (Zugänge: Supabase mit der Rolle `service_role` zum Schreiben, Google Gemini für die Vektoren), er legt die 22 Stücke an.
-2. **Credentials neu zuweisen** (der Export führt keine Zugänge):
+1. **Datenbank:** in Supabase im SQL-Editor nacheinander ausführen: `docs/sql/001_agt_w06_support_log.sql`, `002_agt_w06_chat_histories.sql`, `003_agt_w06_auftraege_tickets.sql`, `004_agt_w06_wissensbasis.sql`, `005_agt_w06_auftrag_abfragen.sql` und `006_agt_w06_vormerkung_anlegen.sql`, für v05 danach `011`, `013`, `014` und `016` (Kennzeichen in der Wissensbasis, Weg `limit`, Prüfung der Vormerkung, Antworttext im Protokoll; `012`, `015`, `017` und `018` gehören zu den Tests), für v07 zuletzt `019` (Spalte `agents_called`). Anschließend den Einlese-Workflow einmal ausführen (Zugänge: Supabase mit der Rolle `service_role` zum Schreiben, Google Gemini für die Vektoren), er legt die 22 Stücke an.
+2. **Credentials neu zuweisen** (der Export führt keine Zugänge). Ab v07 liegen die Werkzeuge in den beiden Spezialisten-Subs, die Zugänge werden dort gesetzt:
 
 | Knoten | Credential-Typ | wofür |
 |---|---|---|
 | `K1-Bezug prüfen`, `K1-Bezug erneut prüfen` (bis v05.1; ab v06 im Sub `SUB Jev-Weiche mit Retry`) | OpenAI-Typ mit Base URL `https://openrouter.ai/api/v1` (OpenRouter-Schlüssel) | Jev über die Decisions API |
-| `Gratismodell [OpenAI Chat Model]`, `Ausweichmodell [OpenAI Chat Model]` | OpenAI-Typ mit Base URL `https://openrouter.ai/api/v1` (OpenRouter-Schlüssel) | Sprachmodell des Agenten und das Ausweichmodell, wenn das Hauptmodell ausfällt |
+| `Gratismodell [OpenAI Chat Model]`, `Ausweichmodell [OpenAI Chat Model]` (ab v07 je 1 Paar im Hauptworkflow und in beiden Spezialisten-Subs) | OpenAI-Typ mit Base URL `https://openrouter.ai/api/v1` (OpenRouter-Schlüssel) | Sprachmodell des Agenten und das Ausweichmodell, wenn das Hauptmodell ausfällt |
 | `Verlauf der Sitzung lesen` (auch ab v06 im Hauptworkflow), `Lauf protokollieren` (bis v05.1; ab v06 im Sub `SUB Protokollzeile schreiben`) | Supabase API mit dem serverseitigen Schlüssel der Rolle `service_role` | Protokolltabelle (Row Level Security ohne INSERT-Policy) |
 | `Gesprächsverlauf holen`, `Dialog speichern` | dieselbe Supabase API mit der Rolle `service_role` | liest und schreibt `agt_w06_chat_histories` für den Verlauf von Jev |
-| `Auftragsstand`, `Teamvormerkung` | Supabase API mit dem öffentlichen `anon`-Schlüssel | rufen nur die Funktionen `agt_w06_auftrag_abfragen` und `agt_w06_vormerkung_anlegen` auf |
-| `K1_Technikwissen` | Supabase API mit dem öffentlichen `anon`-Schlüssel (nur lesen) | Suche in `agt_w06_knowledge_chunks` über `match_agt_w06_knowledge_chunks` |
-| `Vektoren der Frage [Embeddings Google Gemini]` | Google Gemini (PaLM) API-Schlüssel | gleiches Modell wie beim Einlesen: `models/gemini-embedding-001` (3072 Stellen) |
+| `Auftragsstand` (ab v07 im Sub `SUB Auskunfts-Agent K1`), `Teamvormerkung` (ab v07 im Sub `SUB Aktions-Agent K1`) | Supabase API mit dem öffentlichen `anon`-Schlüssel | rufen nur die Funktionen `agt_w06_auftrag_abfragen` und `agt_w06_vormerkung_anlegen` auf |
+| `K1_Technikwissen` (ab v07 im Sub `SUB Auskunfts-Agent K1`) | Supabase API mit dem öffentlichen `anon`-Schlüssel (nur lesen) | Suche in `agt_w06_knowledge_chunks` über `match_agt_w06_knowledge_chunks` |
+| `Vektoren der Frage [Embeddings Google Gemini]` (ab v07 im Sub `SUB Auskunfts-Agent K1`) | Google Gemini (PaLM) API-Schlüssel | gleiches Modell wie beim Einlesen: `models/gemini-embedding-001` (3072 Stellen) |
 | `Dauergedächtnis [Postgres Chat Memory]` | Postgres, Verbindung über den Session Pooler von Supabase, SSL an | Tabelle `agt_w06_chat_histories`, Fenster 10 |
-| `Eilmeldung_ans_Team` | SMTP | Versand der Eilmeldung; im Export ist kein Zugang hinterlegt, er muss gesetzt werden |
+| `Eilmeldung_ans_Team` (ab v07 im Sub `SUB Aktions-Agent K1`) | SMTP | Versand der Eilmeldung; im Export ist kein Zugang hinterlegt, er muss gesetzt werden |
 
-3. **Platzhalter ersetzen** (3 verschiedene, zusammen an 5 Stellen):
-   - `<<REPLACE_WITH_SUPABASE_PROJECT>>`: Projektkennung der eigenen Supabase-Adresse, 1 Mal im Feld `supabase_rest` des Knotens `Konfiguration [Edit Fields]` und 1 Mal im Link des Knopfes „Ticket öffnen“ im HTML der Eilmeldung.
+3. **Platzhalter ersetzen** (3 verschiedene):
+   - `<<REPLACE_WITH_SUPABASE_PROJECT>>`: Projektkennung der eigenen Supabase-Adresse, im Feld `supabase_rest` des Knotens `Konfiguration [Edit Fields]` und im Link des Knopfes „Ticket öffnen“ im HTML der Eilmeldung. Ab v07 steht `Konfiguration [Edit Fields]` 3 Mal: im Hauptworkflow und in beiden Spezialisten-Subs, die Eilmeldung im Sub `SUB Aktions-Agent K1`.
    - `<<REPLACE_WITH_TABLE_ID>>`: Tabellen-ID der Tabelle `agt_w06_tickets`, 1 Mal im Knopf der Mail. Sie steht in der Adresszeile, wenn man die Tabelle in Supabase im Tabelleneditor öffnet (Adressteil `/editor/<Zahl>`).
    - `<<REPLACE_WITH_TEST_EMAIL>>`: eigene Test-Mailadresse, 2 Mal im Knoten `Eilmeldung_ans_Team` (Absender und Empfänger). Der Empfänger ist fest eingetragen und wird nie vom Modell gesetzt.
 4. Die Einstellungen `errorWorkflow` (Verweis auf einen Fehler-Workflow) und `availableInMCP` (Freigabe für den MCP-Zugriff) gelten nur für die Instanz, auf der der Workflow läuft und stehen deshalb nicht im Export; nach dem Import einen eigenen Fehler-Workflow eintragen und die MCP-Freigabe bewusst setzen.

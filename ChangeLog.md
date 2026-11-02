@@ -2,6 +2,59 @@
 
 Je Version des Workflows, was der Agent kann und was gemessen wurde. Neueste Einträge oben. Die Überschrift trägt die Version und das Datum des Stands.
 
+## v07 (2026-11-02): Woche 7 Tag 1, Mo 02.11.2026
+
+**Funktion**
+- Der Agent ist in einen Orchestrator und 2 Spezialisten geteilt. Grund: Tagesaufgabe, der Orchestrator entscheidet nur noch, wer zuständig ist.
+- Orchestrator `Anfrage verteilen [AI Agent]` (vorher `K1-Support beantworten`): nimmt jede Nachricht an und ruft nur die beiden Spezialisten `Auskunfts_Agent` und `Aktions_Agent` auf, er hat kein eigenes Fachwerkzeug mehr. Max Iterations 5. Gedächtnis, Rückfrage vor einer Vormerkung und KI-Hinweis bleiben beim Orchestrator, weil die Spezialisten nichts erinnern.
+- `SUB Auskunfts-Agent K1`: lesender Spezialist mit den 4 Werkzeugen `K1_Antwortkatalog` (FAQ), `K1_Technikwissen` (Wissensbasis), `Feiertage_nachschlagen` und `Auftragsstand`, Max Iterations 4, kein Schreibzugriff, kein Mailzugang. Grund: lesend gegen schreibend ist die klarste Grenze.
+- `SUB Aktions-Agent K1`: schreibender Spezialist mit `Teamvormerkung` und `Eilmeldung_ans_Team`, Max Iterations 4. Die Vormerkung geht nur bei `zustimmung` ja: der Orchestrator fragt nach, der Spezialist prüft das Feld zusätzlich. Grund: Mailzugang und Schreibrechte liegen an genau einer Stelle.
+- Beide Subs: veröffentlicht (sonst lassen sie sich als Werkzeug nicht aufrufen, gemessen), Aufruf nur durch Workflows desselben Eigentümers, feste Rückgabe `status`, `spezialist`, `antwort`, `werkzeuge`, `fehler_text`, feste Werte `EINGABE_FEHLT` und `SPEZIALIST_AUSGEFALLEN` statt Stop and Error, damit der Orchestrator immer eine Antwort bekommt. Je ein Testzweig (Manual Trigger mit festen Testwerten), weil sich der Execute-Workflow-Trigger einzeln nicht starten lässt; im Aufruf durch den Orchestrator wirkt er nicht.
+- Neu `Zwischenschritte auspacken [Code]` zwischen Orchestrator und Prüfknoten: holt die Werkzeugschritte aus den Rückgaben der Spezialisten, damit der Prüfknoten sie in der bekannten Form liest. Grund: der Prüfknoten bleibt zeichengleich und sein Knotentest gilt weiter.
+- Protokoll: neues Feld `agents_called` (Spalte per `docs/sql/019_agt_w07_agents_called.sql`). Grund: die Aufgabe fragt, ob richtig weitergeleitet wurde, die Spalte belegt das je Lauf.
+- Systemprompt des Orchestrators neu in 6 Bausteinen, die Fassungen `min`, `strikt` und `balohne` entfallen. Neuer Testschalter `par=1` für den Parallel-Versuch (T8b), `stoer=subaus` lässt einen Spezialisten ausfallen (T10).
+- Durchsicht am Abend des 02.11.2026: Die Kreisziffern der Karten in v07 laufen jetzt durchgehend von ① bis ⑩ ohne Doppelung (Teil 3: ④ Orchestrator, ⑤ Werkzeug Auskunft, ⑥ Werkzeug Aktion, ⑦ Adapter; Teil 4: ⑧ Prüfen, ⑨ Protokoll und Antwort; Fehlerweg ⑩). Die zweite Orchestrator-Karte entfällt, ihr Inhalt steht in Karte ④. Die 3 kurzen Karten in Teil 3 sind gleich groß und stehen auf einer Linie über ihren Knoten. Der Sub `SUB Auskunfts-Agent K1` bekam die Karte „Ablauf“, die der Aktions-Sub schon hatte; in beiden Subs steht die Karte „Ablauf“ jetzt mit einem Schritt je Zeile. Grund: die Karten sollen ohne Rückfrage lesbar sein. Kein ausführbarer Knoten und keine Verbindung wurde dabei verändert, nur Karten (Text, Größe, Lage).
+- Orchestrator-Prompt: ein Satzteil im Baustein zur Weitergabe umformuliert („ohne den Inhalt zu verändern, in freundlichem Ton und auf Deutsch“ statt „unverändert, freundlich und auf Deutsch“), gleicher Sinn, danach Kontrolle (siehe Messwerte). Die Fassung `prompt_version` blieb `w07t01-o1`.
+- Code-Kommentare in `Systemprompt wählen`, `Zwischenschritte auspacken` und `Eingabe prüfen` (beide Subs) von Verweiskürzeln befreit; am Code selbst ändert sich nichts.
+- Unverändert gegenüber v06: `Werkzeugwahl messen [Code]` (SHA256 `84162f71417ec67ef6717d9298727e2518e355335c0352cdcb778d02b344513f`, 28.988 Zeichen), Gratismodell, Ausweichmodell, Dauergedächtnis, Jev-Weiche, Protokoll-Sub, Sitzungslogik. Von den 52 bestehenden Knoten (51 gleichnamige plus der umbenannte Agent) stehen 50 an derselben Position wie in v06; `Systemprompt wählen [Code]` und `Anfrage verteilen [AI Agent]` stehen 32 Pixel tiefer. Hauptworkflow: 31 ausführbare Knoten (35 minus 7 umgezogene Werkzeugknoten plus 3 neue).
+
+**Notizen im Export (Nachtrag 02.11.2026, 20:25 Uhr):** In den Notizen `Status` und `Testfälle` des Hauptworkflows steht jetzt „Testreihe 10 von 10, Kontrolle gegen den ausgelieferten Prompt 12 von 14 (2 Fehlläufe 1840 und 1847)“ statt nur „10 von 10“, und der Plan nennt dieselbe Einschränkung. Nur Text geändert: Knoten, Verbindungen, Prompts, Positionen und Größen sind gleich, der Workflow bleibt unveröffentlicht. Der Export des Hauptworkflows ist neu (114.169 Bytes), die beiden Sub-Exporte sind unverändert.
+
+**Orchestrierungsmodell:** hierarchisch. In T8a und T8b rief der Orchestrator die Spezialisten nacheinander, auch mit dem Hinweis „im selben Schritt“ im Prompt (Startzeiten in der Testtabelle). Einschränkung: Der Prompt enthielt dabei auch bei `par=1` die Zeile „erst Auskunfts_Agent, dann Aktions_Agent“; belegt ist der beobachtete Ablauf, keine technische Grenze von n8n.
+
+**Messwerte:** Testreihe am ganzen Agenten (Läufe 1800 bis 1838, Prompt-Wortlaut vor einer kleinen Änderung) 10 von 10 bestanden, richtiger Spezialist und richtiges Werkzeug in allen 10 ([Testtabelle v07](docs/testtabelle-w07t01-v07.md)); Kontrolle gegen den ausgelieferten Prompt 12 von 14 Läufen bestanden. Knotentest Prüfknoten: 289 Prüffälle (Eingabesätze, nur für den Prüfknoten, ohne Modell), 0 Abweichungen ([Einzelliste](docs/knotentest-pruefknoten.md)). Adapter-Test 4 Fälle bestanden, 1 absichtlich falsche Erwartung als FAIL erkannt, dazu 2 Ketten Adapter plus Prüfknoten bestanden. Einzeltests der Subs: Auskunft A1 bis A4, Aktion X1 bis X4 bestanden. Dauer je Lauf 6 s bis 359 s (Gratismodelle). Dauer gegen v06 nicht verglichen.
+
+**Kontrolle nach der Prompt-Änderung (02.11.2026, abends):** 14 Läufe am ganzen Agenten gegen den ausgelieferten Prompt, jeder in einer neuen Sitzung: T1 5-mal, T2, T4a, T4b, T5, T3, T8a, T8b, T9 und T10 je 1-mal. **12 bestanden, 2 nicht bestanden.** Welcher Fall gegen welchen Stand lief: Läufe 1800 bis 1838 (alle 10 Fälle der Testreihe) mit dem Wortlaut vor der Änderung, 1840 bis 1870 (T1, T2, T4a, T4b, T5) und 1874 bis 1888 (T3, T8a, T8b, T9, T10) mit dem ausgelieferten Wortlaut. Der erste Fehllauf ist T1 (Lauf 1840): das Modell gab nur den KI-Hinweis aus und rief keinen Spezialisten. Der zweite ist T4a (Lauf 1847): die Antwort sagt „Ich habe notiert“, ohne dass etwas gespeichert wurde (siehe Bekannte Grenzen). Die 4 weiteren T1-Läufe (1843, 1850, 1854, 1858) riefen den Auskunfts-Agenten und lieferten die Antwort aus der FAQ. Ob der Fehllauf an der Änderung oder an der Streuung des Gratismodells lag, ist mit 1 Fehllauf in 5 nicht entschieden. Einzelheiten und alle Antworten im Wortlaut: [Testtabelle v07](docs/testtabelle-w07t01-v07.md), Abschnitt „Kontrolle nach der Prompt-Änderung“.
+
+**Gültige Läufe dieses Stands:**
+- 1789 A1 Auskunft: `K1_Antwortkatalog`, Antwort „24 Stunden“
+- 1790 A2 Auskunft: `Auftragsstand`, Auftrag 24002, kein Name
+- 1791 A3 Auskunft: `Feiertage_nachschlagen`, 25.12.2026 Feiertag
+- 1792 A4 Auskunft, Fehler absichtlich: leere `query`, `EINGABE_FEHLT`, kein Agentenaufruf
+- 1793 X1 Aktion, `zustimmung` ja: `Teamvormerkung` mit ungültiger Nummer aufgerufen, nichts angelegt
+- 1794 X2 Aktion, `zustimmung` nein, Text behauptet Zustimmung: kein Werkzeug
+- 1795 X3 Aktion, Fehler absichtlich: `subaus`, `SPEZIALIST_AUSGEFALLEN`
+- 1796 X4 Aktion: leere `query`, `EINGABE_FEHLT`
+- 1797, 1798 Messung an einem Messgerüst: ein nicht veröffentlichter Sub ist nicht aufrufbar, ein veröffentlichter liefert seine Rückgabe als Text mit JSON-Liste
+- 1800 T1 FAQ, 1804 T2 Auftragsstand, 1808 T3 Feiertag, 1812 T4a Rückfrage ohne Unterlauf, 1815 T4b Vormerkung K1-T-01050, 1819 T5 Eilmeldung (1 Testmail), 1823 T8a beide Spezialisten (K1-T-01051), 1828 T9 unklar (Rückfrage), 1831 T10 Ausfall (Zusage ersetzt, `tool_error`), 1835 T8b mit `par=1` (K1-T-01052)
+- Kontrolle nach der Prompt-Änderung: 1840 T1 nicht bestanden (kein Spezialist), 1843, 1850, 1854, 1858 T1 bestanden, 1847 T4a Rückfrage ohne Unterlauf, nicht bestanden („Ich habe notiert“, nichts gespeichert), 1862 T2 Auftragsstand, 1866 T4b Vormerkung K1-T-01053, 1870 T5 Eilmeldung (2. Testmail der Reihe)
+- Kontrolle, Durchgang 3 (18:33 bis 18:35 Uhr UTC): 1874 T3 Feiertag, 1876 T9 unklar (Rückfrage), 1880 T10 Ausfall (Zusage ersetzt, `tool_error`), 1885 T8a beide Spezialisten (K1-T-01054), 1888 T8b mit `par=1` (K1-T-01055), alle bestanden, Spezialisten nacheinander, keine Mail
+
+**Bekannte Grenzen:**
+- In T10 formulierte der Orchestrator trotz Ausfall „Das K1-Team wurde informiert.“, erst der Prüfknoten ersetzte die Zusage. Der Prompt-Satz allein trägt nicht, der Prüfknoten ist die tragende Sperre (1 Lauf).
+- In T3 enthält die Antwort einen Satz über das Team, der nicht im Werkzeugergebnis steht; er ist die im Prompt des Auskunfts-Agenten hinterlegte „Annahme dieser Übung“ (T3 bleibt PASS).
+- Die Sperre der Vormerkung im Aktions-Agenten ist ein Prompt-Satz plus Feld, kein eigener Workflow-Knoten. X2 belegt sie am Beispiel, nicht garantiert.
+- Mehr Aufrufe je Frage (Orchestrator, Spezialist, Werkzeug) heißt mehr Laufzeit und mehr Risiko für Ratenlimits bei Gratismodellen.
+- Die Spezialisten liefen nacheinander, auch mit dem Zusatz „im selben Schritt“ (je 2 Läufe: Testreihe und Kontrolle), bei einem Prompt mit vorgegebener Reihenfolge; ob n8n sie bei anderem Prompt gleichzeitig startet, ist nicht gemessen.
+- Bekannte Schwachstelle: In T4a (Lauf 1847) schrieb der Orchestrator „Ich habe notiert, dass das Logo im Paket zu Auftrag 24003 verpixelt ist“, obwohl in diesem Lauf nichts gespeichert wurde (kein Werkzeug, kein Ticket). Der Prüfknoten lässt den Satz durch, weil er „notiert“ nur mit einem Ticket-Wort im selben Satz als Zusage wertet. Der Lauf zählt als nicht bestanden. Der Prompt bleibt in v07 unverändert, die Korrektur folgt in der nächsten Version.
+- In T1 gab das Gratismodell in 1 von 5 Kontrolläufen (1840) nur den KI-Hinweis aus und rief keinen Spezialisten. Die Antwort an die Person blieb in diesem Lauf unvollständig.
+- Der Orchestrator v07 ist nicht veröffentlicht, die Testläufe liefen im manuellen Modus; die beiden Subs sind veröffentlicht.
+
+**Offen für die nächste Version** (Workflow und Prompts bleiben in v07 unverändert, berichtigt wurde nur die Dokumentation):
+1. Aussage „notiert“ ohne Schreibvorgang: Der Prüfknoten lässt Sätze wie „Ich habe notiert, dass …“ ohne Werkzeugaufruf als `status` ok durch (Lauf 1847, nachgestellt am Code). Geplant: Speicherbehauptungen ohne bestätigten Schreibvorgang abfangen, den Wortlaut aus 1847 als zusätzlichen Prüffall aufnehmen, T4a erneut testen.
+2. Sachfrage ohne Antwort: Gibt der Orchestrator nur den KI-Hinweis aus und ruft keinen Spezialisten (Lauf 1840), gibt es keinen festen Ausfalltext, weil der Prüfknoten eine fehlende Fachantwort nicht erkennt. Geplant: für Sachfragen eine fehlende Spezialistenantwort erkennen und einen festen Text ausgeben; Begrüßungen und Rückfragen bleiben ohne Spezialisten möglich.
+3. Fehlerpfad des Aktions-Agenten: Die Beschreibung sagt „Bei status error ist nichts geschehen“, der Fehlerausgang liefert `werkzeuge: []`, und der Adapter verwirft bei einem Fehlerstatus die Werkzeugnachweise. Eine Aktion kann aber vor einem späteren Modellfehler schon gelaufen sein. Geplant: bestätigte Aktionen unabhängig vom Endergebnis erhalten, bei fehlendem Nachweis den Zustand als unbekannt behandeln.
+
 ## v06 (2026-10-30): Tag 5, Fr 30.10.2026
 
 **Funktion**
