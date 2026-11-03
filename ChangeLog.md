@@ -2,6 +2,71 @@
 
 Je Version des Workflows, was der Agent kann und was gemessen wurde. Neueste Einträge oben. Die Überschrift trägt die Version und das Datum des Stands.
 
+## v08 (2026-11-03): Woche 7 Tag 2, Di 03.11.2026
+
+Export `workflows/k1-support-agent_2026-11-03_v08.json`, Spezialisten in `workflows/subs/`, Git-Tag `v08`. Thema des Tages: wie die Agenten miteinander sprechen (Handoff) und was passiert, wenn einer nicht antwortet.
+
+**Funktion: Handoff**
+- `Aktions_Agent` (Werkzeug des Orchestrators) übergibt jetzt 3 Felder: `query`, `zustimmung` (ja oder nein) und neu `prioritaet` (normal oder hoch). Was `prioritaet` bedeutet, steht nur in der Beschreibung dieses Feldes: hoch nur, wenn die Person nicht warten will, aufgebracht ist, jemanden aus dem Team verlangt oder von einer Gefahr für Personen schreibt; sonst normal, im Zweifel normal. Grund: Die Priorität wirkt dort, wo gehandelt wird, beim schreibenden Spezialisten.
+- `Auskunfts_Agent` übergibt weiter nur `query`. Grund: Der lesende Spezialist braucht kein weiteres Feld, und ein Feld ohne Wirkung beim Empfänger gehört nicht in die Übergabe. K1 antwortet immer auf Deutsch, deshalb gibt es kein Feld für die Sprache.
+- Dazu gehen 2 feste Felder an den Aktions-Spezialisten, die nicht das Modell füllt: `person_nachricht` (die Nachricht der Person aus der Konfiguration) und `vorige_antwort` (die letzte Antwort des Assistenten, aus `Jev-Zustand bauen [Code]`). Grund: Der Spezialist prüft die Zustimmung an der echten Nachricht, nicht nur am Feld, das das Modell setzt.
+- `SUB Aktions-Agent K1`, `Eingabe prüfen [Code]`: `prioritaet` wird auf genau normal oder hoch gebracht, ein leeres Feld wird normal. `zustimmung` ja zählt nur bei einer ausdrücklichen Bitte um Ticket oder Vormerkung oder bei einem klaren Ja auf eine Rückfrage zur Vormerkung; bedingte, aufgeschobene oder nur simulierte Aufträge („sobald“, „falls“, „später“, „nur simulieren“ und verwandte) werden gesperrt, im Zweifel gesperrt. Das Ergebnis steht in `zustimmung_gesperrt`. Grund: Ohne echte Zustimmung entsteht kein Ticket.
+- `Aktion ausführen [AI Agent]` bekommt einen Text mit 3 Zeilen (Auftrag, Zustimmung, Priorität). Der Prompt (`w07t02-x2`) sagt: normal erlaubt eine Vormerkung nur mit Zustimmung, hoch gilt nur innerhalb der vorhandenen Regeln für die Eilmeldung, bei widersprüchlichen Feldern gilt die strengere Regel. Grund: Ein Feld, das im Sub ankommt, muss der Agent auch sehen.
+
+**Funktion: Fehlerbehandlung**
+- Orchestrator-Prompt (`w07t02-o3`) mit eigenem Abschnitt „Fehlerbehandlung“: Antwortet ein Spezialist nicht, meldet er einen Fehler oder liefert er keine brauchbare Antwort, steht nach dem KI-Hinweis genau der feste Satz „Das hat gerade nicht geklappt. Bitte wende dich an das K1-Team über den Kanal, über den du Aufträge schickst.“ Dazu höchstens 2 Aufrufe je Spezialist und Nachricht. „Das K1-Team wurde informiert.“ steht nur bei bestätigtem Versand. Grund: Ein Ausfall bekommt einen festen Text statt einer Vermutung des Modells.
+- `Zwischenschritte auspacken [Code]` (Adapter zwischen Orchestrator und Prüfknoten): Die Werkzeugschritte der Spezialisten bleiben auch bei `status` error erhalten. Fehlt die Antwort eines Spezialisten, ist sie leer oder unbrauchbar, oder besteht die Antwort des Orchestrators nur aus dem KI-Hinweis, kommt der feste Ausfallsatz. Grund: Bestätigte Teilaktionen dürfen im Fehlerfall nicht verschwinden, und eine leere Antwort ist ein Ausfall.
+- `SUB Aktions-Agent K1`: neuer Knoten `Belege aus Kontext [Code]` im Fehlerausgang des Agenten. Er liest die letzte Rückgabe je Werkzeug und reicht Belege und belegte Ablehnungen weiter. `Ausfall bündeln [Edit Fields]` meldet `aktion_stand`: `keine` (der Agent lief nie), `werkzeug_lief` (ein Werkzeug lief, Ergebnis nicht belegt), `bestaetigt` (Beleg liegt vor), `unbekannt`. Die Werkzeugbeschreibung sagt nicht mehr „bei status error ist nichts geschehen“. Grund: Eine Aktion kann vor einem späteren Fehler schon gelaufen sein.
+- `Werkzeugwahl messen [Code]` (Prüfknoten): hängt bei jeder Aktion des Laufs (Aufruf von `Teamvormerkung` oder `Eilmeldung_ans_Team`) einen festen Absatz aus den strukturierten Rückgaben an, in 3 Klassen: „Bestätigt“ (Beleg liegt vor), „Nicht geklappt“ (nur belegte fachliche Ablehnung) und „Offen“ (technischer Fehler, Zeitüberschreitung, unlesbare Rückgabe: „Ausgang unbekannt“). Ohne Aktionsaufruf kein Absatz. Dazu erkennt er Schreibzusagen ohne Werkzeugaufruf wie „Ich habe notiert, dass die Farben im Paket nicht stimmen.“ und weitere Formen (aufgeschrieben, hinterlegt, registriert, weitergereicht und verwandte). Grund: Was der Kunde über eine Aktion liest, kommt aus den Belegen, nicht aus dem Modelltext.
+- `Ausfall melden [Edit Fields]` (Fehlerausgang des Orchestrators): setzt nach dem KI-Hinweis den festen Satz „Der Support-Assistent antwortet im Moment nicht. Bitte versuch es später noch einmal oder wende dich an das K1-Team.“ und prüft, ob ein Spezialist schon lief. Wenn der Aktions-Spezialist lief, hängt es „Ein Teil des Vorgangs kann schon ausgeführt worden sein.“ an und schreibt die Zahl der Aufrufe als unbekannt (`null`), nicht als 0. `Protokollzeile bauen [Code]` reicht `null` unverändert weiter. Grund: Das Protokoll behauptet keine 0 Aufrufe, wenn es das nicht weiß.
+- `SUB Aktions-Agent K1`, Beschreibung von `Teamvormerkung`: Bei einem technischen Fehler ist der Ausgang unbekannt; das Werkzeug verbietet dann beide Behauptungen, angelegt und nicht angelegt.
+- Max Iterations unverändert: Orchestrator 5, beide Spezialisten 4. Für den Bonusversuch lief der Orchestrator einmal mit 1 (Lauf 2019), danach wieder 5, im Export nachgemessen.
+- `SUB Auskunfts-Agent K1`: fachlich unverändert, nur `workflow_version` `sub-auskunft-v2` und die Notizen.
+- Workflow-Metadaten: Namen „AGT-2606 W07T02 K1 Support-Agent v08“, „SUB Auskunfts-Agent K1 v08“, „SUB Aktions-Agent K1 v08“; Tags `schulung`, `woche-7`, `KI-AGT-2606`, bei den Spezialisten zusätzlich `sub-workflow`. Im Export sind Zugänge entfernt, die IDs der Sub-Workflows durch Platzhalter ersetzt (`SUB_…_NACH_IMPORT_AUSWAEHLEN`), Supabase-Projekt und Mailadresse ebenfalls Platzhalter.
+
+**Baurunden innerhalb von v08.** Nach außen heißt der Stand v08. Die Konfiguration (`workflow_version`) zählt jede Baurunde des Tages weiter, deshalb steht im Export `v16`. Die letzte Runde `v17` änderte nur Texte und eine Knotenposition, nicht die Logik; das Feld blieb deshalb bei `v16`. Jede Runde wurde getestet, bevor die nächste begann.
+
+| Konfiguration | Was sich änderte | Warum |
+|---|---|---|
+| v08 | Feld `prioritaet`, Abschnitt Fehlerbehandlung im Prompt, Belege bleiben im Fehlerweg, Prüfknoten erkennt „notiert“ ohne Werkzeug | Grundbau der Tagesaufgabe |
+| v09 | feste Felder `person_nachricht` und `vorige_antwort`, Zustimmungssperre im Aktions-Spezialisten, `aktion_stand` mit 4 Werten, Knoten `Belege aus Kontext`, weitere Zusageformen im Prüfknoten, Sachaussage ohne Spezialist wird zum festen Satz | in Lauf 1927 setzte der Orchestrator `zustimmung` ja, ohne dass die Person zugestimmt hatte |
+| v10 | Sperre enger (Status- und Fragewörter, Ja nur auf eine Vormerk-Rückfrage), belegte Teilaktion wird bei Ausfall immer genannt, Notiz „Testfälle“ berichtigt | weitere Testsätze gingen durch die Sperre |
+| v11 | bei Ausfall mit Beleg ersetzt ein Belegsatz den Text des Orchestrators, Notiz „Testfälle“ gekürzt, damit sie in ihre Fläche passt | verneinte oder leere Texte neben einer bestätigten Vormerkung |
+| v12 | `Ausfall melden` liest, ob ein Spezialist lief, mehrere bestätigte Aktionen werden zusammen genannt, bedingte und simulierte Aufträge gesperrt | der Fehlerausgang meldete 0 Aufrufe, obwohl ein Spezialist gelaufen war |
+| v13 | leere Antwort bei bestätigter Aktion wird zum Belegsatz, jeder Ersatz im Prüfknoten nennt die bestätigten Belege | weitere Mischfälle |
+| v14 | Umbau: der feste Aktionsabsatz entsteht aus den Belegen; die Satzfilter im Adapter sind zurückgebaut und danach ganz gestrichen | Wortfilter löschten zutreffende Sätze; v12 und v13 hatten in einem Fall die richtige Fehlermeldung zur Mail entfernt, v14 stellte sie wieder her |
+| v15 | Absatz mit 3 Klassen, „Offen“ für unbekannten Ausgang; belegte Ablehnung im Fehlerweg wird weitergereicht | eine Zeitüberschreitung beweist nicht, dass nichts angelegt wurde |
+| v16 | eine Antwort, die nach Abzug des KI-Hinweises leer ist, gilt als leer | Lauf 1990 (L1) bestand nur aus dem KI-Hinweis |
+| v17 (Feld bleibt `v16`) | nur Texte: Rollen-Abschnitte der 3 Prompts neu formuliert, fester Ausfallsatz jetzt „Der Support-Assistent antwortet im Moment nicht.“, Beschreibung des Orchestrators, Notizen und Code-Kommentare sachlich gefasst; `Belege aus Kontext [Code]` im Aktions-Spezialisten etwas höher gesetzt | Texte klarer und sachlicher gefasst; die Beschriftung von `Belege aus Kontext` überdeckte die Ecke von `Eilmeldung_ans_Team` |
+
+Aktions-Spezialist: `sub-aktion-v2` bis `sub-aktion-v6` in denselben Runden. Auskunfts-Spezialist: `sub-auskunft-v2`.
+
+**Messwerte:** Schlussreihe am Stand v15: 11 Läufe, 9 PASS, 2 FAIL (L1 Lauf 1990, A1 Lauf 2015); nach der Änderung v16: 6 Läufe, 6 PASS; Kontrolle am Endstand nach v17: 5 Läufe, 5 PASS. Die 2 FAIL der Schlussreihe bleiben FAIL. Alle Antworten im Wortlaut: [Testtabelle v08](docs/testtabelle-w07t02-v08.md). Der Ticketpfad ist nicht live gemessen: Für die Reihe zeigte `Teamvormerkung` absichtlich auf eine nicht vorhandene Datenbankfunktion, damit kein weiteres Ticket entsteht. Knotentests der geänderten Code-Knoten (Adapter, Prüfknoten, Eingabe prüfen, Belege aus Kontext, Ausfall melden) liefen mit 0 unerwarteten Abweichungen; ihre Skripte liegen nicht im Repository.
+
+**Testticket:** Beim Bau entstand in einem Einzellauf des Aktions-Spezialisten (Lauf 1936) das echte Ticket K1-T-01056. Es ist ein Testticket und bleibt stehen.
+
+**Gültige Läufe dieses Stands:**
+- Schlussreihe (Stand v15): 1990 L1 FAIL (nur KI-Hinweis, kein Spezialist), 1992 L2 Eilmeldung (Aktion 2000, 1 Mail), 1995 L3a Rückfrage, 2004 L3b Vormerkung mit Zustimmung (Aktion 2008, Ausgang unbekannt, weil das Werkzeug kein Ziel hatte), 2013 S1 leere Eingabe, 2014 S2 fehlende Priorität wird normal, 2015 A1 FAIL (Teil, Belege im Fehlerausgang nicht lesbar), 2016 F1 Spezialist unveröffentlicht, 1997 F3 unbekannte Nummer, 2006 F4b lange Mehrfachanfrage (Aktion 2011, 1 Mail), 2019 B1 Max Iterations 1 (Aktion 2021, 1 Mail)
+- Nach v16: 2023, 2025, 2027 L1, 2029 Frage nach den fertigen Dateien, 2039 L2 Kontrolle (1 Mail), 2041 F3 Kontrolle
+- Kontrolle am Endstand (nach v17): 2047 L1, 2050 L2 (1 Mail), 2052 L3a Rückfrage, 2057 L3b Vormerkung (Werkzeug ohne Ziel, Ausgang unbekannt), 2062 B1 Max Iterations 1 (nur Auskunfts-Spezialist gelaufen, neuer Ausfallsatz, keine Mail)
+- Läufe während der Baurunden (1897 bis 1986) liefen an Zwischenständen und gelten nicht für den Endstand; sie stehen nicht in der Testtabelle.
+
+**Bekannte Grenzen:**
+- Zustimmungssperre und Prüfknoten sind Wortlisten. Gemessen mit eigenen Testsätzen vor den letzten Baurunden (Stand v12): von 17 Umschreibungen einer Zustimmung gingen 12 durch, von 10 klaren Bitten wurden 4 gesperrt. Seitdem nicht neu gemessen.
+- Die Obergrenze von 2 Aufrufen je Spezialist steht nur im Prompt, kein Knoten zählt sie.
+- Der Mail-Beleg im Fehlerausgang des Aktions-Spezialisten ist nicht lesbar; der Mail-Knoten liefert dort keine Rückgabe.
+- `Ausfall melden` nennt keine bestätigten Belege, weil der Fehlerausgang des Orchestrators keine trägt; dort gibt es keinen festen Absatz.
+- Ein Satz des Modells, der einer bestätigten Aktion widerspricht, kann neben dem festen Absatz stehen bleiben. Der Absatz am Ende stimmt dann, der Text davor nicht.
+- Der Orchestrator ruft bei einfachen Fragen nicht in jedem Lauf den Spezialisten (L1: 4 von 5 Läufen, 1990 ohne, 2023, 2025, 2027 und 2047 mit Spezialist). Er versucht es nicht erneut, die Antwort ist dann der feste Ausfallsatz.
+- In B1 sendete der Aktions-Spezialist eine Mail, die Antwort deutet sie nur allgemein an („Ein Teil des Vorgangs kann schon ausgeführt worden sein.“), `action` blieb leer.
+- Der Kontext eines Werkzeugknotens hält nur den letzten Aufruf; frühere Aufrufe stehen im Fehlerweg unter „Offen“.
+- Der Orchestrator v08 ist nicht veröffentlicht, die Läufe liefen im manuellen Modus; die Spezialisten sind veröffentlicht.
+
+**Offen für die nächste Version:**
+1. Zustimmung nur über das Ja auf eine konkrete Rückfrage statt über eine Wortliste.
+2. Mailversand über einen eigenen Sub-Workflow, damit sein Beleg auch im Fehlerweg lesbar ist.
+3. Ein zweiter Aufruf des Spezialisten, wenn der Orchestrator bei einer Sachfrage keinen gerufen hat.
+
 ## v07 (2026-11-02): Woche 7 Tag 1, Mo 02.11.2026
 
 **Funktion**

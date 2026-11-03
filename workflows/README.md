@@ -4,7 +4,13 @@ Hier liegen die n8n-Exporte des Support-Agenten. Dateiname `k1-support-agent_<JJ
 
 Welche Version zu welchem Tag und welcher Tages-Doku gehört, steht in der [Versionstabelle im README](../README.md#versionen).
 
-**Stand 02.11.2026:**
+**Stand 03.11.2026:**
+
+- `k1-support-agent_2026-11-03_v08.json`: wie v07 aufgebaut, dazu Handoff mit festen Feldern und Fehlerbehandlung. `Aktions_Agent` übergibt `query`, `zustimmung`, `prioritaet` sowie die festen Felder `person_nachricht` und `vorige_antwort`; `Auskunfts_Agent` übergibt `query`. 58 Knoten (31 ausführbar und 27 Notizen). Import wie unten für v07 beschrieben, mit denselben 4 Platzhaltern; die Spezialisten tragen nach dem Import die Namen `SUB Auskunfts-Agent K1 v08` und `SUB Aktions-Agent K1 v08`. Endstand nach der letzten Textrunde (`workflow_version` `v16`): fester Ausfallsatz „Der Support-Assistent antwortet im Moment nicht. …“, Rollen-Abschnitte der Prompts neu gefasst.
+- `subs/sub-aktions-agent-k1.json` (Stand v08, 34 Knoten): neu sind das Feld `prioritaet`, die Prüfung der Zustimmung in `Eingabe prüfen [Code]` und der Knoten `Belege aus Kontext [Code]` im Fehlerausgang (14 ausführbare Knoten und 20 Notizen). `subs/sub-auskunfts-agent-k1.json` hat 36 Knoten (16 ausführbar und 20 Notizen). `subs/sub-auskunfts-agent-k1.json` (Stand v08): fachlich wie v07. Die Fassungen der Spezialisten zu v07 sind über den Git-Tag `v07` abrufbar.
+- Keine neue SQL-Datei.
+
+**Stand 02.11.2026 (Vorgänger):**
 
 - `k1-support-agent_2026-11-02_v07.json`: der Agent ist in einen Orchestrator und 2 Spezialisten geteilt. Der Orchestrator `Anfrage verteilen [AI Agent]` hat kein eigenes Fachwerkzeug mehr, er ruft nur `Auskunfts_Agent` und `Aktions_Agent` auf. Beide sind Werkzeuge, die je einen Sub-Workflow starten. Jev-Weiche, Protokoll-Sub, Prüfknoten, Gedächtnis und Ausweichmodell bleiben wie in v06. 58 Knoten (31 ausführbar und 27 Notizen).
 - `subs/sub-auskunfts-agent-k1.json` (`SUB Auskunfts-Agent K1`): lesender Spezialist mit `K1_Antwortkatalog`, `K1_Technikwissen`, `Feiertage_nachschlagen` und `Auftragsstand`, kein Schreibzugriff, kein Mailzugang.

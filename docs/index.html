@@ -26,25 +26,27 @@
 <a href="w06t04.html">W6 Tag 4</a>
 <a href="w06t05.html">W6 Tag 5</a>
 <a href="w07t01.html">W7 Tag 1</a>
+<a href="w07t02.html">W7 Tag 2</a>
 <a href="https://github.com/MinkeAutomation/k1-support-agent">Repository</a>
 </nav>
 </header>
 <div class="titelkopf">
 <div>
-<p class="oberzeile"><span aria-hidden="true" class="marke"></span>Wochen-Doku · Woche 6 und 7 · 26.10. bis 02.11.2026</p>
+<p class="oberzeile"><span aria-hidden="true" class="marke"></span>Wochen-Doku · Woche 6 und 7 · 26.10. bis 03.11.2026</p>
 <h1>K1 Support-Agent</h1>
-<p class="untertitel">Ein n8n-Agent beantwortet Fragen zur Content-Maschine K1 und wächst jeden Kurstag um eine Fähigkeit. Stand: v07 vom 02.11.2026, ein Orchestrator verteilt jede Anfrage an 2 Spezialisten.</p>
+<p class="untertitel">Ein n8n-Agent beantwortet Fragen zur Content-Maschine K1 und wächst jeden Kurstag um eine Fähigkeit. Stand: v08 vom 03.11.2026, ein Orchestrator verteilt jede Anfrage an 2 Spezialisten, übergibt feste Felder und hat für jeden Ausfall einen festen Ausgang.</p>
 </div>
 </div>
 <dl aria-label="Stand" class="messleiste">
-<div><dt>Workflow</dt><dd>v07<small>02.11.2026</small></dd></div><div><dt>Agenten</dt><dd>3<small>Orchestrator, Auskunft, Aktion</small></dd></div><div><dt>Testfälle v07</dt><dd>10 von 10<small>Testreihe; Kontrolle 12 von 14 Läufen</small></dd></div><div><dt>Knotentest</dt><dd>289 / 0<small>Prüffälle / Abweichungen</small></dd></div><div><dt>Vergleichsläufe</dt><dd>45<small>3 Prompts, W6 Tag 4</small></dd></div><div><dt>Tage Woche 6</dt><dd>5 von 5<small>dokumentiert</small></dd></div>
+<div><dt>Workflow</dt><dd>v08<small>03.11.2026</small></dd></div><div><dt>Agenten</dt><dd>3<small>Orchestrator, Auskunft, Aktion</small></dd></div><div><dt>Schlussreihe v08</dt><dd>9 von 11<small>Läufe bestanden, 2 FAIL; danach 6 von 6, Kontrolle 5 von 5</small></dd></div><div><dt>Knotentest</dt><dd>289 / 0<small>Prüffälle / Abweichungen</small></dd></div><div><dt>Vergleichsläufe</dt><dd>45<small>3 Prompts, W6 Tag 4</small></dd></div><div><dt>Tage Woche 6</dt><dd>5 von 5<small>dokumentiert</small></dd></div>
 </dl>
 <div class="knoepfe">
-<a class="knopf" href="w07t01.html">Woche 7 Tag 1 <span aria-hidden="true" class="pfeil">→</span></a>
+<a class="knopf" href="w07t02.html">Woche 7 Tag 2 <span aria-hidden="true" class="pfeil">→</span></a>
+<a class="knopf zweit" href="w07t01.html">Woche 7 Tag 1 <span aria-hidden="true" class="pfeil">→</span></a>
 <a class="knopf zweit" href="w06t04.html">Woche 6 Tag 4 <span aria-hidden="true" class="pfeil">→</span></a>
-<a class="knopf" href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/testtabelle-w07t01-v07.md">Testtabelle v07 <span aria-hidden="true" class="pfeil">↗</span></a>
+<a class="knopf" href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/testtabelle-w07t02-v08.md">Testtabelle v08 <span aria-hidden="true" class="pfeil">↗</span></a>
 <a class="knopf zweit" href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/knotentest-pruefknoten.md">Knotentest Prüfknoten <span aria-hidden="true" class="pfeil">↗</span></a>
-<a class="knopf zweit" href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/k1-support-agent_2026-11-02_v07.json">Export v07 <span aria-hidden="true" class="pfeil">↗</span></a>
+<a class="knopf zweit" href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/k1-support-agent_2026-11-03_v08.json">Export v08 <span aria-hidden="true" class="pfeil">↗</span></a>
 <a class="knopf zweit" href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/ChangeLog.md">ChangeLog <span aria-hidden="true" class="pfeil">↗</span></a>
 <a class="knopf zweit" href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/versionsmatrix.md">Versionsmatrix <span aria-hidden="true" class="pfeil">↗</span></a>
 </div>
@@ -52,7 +54,7 @@
 <main id="inhalt">
 <section aria-labelledby="plan-t" class="kapitel" id="plan">
 <h2 id="plan-t">Aktueller Plan</h2>
-<figure><img alt="Plan v07: Kundenfrage, Limit, Jev-Weiche, Orchestrator Anfrage verteilen mit SUB Auskunfts-Agent und SUB Aktions-Agent, danach Zwischenschritte auspacken, Prüfknoten, Protokollzeile, Antwort" src="bilder/w07t01-plan-v07.png"/><figcaption>Plan v07, Endstand 02.11.2026. Ja und Nein stehen an den Pfeilen. <a href="plan/plan-w07t01-v07.png">Volle Auflösung</a>.</figcaption></figure>
+<figure><img alt="Plan v08: Orchestrator mit Handoff-Feldern an SUB Auskunfts-Agent und SUB Aktions-Agent, Fehlerwege rot, Prüfknoten mit festem Aktionsabsatz" src="bilder/w07t02-plan-v08.png"/><figcaption>Plan v08, Endstand 03.11.2026. Handoff-Felder türkis, Fehlerwege rot. <a href="plan/plan-w07t02-v08.png">Volle Auflösung</a>. Was an Tag 1 offen war, steht im <a href="w07t02.html#update">Update-Abschnitt von Tag 2</a>.</figcaption></figure>
 </section>
 <section aria-labelledby="versionen-t" class="kapitel" id="versionen">
 <h2 id="versionen-t">Versionen</h2>
@@ -62,6 +64,7 @@
 <caption id="t-versionen">Versionsleiter, neueste oben</caption>
 <thead><tr><th scope="col">Version</th><th scope="col">Datum</th><th scope="col">Neu</th><th scope="col">Plan</th><th scope="col">Tests</th><th scope="col">Workflow</th><th scope="col">Doku</th></tr></thead>
 <tbody>
+<tr><th data-label="Version" scope="row">v08</th><td data-label="Datum">03.11.2026</td><td data-label="Neu">Handoff-Feld prioritaet, feste Felder für die Zustimmung, fester Ausfallsatz, fester Absatz aus den Belegen (Baurunden intern bis v16, letzte Textrunde v17)</td><td data-label="Plan"><a href="plan/plan-w07t02-v08.png">Plan v08</a></td><td data-label="Tests"><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/testtabelle-w07t02-v08.md">Testtabelle v08</a></td><td data-label="Workflow"><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/k1-support-agent_2026-11-03_v08.json">Export v08</a></td><td data-label="Doku"><a href="w07t02.html">W7 Tag 2</a></td></tr>
 <tr><th data-label="Version" scope="row">v07</th><td data-label="Datum">02.11.2026</td><td data-label="Neu">Agent in 3 Rollen geteilt (Verteilung, Auskunft, Aktion), Spalte agents_called im Protokoll</td><td data-label="Plan"><a href="plan/plan-w07t01-v07.png">Plan v07</a></td><td data-label="Tests"><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/testtabelle-w07t01-v07.md">10 Testfälle</a>, <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/knotentest-pruefknoten.md">Knotentest</a></td><td data-label="Workflow"><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/k1-support-agent_2026-11-02_v07.json">Export v07</a></td><td data-label="Doku"><a href="w07t01.html">W7 Tag 1</a></td></tr>
 <tr><th data-label="Version" scope="row">v06</th><td data-label="Datum">30.10.2026</td><td data-label="Neu">Jev-Weiche und Protokollzeile als eigene Sub-Workflows, Protokollfehler halten die Antwort nicht auf</td><td data-label="Plan">gab es nicht (<a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/versionsmatrix.md">Versionsmatrix</a>)</td><td data-label="Tests"><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/testtabelle-w06t05-v06.md">Testtabelle v06</a>, <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/knotentest-pruefknoten.md">Knotentest</a></td><td data-label="Workflow"><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/k1-support-agent_2026-10-30_v06.json">Export v06</a></td><td data-label="Doku"><a href="w06t05.html">W6 Tag 5</a></td></tr>
 <tr><th data-label="Version" scope="row">v05.1</th><td data-label="Datum">30.10.2026</td><td data-label="Neu">Prüfknoten: Zusagen neben Angeboten, Tickets nur aus bestätigter Rückgabe</td><td data-label="Plan">gab es nicht (<a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/versionsmatrix.md">Versionsmatrix</a>)</td><td data-label="Tests"><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/knotentest-pruefknoten.md">Knotentest</a></td><td data-label="Workflow"><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/k1-support-agent_2026-10-30_v05.1.json">Export v05.1</a></td><td data-label="Doku"><a href="w06t05.html">W6 Tag 5</a></td></tr>
@@ -75,7 +78,7 @@
 </section></main>
 <footer class="fuss">
 <span>Patrick Minkler · K1 Support-Agent</span>
-<span>Stand 02.11.2026 · v07</span>
+<span>Stand 03.11.2026 · v08</span>
 </footer>
 </div>
 </body>
