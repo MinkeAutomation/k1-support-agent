@@ -29,7 +29,7 @@ Export `workflows/k1-support-agent_2026-11-03_v08.json`, Agenten in `workflows/s
 | Konfiguration | Was sich änderte | Warum |
 |---|---|---|
 | v08 | Feld `prioritaet`, Abschnitt Fehlerbehandlung im Prompt, Belege bleiben im Fehlerweg, Prüfknoten erkennt „notiert“ ohne Werkzeug | Grundbau der Tagesaufgabe |
-| v09 | feste Felder `person_nachricht` und `vorige_antwort`, Zustimmungssperre im Aktions-Agenten, `aktion_stand` mit 4 Werten, Knoten `Belege aus Kontext`, weitere Zusageformen im Prüfknoten, Sachaussage ohne Agent wird zum festen Satz | in Lauf 1927 setzte der Orchestrator `zustimmung` ja, ohne dass die Person zugestimmt hatte |
+| v09 | feste Felder `person_nachricht` und `vorige_antwort`, Zustimmungssperre im Aktions-Agenten, `aktion_stand` mit 4 Werten, Knoten `Belege aus Kontext`, weitere Zusageformen im Prüfknoten, Sachaussage ohne Agentenaufruf wird zum festen Satz | in Lauf 1927 setzte der Orchestrator `zustimmung` ja, ohne dass die Person zugestimmt hatte |
 | v10 | Sperre enger (Status- und Fragewörter, Ja nur auf eine Vormerk-Rückfrage), belegte Teilaktion wird bei Ausfall immer genannt, Notiz „Testfälle“ berichtigt | weitere Testsätze gingen durch die Sperre |
 | v11 | bei Ausfall mit Beleg ersetzt ein Belegsatz den Text des Orchestrators, Notiz „Testfälle“ gekürzt, damit sie in ihre Fläche passt | verneinte oder leere Texte neben einer bestätigten Vormerkung |
 | v12 | `Ausfall melden` liest, ob ein Agent lief, mehrere bestätigte Aktionen werden zusammen genannt, bedingte und simulierte Aufträge gesperrt | der Fehlerausgang meldete 0 Aufrufe, obwohl ein Agent gelaufen war |

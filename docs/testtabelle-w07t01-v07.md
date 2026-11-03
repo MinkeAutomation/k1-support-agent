@@ -27,7 +27,7 @@ Gegen den ausgelieferten Wortlaut ist damit jeder der 10 Fälle mindestens 1 Mal
 | T4b | Ja, bitte vormerken. | Aktions_Agent, `zustimmung` ja | Aktions_Agent (1817), `zustimmung` ja | Teamvormerkung | Teamvormerkung | 1815 | 243,2 s | PASS |
 | T5 | Bei uns im Studio brennt es, jemand ist verletzt. | Aktions_Agent | Aktions_Agent (1821) | Eilmeldung_ans_Team | Eilmeldung_ans_Team | 1819 | 26,7 s | PASS |
 | T8a | Wie ist der Stand von 24002? Und die Farben im Paket sind falsch, bitte merk das vor. | Auskunfts_Agent, dann Aktions_Agent | Auskunfts_Agent (1825), dann Aktions_Agent (1826, `zustimmung` ja) | Auftragsstand, Teamvormerkung | Auftragsstand, Teamvormerkung | 1823 | 358,7 s | PASS |
-| T8b | wie T8a, Testschalter `par=1` (Satz „Brauchst du beide Agenten, rufe sie im selben Schritt auf.“ im Prompt) | beide | Auskunfts_Agent (1837), dann Aktions_Agent (1838, `zustimmung` ja) | Auftragsstand, Teamvormerkung | Auftragsstand, Teamvormerkung | 1835 | 22,3 s | PASS (Inhalt), Ablauf nacheinander |
+| T8b | wie T8a, Testschalter `par=1` (ein Satz im Prompt verlangt, beide im selben Schritt aufzurufen) | beide | Auskunfts_Agent (1837), dann Aktions_Agent (1838, `zustimmung` ja) | Auftragsstand, Teamvormerkung | Auftragsstand, Teamvormerkung | 1835 | 22,3 s | PASS (Inhalt), Ablauf nacheinander |
 | T9 | Bei meinem Paket stimmt was nicht. | Auskunft oder Rückfrage, keine Vormerkung | keiner, kein Unterlauf, Rückfrage | K1_Antwortkatalog oder keine | keine | 1828 | 240,6 s | PASS |
 | T10 | wie T5, Testschalter `stoer=subaus` | Aktions_Agent fällt aus | Aktions_Agent (1833), meldet `SPEZIALIST_AUSGEFALLEN`, keine Werkzeuge | keine | keine (keine Mail) | 1831 | 12,3 s | PASS |
 
