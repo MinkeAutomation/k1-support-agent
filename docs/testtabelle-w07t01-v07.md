@@ -1,10 +1,10 @@
 # Testtabelle W07T01, Workflow v07 (Agent in 3 Rollen: Verteilung, Auskunft, Aktion)
 
-Gelaufen am 02.11.2026 zwischen 14:40 und 15:13 Uhr UTC (15:40 bis 16:13 Uhr deutscher Zeit), nacheinander, über den Chat-Eingang des Workflows. Gratismodelle, Spezialisten und Werkzeuge liefen echt. Jeder Fall bekam eine eigene Sitzung, T4b läuft in der Sitzung von T4a weiter. Die Erwartung je Fall stand vor dem Lauf fest.
+Gelaufen am 02.11.2026 zwischen 14:40 und 15:13 Uhr UTC (15:40 bis 16:13 Uhr deutscher Zeit), nacheinander, über den Chat-Eingang des Workflows. Gratismodelle, Agenten und Werkzeuge liefen echt. Jeder Fall bekam eine eigene Sitzung, T4b läuft in der Sitzung von T4a weiter. Die Erwartung je Fall stand vor dem Lauf fest.
 
-**Begriffe:** „Testfall“ heißt hier nur ein Lauf am ganzen Agenten (Orchestrator mit Spezialisten). Der Prüfknoten hat einen eigenen Knotentest mit 289 Eingabesätzen: [knotentest-pruefknoten.md](knotentest-pruefknoten.md). Die Einzeltests der beiden Subs stehen im [ChangeLog](../ChangeLog.md), Abschnitt v07.
+**Begriffe:** „Testfall“ heißt hier nur ein Lauf am ganzen Agenten (Orchestrator mit Agenten). Der Prüfknoten hat einen eigenen Knotentest mit 289 Eingabesätzen: [knotentest-pruefknoten.md](knotentest-pruefknoten.md). Die Einzeltests der beiden Subs stehen im [ChangeLog](../ChangeLog.md), Abschnitt v07.
 
-**Ergebnis der Testreihe (Läufe 1800 bis 1838): 10 von 10 Testfällen bestanden.** Zusammen mit der Kontrolle (14 Läufe, 12 bestanden) sind es 24 Läufe, 22 bestanden, 2 nicht bestanden. 7 Anfragen gingen über den Orchestrator zum erwarteten Spezialisten (T1, T2, T3 zur Auskunft, T4b, T5 zur Aktion, T8a und T8b zu beiden), 2 Fälle waren richtig ohne Spezialisten (T4a, T9), 1 Fehlerfall wurde richtig abgefangen (T10). Zusammen 7 + 2 + 1 = 10. Diese 10 Läufe (1800 bis 1838) liefen mit dem Prompt-Wortlaut vor einer späteren kleinen Änderung. Danach folgte eine Kontrolle gegen den ausgelieferten Prompt mit 14 Läufen (12 bestanden, 2 nicht bestanden), sie steht unter „Kontrolle nach der Prompt-Änderung“. **Bekannte Schwachstelle:** In Kontrolllauf 1847 (T4a) sagt der Agent „Ich habe notiert“, obwohl nichts gespeichert wurde; der Lauf zählt als nicht bestanden. Der Prompt bleibt in dieser Version unverändert, die Korrektur folgt in der nächsten Version.
+**Ergebnis der Testreihe (Läufe 1800 bis 1838): 10 von 10 Testfällen bestanden.** Zusammen mit der Kontrolle (14 Läufe, 12 bestanden) sind es 24 Läufe, 22 bestanden, 2 nicht bestanden. 7 Anfragen gingen über den Orchestrator zum erwarteten Agenten (T1, T2, T3 zur Auskunft, T4b, T5 zur Aktion, T8a und T8b zu beiden), 2 Fälle waren richtig ohne Agenten (T4a, T9), 1 Fehlerfall wurde richtig abgefangen (T10). Zusammen 7 + 2 + 1 = 10. Diese 10 Läufe (1800 bis 1838) liefen mit dem Prompt-Wortlaut vor einer späteren kleinen Änderung. Danach folgte eine Kontrolle gegen den ausgelieferten Prompt mit 14 Läufen (12 bestanden, 2 nicht bestanden), sie steht unter „Kontrolle nach der Prompt-Änderung“. **Bekannte Schwachstelle:** In Kontrolllauf 1847 (T4a) sagt der Agent „Ich habe notiert“, obwohl nichts gespeichert wurde; der Lauf zählt als nicht bestanden. Der Prompt bleibt in dieser Version unverändert, die Korrektur folgt in der nächsten Version.
 
 **Welcher Fall gegen welchen Prompt-Stand lief:**
 
@@ -18,7 +18,7 @@ Gegen den ausgelieferten Wortlaut ist damit jeder der 10 Fälle mindestens 1 Mal
 
 ## Übersicht
 
-| Fall | Anfrage | Spezialist erwartet | Spezialist tatsächlich (Unterlauf) | Werkzeug erwartet | Werkzeug tatsächlich | Lauf | Dauer | Ergebnis |
+| Fall | Anfrage | Agent erwartet | Agent tatsächlich (Unterlauf) | Werkzeug erwartet | Werkzeug tatsächlich | Lauf | Dauer | Ergebnis |
 |---|---|---|---|---|---|---|---|---|
 | T1 | Wie lange wartet K1 auf meine Freigabe? | Auskunfts_Agent | Auskunfts_Agent (1802) | K1_Antwortkatalog | K1_Antwortkatalog | 1800 | 28,0 s | PASS |
 | T2 | Wie ist der Stand von Auftrag 24002? | Auskunfts_Agent | Auskunfts_Agent (1806) | Auftragsstand | Auftragsstand | 1804 | 254,3 s | PASS |
@@ -27,11 +27,11 @@ Gegen den ausgelieferten Wortlaut ist damit jeder der 10 Fälle mindestens 1 Mal
 | T4b | Ja, bitte vormerken. | Aktions_Agent, `zustimmung` ja | Aktions_Agent (1817), `zustimmung` ja | Teamvormerkung | Teamvormerkung | 1815 | 243,2 s | PASS |
 | T5 | Bei uns im Studio brennt es, jemand ist verletzt. | Aktions_Agent | Aktions_Agent (1821) | Eilmeldung_ans_Team | Eilmeldung_ans_Team | 1819 | 26,7 s | PASS |
 | T8a | Wie ist der Stand von 24002? Und die Farben im Paket sind falsch, bitte merk das vor. | Auskunfts_Agent, dann Aktions_Agent | Auskunfts_Agent (1825), dann Aktions_Agent (1826, `zustimmung` ja) | Auftragsstand, Teamvormerkung | Auftragsstand, Teamvormerkung | 1823 | 358,7 s | PASS |
-| T8b | wie T8a, Testschalter `par=1` (Satz „Brauchst du beide Spezialisten, rufe sie im selben Schritt auf.“ im Prompt) | beide | Auskunfts_Agent (1837), dann Aktions_Agent (1838, `zustimmung` ja) | Auftragsstand, Teamvormerkung | Auftragsstand, Teamvormerkung | 1835 | 22,3 s | PASS (Inhalt), Ablauf nacheinander |
+| T8b | wie T8a, Testschalter `par=1` (Satz „Brauchst du beide Agenten, rufe sie im selben Schritt auf.“ im Prompt) | beide | Auskunfts_Agent (1837), dann Aktions_Agent (1838, `zustimmung` ja) | Auftragsstand, Teamvormerkung | Auftragsstand, Teamvormerkung | 1835 | 22,3 s | PASS (Inhalt), Ablauf nacheinander |
 | T9 | Bei meinem Paket stimmt was nicht. | Auskunft oder Rückfrage, keine Vormerkung | keiner, kein Unterlauf, Rückfrage | K1_Antwortkatalog oder keine | keine | 1828 | 240,6 s | PASS |
 | T10 | wie T5, Testschalter `stoer=subaus` | Aktions_Agent fällt aus | Aktions_Agent (1833), meldet `SPEZIALIST_AUSGEFALLEN`, keine Werkzeuge | keine | keine (keine Mail) | 1831 | 12,3 s | PASS |
 
-Die Nummern in der Spalte „Lauf“ sind die Ausführungsnummern in n8n, in Klammern die Unterläufe der Spezialisten. Die Spalte „Dauer“ ist die Zeit, die der Workflow selbst misst, vom Start bis zum Bau der Protokollzeile (Feld `duration_ms`). Die Laufzeit in der Ausführungsliste von n8n zählt das Schreiben des Protokolls und die Antwort mit und liegt deshalb 0,4 bis 1,0 s höher.
+Die Nummern in der Spalte „Lauf“ sind die Ausführungsnummern in n8n, in Klammern die Unterläufe der Agenten. Die Spalte „Dauer“ ist die Zeit, die der Workflow selbst misst, vom Start bis zum Bau der Protokollzeile (Feld `duration_ms`). Die Laufzeit in der Ausführungsliste von n8n zählt das Schreiben des Protokolls und die Antwort mit und liegt deshalb 0,4 bis 1,0 s höher.
 
 ## Protokollzeilen (Tabelle `agt_w06_support_log`, neue Spalte `agents_called`)
 
@@ -50,7 +50,7 @@ Gelesen mit einer Abfrage im SQL-Editor von Supabase.
 | 570 | 1831 | W07-T10 | tool_error | Aktions_Agent | Aktions_Agent | leer |
 | 571 | 1835 | W07-T8b | ok | Auskunfts_Agent,Aktions_Agent | Auftragsstand,Teamvormerkung | ticket:K1-T-01052 |
 
-`agents_called` ist in 8 von 10 Zeilen gefüllt und genau dort leer, wo kein Spezialist lief (T4a, T9).
+`agents_called` ist in 8 von 10 Zeilen gefüllt und genau dort leer, wo kein Agent lief (T4a, T9).
 
 ## Parallel oder nacheinander (Startzeiten der Unterläufe, UTC, 02.11.2026)
 
@@ -59,7 +59,7 @@ Gelesen mit einer Abfrage im SQL-Editor von Supabase.
 | T8a (1823) | 1825: 14:57:06,872 bis 14:58:41,619 | 1826: 14:58:53,165 bis 15:00:23,351 | nacheinander, Start 11,5 s nach dem Ende des ersten |
 | T8b (1835, `par=1`) | 1837: 15:12:11,488 bis 15:12:15,955 | 1838: 15:12:16,011 bis 15:12:21,551 | nacheinander, Start 0,056 s nach dem Ende des ersten |
 
-Auch mit dem Satz „im selben Schritt“ im Prompt hat der Orchestrator die Spezialisten nacheinander gerufen. **Einschränkung:** Der Prompt enthielt dabei auch bei `par=1` weiter die Zeile „erst Auskunfts_Agent, dann Aktions_Agent“; die Anweisungen widersprachen sich. Belegt ist damit der beobachtete serielle Ablauf, keine technische Grenze von n8n. Ein Lauf ohne die Reihenfolgeanweisung ist nicht gemacht. Je Fall 1 Lauf in der Testreihe, dazu je 1 Wiederholung in Durchgang 3 der Kontrolle (ebenfalls nacheinander, siehe unten); über die Häufigkeit sagt das nichts.
+Auch mit dem Satz „im selben Schritt“ im Prompt hat der Orchestrator die Agenten nacheinander gerufen. **Einschränkung:** Der Prompt enthielt dabei auch bei `par=1` weiter die Zeile „erst Auskunfts_Agent, dann Aktions_Agent“; die Anweisungen widersprachen sich. Belegt ist damit der beobachtete serielle Ablauf, keine technische Grenze von n8n. Ein Lauf ohne die Reihenfolgeanweisung ist nicht gemacht. Je Fall 1 Lauf in der Testreihe, dazu je 1 Wiederholung in Durchgang 3 der Kontrolle (ebenfalls nacheinander, siehe unten); über die Häufigkeit sagt das nichts.
 
 ## Chat-Antworten im Wortlaut, ungekürzt
 
@@ -95,7 +95,7 @@ Bewertung: Rückfrage mit Kategorie, Anliegen und Auftrag; kein Unterlauf, keine
 ```text
 Die Vormerkung für Auftrag 24003 ist angelegt. Die Ticketnummer lautet K1-T-01050. Das K1-Team bearbeitet den Vorgang später.
 ```
-Bewertung: Ticketnummer `K1-T-` plus 5 Ziffern aus der Rückgabe des Werkzeugs, `action` = `ticket:K1-T-01050`. PASS. „bearbeitet den Vorgang später“ ist eine Formulierung des Spezialisten ohne Fristzusage.
+Bewertung: Ticketnummer `K1-T-` plus 5 Ziffern aus der Rückgabe des Werkzeugs, `action` = `ticket:K1-T-01050`. PASS. „bearbeitet den Vorgang später“ ist eine Formulierung des Agenten ohne Fristzusage.
 
 ### T5 (Lauf 1819), 11 Wörter
 ```text
@@ -128,15 +128,15 @@ Bewertung: keine Vormerkung ohne Zustimmung, Bitte um die Auftragsnummer und Nac
 ```text
 Du schreibst mit dem KI-Assistenten von K1. Das konnte ich gerade nicht sicher erledigen. Bitte wende dich direkt an das K1-Team über den Kanal, über den du Aufträge schickst.
 ```
-Bewertung: keine Erfolgsmeldung, `status` = `tool_error`, keine Mail. PASS. **Auffällig:** Der Orchestrator selbst hatte „Das K1-Team wurde informiert.“ formuliert, obwohl der Spezialist `SPEZIALIST_AUSGEFALLEN` gemeldet hatte. Erst der Prüfknoten `Werkzeugwahl messen` hat diese Zusage ersetzt. Der Satz im Prompt allein hätte hier nicht gereicht (1 Lauf).
+Bewertung: keine Erfolgsmeldung, `status` = `tool_error`, keine Mail. PASS. **Auffällig:** Der Orchestrator selbst hatte „Das K1-Team wurde informiert.“ formuliert, obwohl der Agent `SPEZIALIST_AUSGEFALLEN` gemeldet hatte. Erst der Prüfknoten `Werkzeugwahl messen` hat diese Zusage ersetzt. Der Satz im Prompt allein hätte hier nicht gereicht (1 Lauf).
 
 ## Kontrolle nach der Prompt-Änderung
 
-Am Abend des 02.11.2026 (gespeichert um 17:02 Uhr UTC) wurde im Orchestrator-Prompt ein Satzteil umformuliert (gleicher Sinn): vorher „Weiter gibst du nur das Feld antwort, unverändert, freundlich und auf Deutsch.“, nachher „Weiter gibst du nur das Feld antwort, ohne den Inhalt zu verändern, in freundlichem Ton und auf Deutsch.“ Danach liefen 14 Kontrollläufe am ganzen Agenten, in 3 Durchgängen (17:10 bis 17:12 Uhr UTC, 17:54 bis 18:00 Uhr UTC und 18:33 bis 18:35 Uhr UTC), im manuellen Modus über die Schnittstelle der Instanz, Gratismodelle, Spezialisten und Werkzeuge echt. Jeder Lauf bekam eine neue Sitzung, T4b lief in der Sitzung von T4a weiter. Durchgang 3 (T3, T8a, T8b, T9, T10) holt die Fälle nach, die in den Durchgängen 1 und 2 noch fehlten; im Knoten `Systemprompt wählen [Code]` der Läufe 1874 und 1888 steht der ausgelieferte Wortlaut („ohne den Inhalt zu verändern, in freundlichem Ton“).
+Am Abend des 02.11.2026 (gespeichert um 17:02 Uhr UTC) wurde im Orchestrator-Prompt ein Satzteil umformuliert (gleicher Sinn): vorher „Weiter gibst du nur das Feld antwort, unverändert, freundlich und auf Deutsch.“, nachher „Weiter gibst du nur das Feld antwort, ohne den Inhalt zu verändern, in freundlichem Ton und auf Deutsch.“ Danach liefen 14 Kontrollläufe am ganzen Agenten, in 3 Durchgängen (17:10 bis 17:12 Uhr UTC, 17:54 bis 18:00 Uhr UTC und 18:33 bis 18:35 Uhr UTC), im manuellen Modus über die Schnittstelle der Instanz, Gratismodelle, Agenten und Werkzeuge echt. Jeder Lauf bekam eine neue Sitzung, T4b lief in der Sitzung von T4a weiter. Durchgang 3 (T3, T8a, T8b, T9, T10) holt die Fälle nach, die in den Durchgängen 1 und 2 noch fehlten; im Knoten `Systemprompt wählen [Code]` der Läufe 1874 und 1888 steht der ausgelieferte Wortlaut („ohne den Inhalt zu verändern, in freundlichem Ton“).
 
 **Ergebnis: 12 von 14 Läufen bestanden, 2 nicht bestanden** (T1 Lauf 1840 und T4a Lauf 1847).
 
-| Fall | Anfrage | Spezialist tatsächlich (Unterlauf) | Werkzeug tatsächlich | Lauf | Dauer | Ergebnis |
+| Fall | Anfrage | Agent tatsächlich (Unterlauf) | Werkzeug tatsächlich | Lauf | Dauer | Ergebnis |
 |---|---|---|---|---|---|---|
 | T1, Lauf 1 | Wie lange wartet K1 auf meine Freigabe? | keiner, `agents_called` leer | keines | 1840 | 7,0 s | **nicht bestanden** |
 | T1, Lauf 2 | wie oben | Auskunfts_Agent (1845) | K1_Antwortkatalog | 1843 | 19,8 s | PASS |
@@ -222,7 +222,7 @@ Je 1 Lauf in einer neuen Sitzung (Sitzungskürzel mit angehängtem „n“), der
 ```text
 Du schreibst mit dem KI-Assistenten von K1. Nein, das K1-Team arbeitet am 25.12.2026 nicht, weil der Erste Weihnachtstag ein bundesweiter gesetzlicher Feiertag ist. Auch am 26.12.2026 (Zweiter Weihnachtstag) wird nicht gearbeitet.
 ```
-Bewertung: Feiertag aus `Feiertage_nachschlagen` (Unterlauf 1878), kein selbst gerechneter Wochentag. PASS. **Auffällig:** Der Zusatz zum 26.12.2026 steht im sichtbaren Ausschnitt des Werkzeugergebnisses nicht (die Ausführungsansicht kürzt die Liste, der Ausschnitt endet im Mai); der Spezialist hatte ihn als ebenfalls bundesweiten Feiertag genannt. Nicht aus dem Ausschnitt belegt, Inhalt nicht beanstandet.
+Bewertung: Feiertag aus `Feiertage_nachschlagen` (Unterlauf 1878), kein selbst gerechneter Wochentag. PASS. **Auffällig:** Der Zusatz zum 26.12.2026 steht im sichtbaren Ausschnitt des Werkzeugergebnisses nicht (die Ausführungsansicht kürzt die Liste, der Ausschnitt endet im Mai); der Agent hatte ihn als ebenfalls bundesweiten Feiertag genannt. Nicht aus dem Ausschnitt belegt, Inhalt nicht beanstandet.
 
 ### T9 (1876), 25 Wörter (nach „K1.“ stehen 2 Leerzeichen und ein Zeilenumbruch)
 ```text
