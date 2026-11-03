@@ -81,7 +81,7 @@
 <p class="klede">Endstand nach allen Baurunden des Tages.</p>
 </div></div>
 <figure><img alt="Plan v08: Kundenfrage, Limit, Jev-Weiche, Orchestrator Anfrage verteilen mit Handoff-Feldern an SUB Auskunfts-Agent und SUB Aktions-Agent, Fehlerwege rot, danach Zwischenschritte auspacken, Prüfknoten, fester Aktionsabsatz, Protokollzeile, Antwort" src="bilder/w07t02-plan-v08.png"/><figcaption>Plan v08, Endstand 03.11.2026. Handoff-Felder türkis, Fehlerwege rot, Ja und Nein an den Pfeilen. <a href="plan/plan-w07t02-v08.png">Volle Auflösung</a>, <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/plan/plan-w07t02-v08.excalidraw">Excalidraw-Datei</a>.</figcaption></figure>
-<figure><img alt="Gesamtansicht des Orchestrators v08 in n8n, dunkel" src="bilder/w07t02-n8n-workflow-gesamt-v08.png"/><figcaption>Gesamtansicht des Orchestrators v08 in n8n, Ausschnitt mit den 4 Bereichen ohne die Kopfnotizen (nur als Übersicht, Schrift nicht lesbar). Anordnung der Knoten wie v07.</figcaption></figure>
+<figure><img alt="Gesamtansicht des Orchestrators v08 in n8n, dunkel" src="bilder/w07t02-n8n-workflow-gesamt-v08.png"/><figcaption>Gesamtansicht des Orchestrators v08 in n8n am Endstand, mit Kopfnotizen und den 4 Bereichen (nur als Übersicht). Knotenanordnung überarbeitet: gemessene Kreuzungen von 10 auf 6, Überlagerungen von Knoten 0, nur Positionen geändert.</figcaption></figure>
 </section>
 
 <section aria-labelledby="k3-t" class="kapitel" id="k3">
@@ -137,8 +137,8 @@
 <p>Der Adapter <code>Zwischenschritte auspacken [Code]</code> wertet eine Antwort, die nach Abzug des KI-Hinweises leer ist, als leer. <code>Protokollzeile bauen [Code]</code> führt eine unbekannte Zahl der Aufrufe als <code>null</code>, nie als 0.</p>
 <figure><img alt="SUB Aktions-Agent, Belege aus Kontext" src="bilder/w07t02-n8n-sub-aktion-belege-aus-kontext.png"/><figcaption>Neuer Knoten <code>Belege aus Kontext [Code]</code> im Fehlerausgang des Aktions-Agenten: liest die letzte Rückgabe je Werkzeug.</figcaption></figure>
 <figure><img alt="SUB Aktions-Agent, Werkzeugbeschreibung Teamvormerkung mit Ausgang unbekannt" src="bilder/w07t02-n8n-sub-aktion-tool-teamvormerkung.png"/><figcaption>Beschreibung des Werkzeugs <code>Teamvormerkung</code>: bei einem technischen Fehler ist der Ausgang unbekannt.</figcaption></figure>
-<figure><img alt="SUB Aktions-Agent, Belege aus Kontext an der neuen Stelle" src="bilder/w07t02-n8n-sub-aktion-belege-lage.png"/><figcaption>Aktions-Spezialist am Endstand, Ausschnitt mit den Knoten: <code>Belege aus Kontext [Code]</code> (markiert) hängt am Fehlerausgang des Agenten und liegt etwas höher, die Beschriftung überdeckt <code>Eilmeldung_ans_Team</code> nicht mehr.</figcaption></figure>
-<figure><img alt="SUB Auskunfts-Agent K1 v08, Gesamtansicht" src="bilder/w07t02-n8n-sub-auskunft-gesamt.png"/><figcaption>Auskunfts-Spezialist, Ausschnitt mit den Knoten, fachlich unverändert.</figcaption></figure>
+<figure><img alt="SUB Aktions-Agent, Belege aus Kontext an der neuen Stelle" src="bilder/w07t02-n8n-sub-aktion-belege-lage.png"/><figcaption>Aktions-Spezialist am Endstand, Ausschnitt mit den Knoten: <code>Belege aus Kontext [Code]</code> hängt am Fehlerausgang des Agenten und liegt etwas höher, die Beschriftung überdeckt <code>Eilmeldung_ans_Team</code> nicht mehr.</figcaption></figure>
+<figure><img alt="SUB Auskunfts-Agent K1 v08, Gesamtansicht" src="bilder/w07t02-n8n-sub-auskunft-gesamt.png"/><figcaption>Auskunfts-Spezialist, Ausschnitt mit den Knoten, fachlich unverändert. Die Werkzeugreihe sitzt enger, kein Knoten überlagert einen anderen.</figcaption></figure>
 </section>
 
 <section aria-labelledby="k5-t" class="kapitel" id="k5">
@@ -162,7 +162,7 @@
 </tbody>
 </table>
 </div>
-<p>Der Stand v08 entstand in mehreren Baurunden. Die Konfiguration zählt sie intern bis <code>v16</code>. Die letzte Runde <code>v17</code> fasste nur Texte neu (die Rollen-Abschnitte der 3 Prompts, den festen Ausfallsatz, Notizen und Code-Kommentare) und setzte einen Knoten im Aktions-Spezialisten etwas höher; die Logik blieb gleich, deshalb steht im Workflow weiter <code>v16</code>. Was sich je Runde änderte und warum, steht im <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/ChangeLog.md">ChangeLog</a>, Abschnitt v08, und in der <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/versionsmatrix.md">Versionsmatrix</a>.</p>
+<p>Der Stand v08 entstand in mehreren Baurunden. Die Konfiguration zählt sie intern bis <code>v16</code>. Die letzte Runde <code>v17</code> fasste nur Texte neu (die Rollen-Abschnitte der 3 Prompts, den festen Ausfallsatz, Notizen und Code-Kommentare) und setzte einen Knoten im Aktions-Spezialisten etwas höher; die Logik blieb gleich, deshalb steht im Workflow weiter <code>v16</code>. Danach wurde nur noch die Knotenanordnung überarbeitet: gemessene Kreuzungen im Hauptworkflow von 10 auf 6, Überlagerungen von Knoten auf 0; 3 Linien durch Notizen im Hauptworkflow und die Kreuzungen in den Spezialisten (4 und 6) blieben unverändert. Nur Positionen geändert, Rauchlauf 2075 bestanden. Was sich je Runde änderte und warum, steht im <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/ChangeLog.md">ChangeLog</a>, Abschnitt v08, und in der <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/versionsmatrix.md">Versionsmatrix</a>.</p>
 </section>
 
 <section aria-labelledby="k6-t" class="kapitel" id="k6">

@@ -13,7 +13,7 @@
       "type": "@n8n/n8n-nodes-langchain.chatTrigger",
       "typeVersion": 1.4,
       "position": [
-        0,
+        64,
         768
       ],
       "webhookId": "41e9afc4-a832-4a10-b6af-eb42a3588ec9"
@@ -634,7 +634,7 @@
       "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
       "typeVersion": 1.3,
       "position": [
-        4384,
+        4448,
         1008
       ]
     },
@@ -815,8 +815,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.3,
       "position": [
-        4480,
-        1248
+        4224,
+        1008
       ]
     },
     {
@@ -1205,7 +1205,7 @@
       "typeVersion": 2,
       "position": [
         3376,
-        1488
+        1232
       ]
     },
     {
@@ -1219,7 +1219,7 @@
       "typeVersion": 1,
       "position": [
         3584,
-        1488
+        1232
       ]
     },
     {
@@ -1556,7 +1556,7 @@
       "typeVersion": 2.2,
       "position": [
         4768,
-        1024
+        1008
       ]
     },
     {
@@ -1662,7 +1662,7 @@
       "typeVersion": 2.2,
       "position": [
         4992,
-        1024
+        1008
       ]
     },
     {
