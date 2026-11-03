@@ -547,7 +547,7 @@
         -96
       ],
       "parameters": {
-        "content": "# 📋 Workflow-Beschreibung\n🎯 **Zweck:** beantwortet lesend Fragen zu K1 aus 4 Quellen.\n👥 **Für wen:** den Orchestrator in v08, nie die Person direkt.\n🕹️ **So nutzt du ihn:** Aufruf durch v08 oder Testzweig starten.\n## Status: 🟢 veröffentlicht und getestet am 03.11.2026 (Orchestrator-Läufe 1897, 1920, 1927)",
+        "content": "# 📋 Workflow-Beschreibung\n🎯 **Zweck:** beantwortet lesend Fragen zu K1 aus 4 Quellen.\n👥 **Für wen:** den Orchestrator in v08, nie die Person direkt.\n🕹️ **So nutzt du ihn:** Aufruf durch v08 oder Testzweig starten.\n## Status: 🟢 veröffentlicht und getestet am 03.11.2026 (Orchestrator-Läufe 1997, 2016, 2047, 2066)",
         "height": 240,
         "width": 624,
         "color": 7
@@ -579,7 +579,7 @@
         -96
       ],
       "parameters": {
-        "content": "# 🧾 Version\nv2 vom 03.11.2026, Kopie von v1 für den Orchestrator v08, fachlich unverändert: Eingabe bleibt query. Änderungen stehen im ChangeLog.md.",
+        "content": "# 🧾 Version\nv2 vom 03.11.2026, Textrunde v17 am selben Tag (nur Kommentare und Wortlaut des Rollenabsatzes, Logik gleich); für den Orchestrator v08 fachlich unverändert: Eingabe bleibt query. Änderungen stehen im ChangeLog.md.",
         "height": 240,
         "color": 7
       }
@@ -594,7 +594,7 @@
         -96
       ],
       "parameters": {
-        "content": "## Status\n🟢 Läufe 1897, 1920, 1927 bestanden\n🟢 unveröffentlicht gibt den festen Ausfallsatz (1915)\n🟡 Läuft nur mit Gratismodellen\n🔴 Ohne Veröffentlichung kein Aufruf\n🔵 Kein Schreibzugriff, kein SMTP",
+        "content": "## Status\n🟢 Läufe 1997, 2047, 2066 bestanden\n🟢 unveröffentlicht gibt den festen Ausfallsatz (2016)\n🟡 Läuft nur mit Gratismodellen\n🔴 Ohne Veröffentlichung kein Aufruf\n🔵 Kein Schreibzugriff, kein SMTP",
         "height": 240,
         "width": 288,
         "color": 7

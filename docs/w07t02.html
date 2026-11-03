@@ -41,7 +41,7 @@
 </div>
 </div>
 <dl aria-label="Kennzahlen v08" class="messleiste">
-<div><dt>Schlussreihe</dt><dd>9 von 11<small>Läufe bestanden, 2 FAIL (L1, A1)</small></dd></div><div><dt>Nach der Reparatur</dt><dd>6 von 6<small>Läufe bestanden</small></dd></div><div><dt>Kontrolle Endstand</dt><dd>5 von 5<small>Läufe bestanden</small></dd></div><div><dt>Handoff Aktion</dt><dd>3 Felder<small>query, zustimmung, prioritaet, dazu 2 feste</small></dd></div><div><dt>Ticketpfad</dt><dd>nicht live<small>nur im Knotentest belegt</small></dd></div>
+<div><dt>Schlussreihe</dt><dd>7 von 9<small>Läufe bestanden, 2 FAIL (L1, A1)</small></dd></div><div><dt>Nach der Reparatur</dt><dd>6 von 6<small>Läufe bestanden</small></dd></div><div><dt>Kontrolle Endstand</dt><dd>6 von 6<small>Läufe bestanden, mit Bonus B1</small></dd></div><div><dt>Handoff Aktion</dt><dd>3 Felder<small>query, zustimmung, prioritaet, dazu 2 feste</small></dd></div><div><dt>Ticketpfad</dt><dd>in den Reihen nicht live<small>Lauf 1936: 1 Testticket</small></dd></div>
 </dl>
 <div class="knoepfe">
 <a class="knopf zweit" href="w07t01.html">Vorheriger Tag: W7 Tag 1 <span aria-hidden="true" class="pfeil">←</span></a>
@@ -55,8 +55,8 @@
 <ul>
 <li><strong>Ziel:</strong> Festlegen, was der Orchestrator an jeden Spezialisten übergibt, und dafür sorgen, dass ein Ausfall eines Spezialisten nie zu einer falschen Zusage wird.</li>
 <li><strong>Ergebnis:</strong> Der Aktions-Agent bekommt <code>query</code>, <code>zustimmung</code> und neu <code>prioritaet</code>, der Auskunfts-Agent nur <code>query</code>. Bei Ausfall kommt ein fester Satz. Nach jeder Aktion hängt ein fester Absatz an, der nur sagt, was belegt ist.</li>
-<li><strong>Zahl:</strong> Schlussreihe 11 Läufe, 9 bestanden, 2 nicht. Nach der Reparatur für L1 6 Läufe, alle bestanden. Kontrolle am Endstand mit dem neuen Wortlaut der Prompts 5 Läufe, alle bestanden.</li>
-<li><strong>Grenze:</strong> Der Ticketpfad ist nicht live gemessen. Zustimmungssperre und Prüfknoten sind Wortlisten.</li>
+<li><strong>Zahl:</strong> Schlussreihe 9 Läufe, 7 bestanden, 2 nicht. Nach der Reparatur für L1 6 Läufe, alle bestanden. Kontrolle am Endstand mit dem neuen Wortlaut der Prompts 6 Läufe, alle bestanden, darunter F4b und der Bonus B1 mit überarbeiteter Eingabe.</li>
+<li><strong>Grenze:</strong> In den Testreihen ist der Ticketpfad nicht live gemessen; live belegt ist das Testticket K1-T-01056 aus Lauf 1936. Zustimmungssperre und Prüfknoten sind Wortlisten.</li>
 <li><strong>Link:</strong> Alle Antworten ungekürzt in der <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/testtabelle-w07t02-v08.md">Testtabelle v08</a>.</li>
 </ul></div>
 
@@ -70,7 +70,7 @@
 <li><strong>Wirkung beim Empfänger:</strong> Jedes Feld, das beim Spezialisten ankommt, verändert dort etwas. Ein leeres Feld bekommt einen festen Ersatzwert.</li>
 <li><strong>Ausfall:</strong> Antwortet ein Spezialist nicht oder unbrauchbar, bekommt die Person einen festen Satz statt einer geratenen Antwort, und der Lauf stürzt nicht ab.</li>
 <li><strong>Ehrlichkeit nach einer Aktion:</strong> Was schon geschehen ist (Ticket, Mail), geht im Fehlerfall nicht verloren, und was nicht belegt ist, wird nicht behauptet.</li>
-<li><strong>Prüfen:</strong> Feste Läufe für Übergabe, Ausfall, leere Eingabe, unbekannte Nummer und eine lange Mehrfachanfrage, dazu einmal Max Iterations 1 beim Orchestrator.</li>
+<li><strong>Prüfen:</strong> Feste Läufe für Übergabe, Ausfall, leere Eingabe, unbekannte Nummer und eine lange Mehrfachanfrage, dazu als Bonus einmal Max Iterations 1 beim Orchestrator.</li>
 </ul>
 <p>v08 baut auf v07 auf. Orchestrator, Spezialisten, Jev-Weiche, Gedächtnis und Protokoll bleiben; neu sind die Felder der Übergabe und alles, was bei einem Fehler passiert.</p>
 </section>
@@ -81,7 +81,7 @@
 <p class="klede">Endstand nach allen Baurunden des Tages.</p>
 </div></div>
 <figure><img alt="Plan v08: Kundenfrage, Limit, Jev-Weiche, Orchestrator Anfrage verteilen mit Handoff-Feldern an SUB Auskunfts-Agent und SUB Aktions-Agent, Fehlerwege rot, danach Zwischenschritte auspacken, Prüfknoten, fester Aktionsabsatz, Protokollzeile, Antwort" src="bilder/w07t02-plan-v08.png"/><figcaption>Plan v08, Endstand 03.11.2026. Handoff-Felder türkis, Fehlerwege rot, Ja und Nein an den Pfeilen. <a href="plan/plan-w07t02-v08.png">Volle Auflösung</a>, <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/plan/plan-w07t02-v08.excalidraw">Excalidraw-Datei</a>.</figcaption></figure>
-<figure><img alt="Gesamtansicht des Orchestrators v08 in n8n, dunkel" src="bilder/w07t02-n8n-workflow-gesamt-v08.png"/><figcaption>Gesamtansicht des Orchestrators v08 in n8n (nur als Übersicht, Schrift nicht lesbar). Anordnung der Knoten wie v07.</figcaption></figure>
+<figure><img alt="Gesamtansicht des Orchestrators v08 in n8n, dunkel" src="bilder/w07t02-n8n-workflow-gesamt-v08.png"/><figcaption>Gesamtansicht des Orchestrators v08 in n8n, Ausschnitt mit den 4 Bereichen ohne die Kopfnotizen (nur als Übersicht, Schrift nicht lesbar). Anordnung der Knoten wie v07.</figcaption></figure>
 </section>
 
 <section aria-labelledby="k3-t" class="kapitel" id="k3">
@@ -124,7 +124,7 @@
 <tbody>
 <tr><th data-label="Was passiert" scope="row">Sub-Workflow unveröffentlicht, Aufruf scheitert</th><td data-label="wer">Adapter <code>Zwischenschritte auspacken</code></td><td data-label="liest">fester Satz „Das hat gerade nicht geklappt. Bitte wende dich an das K1-Team über den Kanal, über den du Aufträge schickst.“</td><td data-label="gemessen">live, F1 Lauf 2016</td></tr>
 <tr><th data-label="Was passiert" scope="row">leere Eingabe an den Spezialisten</th><td data-label="wer"><code>Eingabe prüfen</code> im Spezialisten</td><td data-label="liest">Rückgabe <code>EINGABE_FEHLT</code>, der Agent startet nicht</td><td data-label="gemessen">live, S1 Lauf 2013</td></tr>
-<tr><th data-label="Was passiert" scope="row">Orchestrator bricht ab (Max Iterations 1)</th><td data-label="wer"><code>Ausfall melden</code> im Fehlerausgang</td><td data-label="liest">fester Text „Der Support-Assistent antwortet im Moment nicht. Bitte versuch es später noch einmal oder wende dich an das K1-Team.“, dazu „Ein Teil des Vorgangs kann schon ausgeführt worden sein.“, wenn der Aktions-Agent lief</td><td data-label="gemessen">live, B1 Lauf 2019 (mit Zusatz) und Lauf 2062 (Endstand, ohne Zusatz)</td></tr>
+<tr><th data-label="Was passiert" scope="row">Orchestrator bricht ab (Max Iterations 1)</th><td data-label="wer"><code>Ausfall melden</code> im Fehlerausgang</td><td data-label="liest">fester Text „Der Support-Assistent antwortet im Moment nicht. Bitte versuch es später noch einmal oder wende dich an das K1-Team.“, dazu „Ein Teil des Vorgangs kann schon ausgeführt worden sein.“, wenn der Aktions-Agent lief</td><td data-label="gemessen">live, B1 Lauf 2069 (nur Auskunfts-Agent gelaufen, ohne Zusatz); der Zusatz ist im Knotentest belegt</td></tr>
 <tr><th data-label="Was passiert" scope="row">Orchestrator antwortet nur mit dem KI-Hinweis</th><td data-label="wer">Adapter</td><td data-label="liest">fester Ausfallsatz</td><td data-label="gemessen">nur Knotentest (aufgetreten in L1 Lauf 1990, vor der Reparatur)</td></tr>
 <tr><th data-label="Was passiert" scope="row">Aktion lief, danach Fehler</th><td data-label="wer"><code>Belege aus Kontext</code>, <code>Ausfall bündeln</code>, Prüfknoten</td><td data-label="liest">Ausfallsatz, darunter der feste Absatz mit „Bestätigt“, „Nicht geklappt“ oder „Offen“</td><td data-label="gemessen"><code>aktion_stand</code> live (A1 Lauf 2015), Belege nur im Knotentest</td></tr>
 <tr><th data-label="Was passiert" scope="row">Werkzeug liefert technischen Fehler</th><td data-label="wer">Prüfknoten</td><td data-label="liest">„Offen: Vormerkung nicht bestätigt, Ausgang unbekannt.“</td><td data-label="gemessen">live, L3b Lauf 2004</td></tr>
@@ -137,9 +137,8 @@
 <p>Der Adapter <code>Zwischenschritte auspacken [Code]</code> wertet eine Antwort, die nach Abzug des KI-Hinweises leer ist, als leer. <code>Protokollzeile bauen [Code]</code> führt eine unbekannte Zahl der Aufrufe als <code>null</code>, nie als 0.</p>
 <figure><img alt="SUB Aktions-Agent, Belege aus Kontext" src="bilder/w07t02-n8n-sub-aktion-belege-aus-kontext.png"/><figcaption>Neuer Knoten <code>Belege aus Kontext [Code]</code> im Fehlerausgang des Aktions-Agenten: liest die letzte Rückgabe je Werkzeug.</figcaption></figure>
 <figure><img alt="SUB Aktions-Agent, Werkzeugbeschreibung Teamvormerkung mit Ausgang unbekannt" src="bilder/w07t02-n8n-sub-aktion-tool-teamvormerkung.png"/><figcaption>Beschreibung des Werkzeugs <code>Teamvormerkung</code>: bei einem technischen Fehler ist der Ausgang unbekannt.</figcaption></figure>
-<figure><img alt="SUB Aktions-Agent K1 v08, Gesamtansicht" src="bilder/w07t02-n8n-sub-aktion-gesamt.png"/><figcaption>Aktions-Spezialist mit dem neuen Fehlerweg (markiert). Die Notizen zeigen in diesem Bildschirmfoto noch einen früheren Text der Versionsnotiz; Knoten und Verbindungen sind die des Endstands; nur <code>Belege aus Kontext [Code]</code> liegt inzwischen etwas höher (nächstes Bild).</figcaption></figure>
-<figure><img alt="SUB Aktions-Agent, Belege aus Kontext an der neuen Stelle" src="bilder/w07t02-n8n-sub-aktion-belege-lage.png"/><figcaption><code>Belege aus Kontext [Code]</code> am Endstand: etwas höher gesetzt, die Beschriftung überdeckt <code>Eilmeldung_ans_Team</code> nicht mehr.</figcaption></figure>
-<figure><img alt="SUB Auskunfts-Agent K1 v08, Gesamtansicht" src="bilder/w07t02-n8n-sub-auskunft-gesamt.png"/><figcaption>Auskunfts-Spezialist, fachlich unverändert.</figcaption></figure>
+<figure><img alt="SUB Aktions-Agent, Belege aus Kontext an der neuen Stelle" src="bilder/w07t02-n8n-sub-aktion-belege-lage.png"/><figcaption>Aktions-Spezialist am Endstand, Ausschnitt mit den Knoten: <code>Belege aus Kontext [Code]</code> (markiert) hängt am Fehlerausgang des Agenten und liegt etwas höher, die Beschriftung überdeckt <code>Eilmeldung_ans_Team</code> nicht mehr.</figcaption></figure>
+<figure><img alt="SUB Auskunfts-Agent K1 v08, Gesamtansicht" src="bilder/w07t02-n8n-sub-auskunft-gesamt.png"/><figcaption>Auskunfts-Spezialist, Ausschnitt mit den Knoten, fachlich unverändert.</figcaption></figure>
 </section>
 
 <section aria-labelledby="k5-t" class="kapitel" id="k5">
@@ -154,10 +153,10 @@
 <tbody>
 <tr><th data-label="Knoten" scope="row">Aktions_Agent (Werkzeug)</th><td data-label="was er tut">übergibt zusätzlich <code>prioritaet</code> und die festen Felder</td><td data-label="warum">die Priorität wirkt beim schreibenden Spezialisten</td></tr>
 <tr><th data-label="Knoten" scope="row">Systemprompt wählen (Code)</th><td data-label="was er tut">Abschnitt „Fehlerbehandlung“ mit festem Satz, Obergrenze 2 Aufrufe</td><td data-label="warum">ein Ausfall bekommt einen festen Text</td></tr>
-<tr><th data-label="Knoten" scope="row">Zwischenschritte auspacken (Code)</th><td data-label="was er tut">hält Belege auch bei Fehler, setzt bei leerer Antwort den festen Satz</td><td data-label="warum">keine Teilaktion geht verloren, keine leere Antwort geht raus</td></tr>
+<tr><th data-label="Knoten" scope="row">Zwischenschritte auspacken (Code)</th><td data-label="was er tut">hält Belege auch bei Fehler, setzt bei leerer Antwort den festen Satz</td><td data-label="warum">Belege einer Teilaktion bleiben, soweit der Ausgang sie trägt; eine leere Antwort wird zum festen Satz (Grenzen in Kapitel 7)</td></tr>
 <tr><th data-label="Knoten" scope="row">Werkzeugwahl messen (Code)</th><td data-label="was er tut">fester Absatz nach jeder Aktion, erkennt „notiert“ ohne Werkzeug</td><td data-label="warum">Aussagen über Aktionen kommen aus Belegen</td></tr>
 <tr><th data-label="Knoten" scope="row">Ausfall melden (Edit Fields)</th><td data-label="was er tut">prüft, ob ein Spezialist lief</td><td data-label="warum">kein „0 Aufrufe“, wenn es nicht stimmt</td></tr>
-<tr><th data-label="Knoten" scope="row">Eingabe prüfen (Code, Aktion)</th><td data-label="was er tut">Priorität normalisieren, Zustimmung prüfen</td><td data-label="warum">kein Ticket ohne echte Zustimmung</td></tr>
+<tr><th data-label="Knoten" scope="row">Eingabe prüfen (Code, Aktion)</th><td data-label="was er tut">Priorität normalisieren, Zustimmung prüfen</td><td data-label="warum">eine Vormerkung nur bei erkannter Zustimmung (Wortliste, Grenzen in Kapitel 7)</td></tr>
 <tr><th data-label="Knoten" scope="row">Belege aus Kontext (Code, Aktion, neu)</th><td data-label="was er tut">liest im Fehlerausgang die letzte Rückgabe je Werkzeug</td><td data-label="warum">der Fehlerausgang trägt selbst keine Zwischenschritte</td></tr>
 <tr><th data-label="Knoten" scope="row">Ausfall bündeln (Edit Fields, Aktion)</th><td data-label="was er tut">meldet <code>aktion_stand</code></td><td data-label="warum">der Orchestrator weiß, ob schon etwas geschah</td></tr>
 </tbody>
@@ -185,8 +184,6 @@
 <tr><th data-label="Fall" scope="row">A1</th><td data-label="Anfrage">Aktion einzeln, Abbruch nach dem Werkzeug</td><td data-label="Spezialist">aktion_stand werkzeug_lief, Belege leer</td><td data-label="Lauf">2015</td><td data-label="Ergebnis">FAIL (Teil)</td><td data-label="Messart">live</td></tr>
 <tr><th data-label="Fall" scope="row">F1</th><td data-label="Anfrage">wie L1, Auskunft unveröffentlicht</td><td data-label="Spezialist">Ausfallpfad, fester Satz</td><td data-label="Lauf">2016</td><td data-label="Ergebnis">PASS</td><td data-label="Messart">live</td></tr>
 <tr><th data-label="Fall" scope="row">F3</th><td data-label="Anfrage">Wo ist mein Auftrag 99999?</td><td data-label="Spezialist">Auskunft, Auftragsstand</td><td data-label="Lauf">1997</td><td data-label="Ergebnis">PASS</td><td data-label="Messart">live</td></tr>
-<tr><th data-label="Fall" scope="row">F4b</th><td data-label="Anfrage">lange Mehrfachanfrage, 7 Fragen und Teamwunsch</td><td data-label="Spezialist">beide, 5 Werkzeuge, Eilmeldung</td><td data-label="Lauf">2006</td><td data-label="Ergebnis">PASS</td><td data-label="Messart">live</td></tr>
-<tr><th data-label="Fall" scope="row">B1</th><td data-label="Anfrage">wie F4b, Orchestrator Max Iterations 1</td><td data-label="Spezialist">Abbruch, fester Ausfallweg</td><td data-label="Lauf">2019</td><td data-label="Ergebnis">PASS mit Beobachtung</td><td data-label="Messart">live</td></tr>
 </tbody>
 </table>
 </div>
@@ -200,14 +197,16 @@
 <tr><th data-label="Fall" scope="row">L2</th><td data-label="Anfrage">Bei uns im Studio brennt es, jemand ist verletzt.</td><td data-label="Spezialist">Aktion, Eilmeldung, 1 Mail</td><td data-label="Lauf">2050</td><td data-label="Ergebnis">PASS</td><td data-label="Messart">live</td></tr>
 <tr><th data-label="Fall" scope="row">L3a</th><td data-label="Anfrage">Das Logo im Paket zu Auftrag 123 ist verpixelt.</td><td data-label="Spezialist">keiner, Rückfrage</td><td data-label="Lauf">2052</td><td data-label="Ergebnis">PASS</td><td data-label="Messart">live</td></tr>
 <tr><th data-label="Fall" scope="row">L3b</th><td data-label="Anfrage">Ja, bitte vormerken.</td><td data-label="Spezialist">Aktion, Vormerkung (ohne Ziel), Absatz mit „Offen“</td><td data-label="Lauf">2057</td><td data-label="Ergebnis">PASS mit Grenze</td><td data-label="Messart">live, Ticket nicht</td></tr>
-<tr><th data-label="Fall" scope="row">B1</th><td data-label="Anfrage">wie F4b, Orchestrator Max Iterations 1</td><td data-label="Spezialist">Abbruch, fester Ausfallsatz mit neuem Wortlaut</td><td data-label="Lauf">2062</td><td data-label="Ergebnis">PASS mit Beobachtung</td><td data-label="Messart">live</td></tr>
+<tr><th data-label="Fall" scope="row">F4b</th><td data-label="Anfrage">lange Mehrfachanfrage im Fließtext, 7 Fragen und Teamwunsch</td><td data-label="Spezialist">beide, 4 Werkzeuge, Eilmeldung, 1 Mail</td><td data-label="Lauf">2066</td><td data-label="Ergebnis">PASS</td><td data-label="Messart">live</td></tr>
+<tr><th data-label="Fall" scope="row">B1 (Bonus)</th><td data-label="Anfrage">wie F4b, Orchestrator Max Iterations 1</td><td data-label="Spezialist">Abbruch, fester Ausfallsatz</td><td data-label="Lauf">2069</td><td data-label="Ergebnis">PASS mit Beobachtung</td><td data-label="Messart">live</td></tr>
 </tbody>
 </table>
 </div>
-<p>Die Kontrolle läuft auf dem Stand, den die Exporte zeigen. In B1 lief diesmal nur der Auskunfts-Agent, deshalb fehlt der Zusatz zur Teilaktion zu Recht. Die Schlussreihe und ihre FAIL bleiben unverändert stehen.</p>
+<p>Die Kontrolle läuft auf der Logik, die die Exporte zeigen. F4b und B1 laufen mit einer überarbeiteten Eingabe und stehen deshalb hier statt in der Schlussreihe. In B1 lief nur der Auskunfts-Agent, deshalb fehlt der Zusatz zur Teilaktion zu Recht. Die Schlussreihe und ihre FAIL bleiben unverändert stehen.</p>
+<div class="merksatz"><p><strong>Bonus: Max-Iterations-Limit.</strong> Ja. Der Orchestrator darf höchstens 5 Schritte machen, jeder Spezialist höchstens 4. Für B1 stand der Orchestrator einmal auf 1 (Lauf 2069): Er brach ab, die Person bekam den festen Ausfallsatz, der Lauf stürzte nicht ab. Danach wieder 5, im Export nachgemessen.</p></div>
 <div class="merksatz"><p><strong>A1, Lauf 2015, FAIL (Teil).</strong> <code>aktion_stand</code> stimmt, aber die Belege bleiben leer: der Fehlerausgang eines KI-Agenten in n8n liefert keine Zwischenschritte. Nicht repariert, im Hauptweg steht dafür „Ausgang unbekannt“.</p></div>
-<figure><img alt="Ausführung 2006 (F4b) in n8n, beide Spezialisten" src="bilder/w07t02-n8n-lauf-2006-f4b.png"/><figcaption>Ausführung 2006 (F4b): erfolgreich, 2 min 20 s. Die gerufenen Werkzeuge stehen in der Protokollzeile und in der Testtabelle.</figcaption></figure>
-<p>Alle Antworten im Wortlaut, der Nachtrag mit 6 Läufen, die Kontrolle mit 5 Läufen und was nur im Knotentest belegt ist: <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/testtabelle-w07t02-v08.md">Testtabelle v08</a>.</p>
+<figure><img alt="Notiz Testfälle am Endstand im Orchestrator v08" src="bilder/w07t02-n8n-notiz-testfaelle-endstand.png"/><figcaption>Notiz „Testfälle am Endstand“ im Orchestrator: dieselben Läufe wie hier, mit Verweis auf die Testtabelle.</figcaption></figure>
+<p>Alle Antworten im Wortlaut, der Nachtrag mit 6 Läufen, die Kontrolle mit 6 Läufen, die Eingabe von F4b und B1 und was nur im Knotentest belegt ist: <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/testtabelle-w07t02-v08.md">Testtabelle v08</a>.</p>
 </section>
 
 <section aria-labelledby="k7-t" class="kapitel" id="k7">
@@ -216,14 +215,14 @@
 <p class="klede">Was nicht gemessen oder nicht garantiert ist.</p>
 </div></div>
 <ul>
-<li><strong>Ticketpfad nicht live:</strong> Für die Testreihe zeigte die Vormerkung absichtlich auf eine nicht vorhandene Datenbankfunktion, damit kein weiteres Ticket entsteht. Eine bestätigte Vormerkung im festen Absatz ist nur im Knotentest belegt. Beim Bau entstand in Lauf 1936 das Testticket K1-T-01056; es bleibt stehen.</li>
+<li><strong>Ticketpfad in den Testreihen nicht live:</strong> Für die Testreihen zeigte die Vormerkung absichtlich auf eine nicht vorhandene Datenbankfunktion, damit kein weiteres Ticket entsteht. Eine bestätigte Vormerkung im festen Absatz ist nur im Knotentest belegt. Beim Bau entstand in Lauf 1936 das Testticket K1-T-01056; es bleibt stehen.</li>
 <li><strong>Wortlisten:</strong> Zustimmungssperre und Prüfknoten erkennen Sätze an Wörtern. Gemessen mit eigenen Testsätzen vor den letzten Baurunden: von 17 Umschreibungen einer Zustimmung gingen 12 durch, von 10 klaren Bitten wurden 4 gesperrt. Seitdem nicht neu gemessen.</li>
 <li><strong>Obergrenze nur im Prompt:</strong> „höchstens 2 Aufrufe je Spezialist“ zählt kein Knoten.</li>
 <li><strong>Mail im Fehlerweg:</strong> Der Beleg einer Eilmeldung ist im Fehlerausgang des Aktions-Spezialisten nicht lesbar.</li>
 <li><strong>Ausfall melden ohne Belege:</strong> Der Fehlerausgang des Orchestrators trägt keine Belege, dort gibt es keinen festen Absatz.</li>
 <li><strong>Modelltext neben dem Absatz:</strong> Ein Satz des Modells, der einer bestätigten Aktion widerspricht, bleibt stehen; der Absatz darunter stimmt.</li>
 <li><strong>Spezialist nicht in jedem Lauf:</strong> Für L1 rief der Orchestrator in 4 von 5 Läufen den Spezialisten (1990 nicht, 2023, 2025, 2027 und 2047 ja). Er versucht es nicht erneut, die Antwort ist dann der feste Ausfallsatz.</li>
-<li><strong>B1:</strong> Der Aktions-Spezialist sendete eine Mail, die Antwort deutet sie nur allgemein an („Ein Teil des Vorgangs kann schon ausgeführt worden sein.“).</li>
+<li><strong>B1:</strong> Im Lauf 2069 lief nur der Auskunfts-Spezialist. Den Zusatz „Ein Teil des Vorgangs kann schon ausgeführt worden sein.“ für einen Abbruch nach dem Aktions-Spezialisten belegt nur der Knotentest. Der Zusatz nennt eine schon gesendete Mail nur allgemein.</li>
 <li>Nicht geprüft: Betrieb mit veröffentlichtem Orchestrator.</li>
 </ul>
 </section>
