@@ -101,7 +101,7 @@ Zusammen: 6 Läufe, 6 PASS (2 davon mit Grenze oder Beobachtung). Für die Einga
 
 ## Was nur im Knotentest belegt ist
 
-Diese Aussagen sind nicht live gemessen, weil sie ein echtes Ticket oder einen Fehler zu einem bestimmten Zeitpunkt bräuchten:
+Die folgenden Verhaltensweisen sind ausschließlich durch Knotentests belegt; ein Live-Nachweis liegt dafür nicht vor. Sie sind nicht live gemessen, weil sie ein echtes Ticket oder einen Fehler zu einem bestimmten Zeitpunkt bräuchten:
 
 - Bestätigte Vormerkung mit Ticketnummer im festen Absatz („Bestätigt: Vormerkung K1-T-…“), auch zusammen mit einer Eilmeldung.
 - Teilaktion im Fehlerweg: eine Vormerkung steht, danach fällt der Spezialist aus.
@@ -109,8 +109,6 @@ Diese Aussagen sind nicht live gemessen, weil sie ein echtes Ticket oder einen F
 - Unbekannter Ausgang (Zeitüberschreitung, leere oder unlesbare Rückgabe) steht unter „Offen“, nicht unter „Nicht geklappt“.
 - Eine Antwort aus nur dem KI-Hinweis geht in den festen Ausfallsatz (Reparatur nach L1).
 - Schreibzusagen ohne Werkzeugaufruf wie „Ich habe notiert, dass die Farben im Paket nicht stimmen.“ ersetzt der Prüfknoten.
-
-Die Testskripte der Knotentests liegen nicht in diesem Repository. Sie liefen vor der Abgabe mit 0 unerwarteten Abweichungen.
 
 ## Schlussantworten im Wortlaut (ungekürzt)
 
