@@ -1,18 +1,8 @@
----
-title: "Testtabelle W07T03 v09"
-type: abgabe
-kurs: AGT-2606
-tag: W07T03
-datum: 2026-11-04
-sichtbarkeit: extern
-updated: 2026-11-04
----
-
 # Testtabelle W07T03, K1 Support-Agent v09
 
 Die Tabelle gehört zur Tages-Doku von Woche 7, Tag 3. Sie zählt nur Läufe am ganzen Agenten (Hauptworkflow mit beiden Agenten und dem MCP-Server). Die Einzeltests am Server und an den Agenten stehen weiter unten in eigenen Tabellen.
 
-**Zahlen:** Gesamttest 7 Fälle in 17 Läufen (Tabelle 1, 17 Zeilen), Nachläufe nach den Notizkorrekturen 5 Läufe (Tabelle 2), Einzeltests am Server 8 Fälle (Tabelle 3), Einzeltests an den Agenten 10 Läufe (Tabelle 4).
+**Zahlen:** Gesamttest 7 Fälle in 17 Läufen (Tabelle 1, 17 Zeilen), Nachläufe nach den Notizkorrekturen und der Neuanordnung 6 Läufe (Tabelle 2), Einzeltests am Server 8 Fälle (Tabelle 3), Einzeltests an den Agenten 10 Läufe (Tabelle 4).
 
 **Stand der Version beim Test (04.11.2026):**
 
@@ -51,9 +41,9 @@ Die Tabelle gehört zur Tages-Doku von Woche 7, Tag 3. Sie zählt nur Läufe am 
 
 **Ergebnis Tabelle 1:** 17 von 17 Läufen bestanden. Die Erwartung zum Werkzeug traf in jedem Lauf zu. Die Fälle A, B, C, D und F laufen je 3 Mal, weil die Antwort des Modells von Lauf zu Lauf im Wortlaut schwankt; die Werkzeugwahl blieb gleich.
 
-## Tabelle 2: Nachläufe nach den Notizkorrekturen (5 Zeilen)
+## Tabelle 2: Nachläufe nach den Notizkorrekturen und der Neuanordnung (6 Zeilen)
 
-Nach dem Berichtigen der Notizen am Server und dem erneuten Veröffentlichen des Servers (dreimal) lief je ein Fall A noch einmal, um zu belegen, dass die Werkzeuge weiter über den Server erreichbar sind (N1 bis N3). Nach dem Kürzen von Notiztexten in den beiden Agenten und dem erneuten Veröffentlichen lief je ein Fall noch einmal: N4 über den Auskunfts-Agenten, N5 über den Aktions-Agenten.
+Nach dem Berichtigen der Notizen am Server und dem erneuten Veröffentlichen des Servers (dreimal) lief je ein Fall A noch einmal, um zu belegen, dass die Werkzeuge weiter über den Server erreichbar sind (N1 bis N3). Nach dem Kürzen von Notiztexten in den beiden Agenten und dem erneuten Veröffentlichen lief je ein Fall noch einmal: N4 über den Auskunfts-Agenten, N5 über den Aktions-Agenten. Nach dem Neuanordnen der 4 Workflows im Editor (nur Positionen und Notizgrößen) lief N6 über den Hauptworkflow.
 
 | Nr | Eingabe | Werkzeug gemessen | Antwort im Wortlaut | Urteil | Lauf |
 |---|---|---|---|---|---|
@@ -62,6 +52,7 @@ Nach dem Berichtigen der Notizen am Server und dem erneuten Veröffentlichen des
 | N3 | Wie ist der Stand von Auftrag 24002? | `Auftragsstand` | Du schreibst mit dem KI-Assistenten von K1. Auftrag 24002 ist ein Social-Media-Paket mit 3 Beiträgen und befindet sich aktuell in der Erstellung. Recherche und Texte laufen noch, die Vorschau wird voraussichtlich am 28.10.2026 bereitgestellt. Zuletzt wurde der Auftrag am 27.10.2026 aktualisiert. | PASS | 2217 |
 | N4 | Wie ist der Stand von Auftrag 24002? (nach dem Kürzen der Notizen im Auskunfts-Agenten) | `Auftragsstand` | Du schreibst mit dem KI-Assistenten von K1. Auftrag 24002 ist ein Social-Media-Paket mit 3 Beiträgen und befindet sich aktuell in der Erstellung. Recherche und Texte laufen noch, die Vorschau wird voraussichtlich am 28.10.2026 bereitgestellt. Zuletzt wurde der Auftrag am 27.10.2026 aktualisiert. | PASS | 2222 |
 | N5 | Bitte leg ein Ticket an: Das Logo im Paket zu Auftrag 123 ist verpixelt. (nach dem Kürzen der Notizen im Aktions-Agenten) | `Teamvormerkung` | Du schreibst mit dem KI-Assistenten von K1. Das Ticket K1-T-01057 wurde für die Korrektur des verpixelten Logos im Paket zu Auftrag 12335 angelegt.<br><br>Bestätigt: Vormerkung K1-T-01057. | PASS (Werkzeug über den Server erreicht), aber Abweichung vom Fall E1 | 2227 |
+| N6 | Wie ist der Stand von Auftrag 24002? (nach dem Neuanordnen der Workflows) | `Auftragsstand` | Du schreibst mit dem KI-Assistenten von K1. Auftrag 24002 ist ein Social-Media-Paket mit 3 Beiträgen und befindet sich aktuell in der Erstellung. Recherche und Texte laufen noch, die Vorschau wird voraussichtlich am 28.10.2026 bereitgestellt. Der Stand wurde zuletzt am 27.10.2026 aktualisiert. | PASS | 2232 |
 
 **Abweichung bei N5:** Der Aktions-Agent hat aus „Auftrag 123“ die Nummer 12335 gemacht und damit eine gültige Vormerkung angelegt (Testzeile K1-T-01057, nicht entfernt). Im Lauf 2174 (E1) hatte derselbe Eingabesatz noch die Antwort „Auftragsnummer ungültig“ ergeben. Das Modell schwankt hier von Lauf zu Lauf; die Prüfung der Nummer im Werkzeug greift nur bei der Nummer, die der Agent übergibt. Für N5 zählt nur der Beleg, dass `Teamvormerkung` nach dem Veröffentlichen weiter über den Server läuft.
 

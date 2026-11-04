@@ -166,8 +166,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.3,
       "position": [
-        1056,
-        768
+        1232,
+        816
       ]
     },
     {
@@ -188,8 +188,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.3,
       "position": [
-        1264,
-        768
+        1456,
+        816
       ]
     },
     {
@@ -254,8 +254,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1984,
-        640
+        2016,
+        704
       ]
     },
     {
@@ -364,7 +364,7 @@
       "parameters": {
         "content": "## Fehlerweg\n🔴 Leere query gibt EINGABE_FEHLT, fault_test subaus gibt SPEZIALIST_AUSGEFALLEN. Ein Agent-Fehler läuft über Belege aus Kontext: aktion_stand ist keine, werkzeug_lief oder unbekannt (der Kontext des MCP-Clients ist leer, Belege wie Ticketnummer sind hier nicht lesbar). Nie Stop and Error.",
         "height": 176,
-        "width": 320,
+        "width": 496,
         "color": 3
       },
       "id": "aaf64f66-4ac5-4fe5-9091-a181d3feb0e6",
@@ -372,8 +372,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1888,
-        848
+        2288,
+        496
       ]
     },
     {
@@ -426,8 +426,8 @@
     {
       "parameters": {
         "content": "",
-        "height": 368,
-        "width": 352,
+        "height": 352,
+        "width": 528,
         "color": 5
       },
       "id": "0ce0ff46-d295-4438-914b-a8e97b6f38b4",
@@ -435,8 +435,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1872,
-        832
+        2272,
+        480
       ]
     },
     {
@@ -536,8 +536,8 @@
     {
       "parameters": {
         "content": "# 📋 Error Report\nAusführungen ansehen: Workflow öffnen, Reiter Executions. Der Fehler-Workflow ist eingetragen.",
-        "height": 144,
-        "width": 320,
+        "height": 128,
+        "width": 496,
         "color": 3
       },
       "id": "1ad41a80-90cc-44c5-a4d9-57da8572a922",
@@ -545,8 +545,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1888,
-        1040
+        2288,
+        688
       ]
     },
     {
@@ -671,7 +671,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1760,
+        1808,
         576
       ]
     },
@@ -693,8 +693,8 @@
       "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
       "typeVersion": 1.4,
       "position": [
-        1472,
-        768
+        1664,
+        832
       ]
     }
   ],

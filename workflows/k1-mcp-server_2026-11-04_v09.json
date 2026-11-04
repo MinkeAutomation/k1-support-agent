@@ -69,8 +69,8 @@
       "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
       "typeVersion": 1,
       "position": [
-        1200,
-        944
+        560,
+        960
       ]
     },
     {
@@ -210,13 +210,13 @@
       "typeVersion": 1,
       "position": [
         96,
-        -256
+        -288
       ]
     },
     {
       "parameters": {
         "content": "",
-        "height": 320,
+        "height": 352,
         "width": 2000
       },
       "id": "231f02b8-8dad-446d-84dc-4a18ce540cd4",
@@ -225,13 +225,13 @@
       "typeVersion": 1,
       "position": [
         96,
-        -112
+        -144
       ]
     },
     {
       "parameters": {
         "content": "## 📋 Workflow-Beschreibung\n\n🎯 **Zweck:** Die 6 Werkzeuge des K1-Supports liegen einmal an diesem Server. Der Auskunfts-Agent und der Aktions-Agent verbinden sich mit ihm und sehen nur ihre Auswahl.\n\n👥 **Für wen:** für die zwei Agenten `SUB Auskunfts-Agent K1 v09` und `SUB Aktions-Agent K1 v09`.\n\n🕹️ **So nutzt du ihn:** Der Server ist veröffentlicht. Die Agenten rufen ihn intern über `http://localhost:5678/mcp/<Pfad>` mit Bearer-Anmeldung auf, weil die öffentliche Adresse eine Cloudflare-Prüfseite liefert. Ein neues Werkzeug kommt hier einmal dazu.\n\n## Status: 🟢 gebaut und getestet, beide Agenten angebunden",
-        "height": 280,
+        "height": 312,
         "width": 700,
         "color": 7
       },
@@ -241,13 +241,13 @@
       "typeVersion": 1,
       "position": [
         112,
-        -96
+        -128
       ]
     },
     {
       "parameters": {
         "content": "## 🧾 Version\n\nv09 vom 04.11.2026. Änderungen je Stand stehen in der Datei `ChangeLog.md`.\n\nWerkzeugfassung: Beschreibungen wie in v08, nur `Teamvormerkung` trägt zusätzlich den Parameter `session_id`.",
-        "height": 280,
+        "height": 312,
         "width": 280,
         "color": 7
       },
@@ -257,13 +257,13 @@
       "typeVersion": 1,
       "position": [
         832,
-        -96
+        -128
       ]
     },
     {
       "parameters": {
         "content": "# 🧪 K1 MCP-Server\n\n**Aufgabe:** 6 Werkzeuge an einem Server anbieten, jeder Agent nutzt nur seine Auswahl.\n\n**Die Idee:** Zugangsdaten und Adressen liegen einmal am Server, nicht doppelt in zwei Agenten.\n\n**Warum so?** Ein Server ohne Ablauf hat keinen Datenfluss, deshalb gibt es hier keinen Konfigurationsknoten: Adressen stehen fest in den Werkzeugen.\n\n**Hinweis:** Wer das Token kennt, ruft alle 6 Werkzeuge direkt auf, auch ohne die Zustimmungsprüfung des Aktions-Agenten.",
-        "height": 280,
+        "height": 312,
         "width": 380,
         "color": 7
       },
@@ -273,13 +273,13 @@
       "typeVersion": 1,
       "position": [
         1136,
-        -96
+        -128
       ]
     },
     {
       "parameters": {
         "content": "## Ablauf\n\n① Server mit Anmeldung\n② 4 lesende Werkzeuge\n③ 2 schreibende Werkzeuge",
-        "height": 280,
+        "height": 312,
         "width": 280,
         "color": 7
       },
@@ -289,13 +289,13 @@
       "typeVersion": 1,
       "position": [
         1536,
-        -96
+        -128
       ]
     },
     {
       "parameters": {
         "content": "## Status\n\n🟢 Server gebaut und veröffentlicht\n🟢 Tests bestanden: alle 6 Werkzeuge, Ablehnung ohne Token\n🔴 Token nie in Notizen\n🔵 Der Pfad steht nur am Trigger",
-        "height": 280,
+        "height": 312,
         "width": 248,
         "color": 7
       },
@@ -305,7 +305,7 @@
       "typeVersion": 1,
       "position": [
         1840,
-        -96
+        -128
       ]
     },
     {
@@ -342,21 +342,21 @@
       "parameters": {
         "content": "## ③ Schreibende Werkzeuge\n\nTeamvormerkung legt ein Ticket an, Eilmeldung_ans_Team schickt eine Mail. Den Aktions-Agenten fragen vorher die Zustimmung ab, der Server selbst prüft sie nicht.\n\n### 🟡 2 Werkzeuge mit Wirkung\n\n🩺 **Wenn es hakt:** Eine Vormerkung ohne Rückgabe gilt als nicht bestätigt, nicht als nicht angelegt.",
         "height": 200,
-        "width": 736
+        "width": 704
       },
       "id": "d71b3e07-c22c-4a3f-bda0-f5242a55dc6e",
       "name": "Schrittkarte 3 Schreibende Werkzeuge MCP-Server",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1360,
+        1392,
         240
       ]
     },
     {
       "parameters": {
         "content": "",
-        "height": 1262,
+        "height": 1054,
         "width": 604,
         "color": 5
       },
@@ -365,8 +365,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2208,
-        -256
+        2144,
+        -288
       ]
     },
     {
@@ -381,14 +381,14 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2224,
-        -240
+        2160,
+        -272
       ]
     },
     {
       "parameters": {
         "content": "# 🌐 Plattform-Hinweise\n\n**n8n-Instanz:** Erlaubt: MCP Server Trigger mit Bearer-Anmeldung. 🟡 Besonderheit: Test-URL und Production URL sind verschieden; nach jeder Änderung neu veröffentlichen. Die Clients nutzen die interne Adresse `localhost:5678`, weil die öffentliche Adresse eine Cloudflare-Prüfseite liefert; dort ist Bearer die einzige Schranke.\n\n**Supabase:** Erlaubt: Aufruf mit anon-Schlüssel für die zwei Funktionen. 🟡 Besonderheit: kein Service-Schlüssel an einem Werkzeug.\n\n**SMTP Monitoring:** Erlaubt: Mails an die feste Testadresse. 🟡 Besonderheit: Empfänger nie vom Modell gesetzt.",
-        "height": 330,
+        "height": 282,
         "width": 568,
         "color": 7
       },
@@ -397,14 +397,14 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2224,
-        208
+        2160,
+        176
       ]
     },
     {
       "parameters": {
         "content": "# 🩺 Fehlerbehebung\n\n👉 Aufruf wird mit 403 abgelehnt: Token im Zugang prüfen, beide Seiten nutzen denselben Zugang.\n👉 Der Client meldet einen Fehler oder findet den Server nicht: Server veröffentlichen und 1 Minute warten.\n👉 Der Client bekommt eine Seite mit „Just a moment“: nicht die öffentliche Adresse nutzen, sondern die interne.\n👉 Agent findet ein Werkzeug nicht: Name im Prompt und Auswahl am Client gegen den Namen am Server halten.\n👉 Werkzeug liefert Fehler: Ausführung des Servers öffnen, dort steht der Fehler des Werkzeugs.",
-        "height": 400,
+        "height": 272,
         "width": 568,
         "color": 7
       },
@@ -413,14 +413,14 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2224,
-        560
+        2160,
+        480
       ]
     },
     {
       "parameters": {
         "content": "",
-        "height": 300,
+        "height": 220,
         "width": 1000,
         "color": 5
       },
@@ -429,14 +429,14 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        96,
-        1008
+        880,
+        976
       ]
     },
     {
       "parameters": {
         "content": "## 🔴 Fehlerweg\n\nDer Server hat keinen eigenen Ablauf. Ein Fehler eines Werkzeugs geht als Werkzeug-Ergebnis an den Agenten (er wird nicht gestoppt). Läuft der Server nicht oder ist er nicht veröffentlicht, meldet der Client sofort einen Fehler: Code 404, der Webhook sei nicht registriert (gemessen: 0,2 s, Ausführung 2200). Der Hauptworkflow antwortet dann mit seinem festen Ausfallsatz (Ausführung 2201).",
-        "height": 268,
+        "height": 188,
         "width": 480,
         "color": 3
       },
@@ -445,14 +445,14 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        112,
-        1024
+        896,
+        992
       ]
     },
     {
       "parameters": {
         "content": "## 📋 Error Report\n\nAusführungen ansehen auf der eigenen n8n-Instanz, Workflow öffnen, Reiter Executions.\n\nEin Fehler beim Starten löst den zentralen Error Workflow der Instanz aus.",
-        "height": 268,
+        "height": 188,
         "width": 472,
         "color": 3
       },
@@ -461,8 +461,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        608,
-        1024
+        1392,
+        992
       ]
     }
   ],
