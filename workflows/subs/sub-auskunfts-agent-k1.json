@@ -1,16 +1,7 @@
 {
-  "name": "SUB Auskunfts-Agent K1 v08",
-  "description": "Lesender Spezialist des K1-Supports (FAQ, Wissensbasis, Feiertage, Auftragsstand). Ruf nur durch den Orchestrator v08. Kein Schreibzugriff.",
+  "name": "SUB Auskunfts-Agent K1 v09",
   "nodes": [
     {
-      "id": "2721c869-50bc-4ea9-a2a6-62f226b96c9c",
-      "name": "Aufruf empfangen [Execute Workflow Trigger]",
-      "type": "n8n-nodes-base.executeWorkflowTrigger",
-      "typeVersion": 1.3,
-      "position": [
-        240,
-        464
-      ],
       "parameters": {
         "workflowInputs": {
           "values": [
@@ -25,30 +16,30 @@
             }
           ]
         }
-      }
+      },
+      "id": "0cdff854-8cdb-4da4-80af-968db34829ed",
+      "name": "Aufruf empfangen [Execute Workflow Trigger]",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        240,
+        464
+      ]
     },
     {
-      "id": "fa413fab-768b-4e67-9033-f6d21f1f846c",
+      "parameters": {
+        "jsCode": "// Prüft die Eingabe des Orchestrators. Eine leere query stoppt nicht (kein Stop and Error), sondern liefert den festen Wert EINGABE_FEHLT,\n// damit der Orchestrator eine Antwort bekommt. fault_test = subaus simuliert den Ausfall des Spezialisten (nur Test, Fehlerfall im Test).\nconst inp = $input.first().json;\nconst query = String(inp.query ?? '').trim().slice(0, 4000);\nconst sessionId = String(inp.session_id ?? '').trim();\nconst fault = String(inp.fault_test ?? '').trim();\nlet fehler = '';\nif (fault === 'subaus') fehler = 'SPEZIALIST_AUSGEFALLEN';\nelse if (!query) fehler = 'EINGABE_FEHLT';\nreturn [{ json: { valid: fehler === '', fehler, query, session_id: sessionId, fault_test: fault } }];"
+      },
+      "id": "5fda2665-5c7f-4c10-888b-646b667f93c5",
       "name": "Eingabe prüfen [Code]",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
         560,
         464
-      ],
-      "parameters": {
-        "jsCode": "// Prüft die Eingabe des Orchestrators. Eine leere query stoppt nicht (kein Stop and Error), sondern liefert den festen Wert EINGABE_FEHLT,\n// damit der Orchestrator eine Antwort bekommt. fault_test = subaus simuliert den Ausfall des Spezialisten (nur Test, Fehlerfall im Test).\nconst inp = $input.first().json;\nconst query = String(inp.query ?? '').trim().slice(0, 4000);\nconst sessionId = String(inp.session_id ?? '').trim();\nconst fault = String(inp.fault_test ?? '').trim();\nlet fehler = '';\nif (fault === 'subaus') fehler = 'SPEZIALIST_AUSGEFALLEN';\nelse if (!query) fehler = 'EINGABE_FEHLT';\nreturn [{ json: { valid: fehler === '', fehler, query, session_id: sessionId, fault_test: fault } }];"
-      }
+      ]
     },
     {
-      "id": "b05d1959-42e5-4d5f-8e05-093ef40a6651",
-      "name": "Eingabe gültig? [If]",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        880,
-        592
-      ],
       "parameters": {
         "conditions": {
           "options": {
@@ -70,17 +61,17 @@
           "combinator": "and"
         },
         "options": {}
-      }
+      },
+      "id": "e7935f41-f8d4-42a0-92ae-6de7c31322c5",
+      "name": "Eingabe gültig? [If]",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        880,
+        560
+      ]
     },
     {
-      "id": "738f3e42-abbe-4cc0-a55d-50158b23c1d9",
-      "name": "Konfiguration [Edit Fields]",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        1200,
-        464
-      ],
       "parameters": {
         "assignments": {
           "assignments": [
@@ -147,17 +138,17 @@
           ]
         },
         "options": {}
-      }
+      },
+      "id": "e84b9c8d-abf0-4480-994b-4e5269c07052",
+      "name": "Konfiguration [Edit Fields]",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1200,
+        464
+      ]
     },
     {
-      "id": "a57cd9c1-e677-42b1-891a-6660ad8e3ac2",
-      "name": "Gratismodell [OpenAI Chat Model]",
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "typeVersion": 1.3,
-      "position": [
-        752,
-        768
-      ],
       "parameters": {
         "model": {
           "__rl": true,
@@ -169,17 +160,17 @@
           "maxTokens": 4096,
           "temperature": 0
         }
-      }
-    },
-    {
-      "id": "1821bd43-7f0d-4d99-893d-2e657234ff39",
-      "name": "Ausweichmodell [OpenAI Chat Model]",
+      },
+      "id": "99f3ff2a-0fd0-45c3-ae8b-8468ce1ebe98",
+      "name": "Gratismodell [OpenAI Chat Model]",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.3,
       "position": [
-        960,
+        752,
         768
-      ],
+      ]
+    },
+    {
       "parameters": {
         "model": {
           "__rl": true,
@@ -191,30 +182,30 @@
           "maxTokens": 4096,
           "temperature": 0
         }
-      }
+      },
+      "id": "6e5d1188-c610-447e-b651-036c9e6f352c",
+      "name": "Ausweichmodell [OpenAI Chat Model]",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        960,
+        768
+      ]
     },
     {
-      "id": "7abe961a-7474-447d-94fb-1f755503c2df",
+      "parameters": {
+        "jsCode": "// Bündelt die Rückgabe des Agenten für den Orchestrator. werkzeuge trägt jeden Werkzeugaufruf mit Name und Rückgabe,\n// damit der Hauptworkflow die Schritte im Adapter auspacken und Werkzeugwahl messen sie wie in v06 bewerten kann.\n// v09: Die 4 Werkzeuge liegen am MCP-Server, der Client-Knoten K1_MCP_Auskunft reicht sie an den Agenten. Gemessen (Ausführung 2107): im Protokoll heißt ein Werkzeug\n// <Clientname>_<Werkzeugname> mit EINEM Unterstrich (nicht mit zwei, wie R77 annahm), und die Rückgabe ist mehrfach verpackt: [{response:[{type:text,text:\"[{data:...}]\"}]}].\n// Der Hauptworkflow vergleicht exakte Namen (K1_Antwortkatalog, Auftragsstand ...) und liest die Rückgabe als Text oder JSON in der Form von v08. Deshalb gibt dieser Knoten\n// das Namensende weiter und packt die Rückgabe bis zum eigentlichen Inhalt aus.\n// Lange Rückgaben (FAQ-Tabelle, Textstellen, Feiertagsliste) werden gekürzt; der Prüfknoten braucht nur ihren Anfang (Kopfzeile, Quellzeile, Datum).\nconst KURZ = { K1_Antwortkatalog: 1500, K1_Technikwissen: 1500, Feiertage_nachschlagen: 1500 };\nconst NAMEN = ['K1_Antwortkatalog', 'K1_Technikwissen', 'Feiertage_nachschlagen', 'Auftragsstand'];\nconst nameEnde = (t) => { const s = String(t); return NAMEN.find(n => s === n || s.endsWith('_' + n)) || s; };\nconst auspacken = (v, tiefe = 0) => {\n  if (tiefe > 8) return typeof v === 'string' ? v : JSON.stringify(v);\n  if (typeof v === 'string') { let p; try { p = JSON.parse(v); } catch (e) { return v; } return (p !== null && typeof p === 'object') ? auspacken(p, tiefe + 1) : v; }\n  if (Array.isArray(v)) {\n    if (v.length > 0 && v.every(x => x && typeof x === 'object' && x.type === 'text' && typeof x.text === 'string')) return v.map(x => auspacken(x.text, tiefe + 1)).join('\\n');\n    if (v.length === 1) return auspacken(v[0], tiefe + 1);\n    return JSON.stringify(v);\n  }\n  if (v && typeof v === 'object') {\n    if (v.response !== null && typeof v.response === 'object') return auspacken(v.response, tiefe + 1);\n    if (typeof v.data === 'string' && v.status === undefined) return auspacken(v.data, tiefe + 1);\n    if (typeof v.pageContent === 'string') return v.pageContent;\n    return JSON.stringify(v);\n  }\n  return String(v ?? '');\n};\nconst it = $input.first().json;\nconst steps = Array.isArray(it.intermediateSteps) ? it.intermediateSteps : [];\nconst werkzeuge = steps.filter(s => s && s.action && s.action.tool).map(s => {\n  const tool = nameEnde(s.action.tool);\n  const obs = auspacken(s.observation);\n  return { tool, observation: obs.slice(0, KURZ[tool] || 4000) };\n});\nreturn [{ json: { status: 'ok', spezialist: 'Auskunfts_Agent', antwort: String(it.output ?? '').trim(), werkzeuge, fehler_text: '' } }];"
+      },
+      "id": "9cc2fe5e-f51e-4b75-8307-9647e41fa877",
       "name": "Ergebnis bündeln [Code]",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
         1984,
         464
-      ],
-      "parameters": {
-        "jsCode": "// Bündelt die Rückgabe des Spezialisten für den Orchestrator. werkzeuge trägt jeden Werkzeugaufruf mit Name und Rückgabe,\n// damit der Hauptworkflow die Schritte im Adapter auspacken und Werkzeugwahl messen sie wie in v06 bewerten kann.\n// Lange Rückgaben (FAQ-Tabelle, Textstellen, Feiertagsliste) werden gekürzt; der Prüfknoten braucht nur ihren Anfang (Kopfzeile, Quellzeile, Datum).\nconst KURZ = { K1_Antwortkatalog: 1500, K1_Technikwissen: 1500, Feiertage_nachschlagen: 1500 };\nconst it = $input.first().json;\nconst steps = Array.isArray(it.intermediateSteps) ? it.intermediateSteps : [];\nconst werkzeuge = steps.filter(s => s && s.action && s.action.tool).map(s => {\n  const obs = typeof s.observation === 'string' ? s.observation : JSON.stringify(s.observation ?? '');\n  return { tool: s.action.tool, observation: obs.slice(0, KURZ[s.action.tool] || 4000) };\n});\nreturn [{ json: { status: 'ok', spezialist: 'Auskunfts_Agent', antwort: String(it.output ?? '').trim(), werkzeuge, fehler_text: '' } }];"
-      }
+      ]
     },
     {
-      "id": "6236fa9e-30da-47a3-ad5d-49dbe4b26a97",
-      "name": "Ausfall bündeln [Edit Fields]",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        1984,
-        640
-      ],
       "parameters": {
         "assignments": {
           "assignments": [
@@ -251,147 +242,35 @@
           ]
         },
         "options": {}
-      }
-    },
-    {
-      "id": "a9d6f0c0-1135-469e-bafc-f63fb219dae1",
-      "name": "K1_Antwortkatalog",
-      "type": "n8n-nodes-base.httpRequestTool",
-      "typeVersion": 4.5,
+      },
+      "id": "f4fdca6d-1896-4b92-9f4d-83dab57c5981",
+      "name": "Ausfall bündeln [Edit Fields]",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
       "position": [
-        1152,
-        768
-      ],
-      "parameters": {
-        "toolDescription": "Liefert: die komplette FAQ der Content-Maschine K1 als CSV-Text mit den Spalten id, kategorie, frage, stichworte, antwort, eskalation, stand. Den passenden Eintrag suchst du selbst heraus.\nBraucht: nichts, die Adresse ist fest eingetragen.\nGedacht für: Fragen dazu, wie K1 genutzt wird (Auftrag, Quellen, Ergebnis, Freigabe, Ablage, Gestaltung, Fehler, Datenschutz, Preis, Vertrag), auch wenn die Frage anders klingt als der Eintrag in der Tabelle.\nNicht für: Aufträge oder Kundendaten einsehen, etwas ändern, senden oder jemanden benachrichtigen.\nWenn es nicht passt: einen Nicht-Treffer-Wert gibt es nicht; steht nichts Passendes in der Tabelle, sagst du das selbst. Kommt statt der Tabelle eine Fehlermeldung, ist die FAQ im Moment nicht abrufbar: sag das und verweise ans K1-Team.",
-        "url": "={{ $('Konfiguration [Edit Fields]').first().json.faq_url }}",
-        "options": {
-          "response": {
-            "response": {
-              "responseFormat": "text"
-            }
-          },
-          "timeout": 10000
-        }
-      }
+        1984,
+        640
+      ]
     },
     {
-      "id": "0fe46b0b-b58e-4c99-bac6-9c1e0cb94fc0",
-      "name": "K1_Technikwissen",
-      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
-      "typeVersion": 1.3,
-      "position": [
-        1312,
-        768
-      ],
-      "parameters": {
-        "mode": "retrieve-as-tool",
-        "toolDescription": "Liefert: bis zu 4 Textstellen aus der K1-Wissensbasis, jede beginnt mit \"Quelle: <Datei>, Abschnitt: <Titel>, Wissensstand: 30.09.2026\".\nPasst, wenn: es um die Technik hinter K1 geht (Aufbau, beteiligte Dienste, Fehlerverhalten, bekannte Grenzen) und die FAQ dazu nichts Passendes hat.\nBraucht: query (Text), die Frage mit eigenen Wörtern, zum Beispiel \"Was passiert, wenn kein passendes Foto gefunden wird\".\nStand: die Unterlagen reichen bis 30.09.2026; was später passiert ist oder neu dazukam, steht nicht darin.\nWenn es nicht passt: einen Nicht-Treffer-Wert gibt es nicht. Passen die Stellen nicht zur Frage, steht dazu nichts in den Unterlagen; sag das offen und leite nichts ab.\nNicht für: Preise, Verträge, Auftragsstatus, Kundendaten, Kalenderdaten.",
-        "tableName": {
-          "__rl": true,
-          "mode": "id",
-          "value": "agt_w06_knowledge_chunks"
-        },
-        "includeDocumentMetadata": false,
-        "options": {
-          "queryName": "match_agt_w06_knowledge_chunks"
-        }
-      }
-    },
-    {
-      "id": "f2b0c5dd-1ac7-4340-a880-6ce4a197f890",
-      "name": "Vektoren der Frage [Embeddings Google Gemini]",
-      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
-      "typeVersion": 1,
-      "position": [
-        1392,
-        944
-      ],
-      "parameters": {}
-    },
-    {
-      "id": "f5865275-d3c5-4c28-81df-d395e600e3cf",
-      "name": "Feiertage_nachschlagen",
-      "type": "n8n-nodes-base.httpRequestTool",
-      "typeVersion": 4.5,
-      "position": [
-        1560,
-        768
-      ],
-      "parameters": {
-        "toolDescription": "Liefert: die gesetzlichen Feiertage in Deutschland für ein Kalenderjahr aus der öffentlichen Schnittstelle Nager.Date, als JSON-Liste. Je Feiertag stehen date (JJJJ-MM-TT), localName, name, global (true heißt bundesweit) und counties (die Bundesländer bei regionalen Feiertagen, sonst null).\nBraucht: jahr (Zahl), das Kalenderjahr vierstellig, zum Beispiel 2026. Bei einem Datum nimmst du das Jahr dieses Datums.\nPasst, wenn: eine Frage vom Kalender abhängt: ob ein Datum ein Feiertag ist, an welchen Tagen das K1-Team nicht arbeitet oder ob ein Auftrag an einem Tag bearbeitet wird. Steht ein Datum nicht in der Liste, ist es kein gesetzlicher Feiertag.\nWenn es schiefgeht: eine Fehlermeldung oder eine leere Antwort heißt, die Feiertage sind gerade nicht abrufbar; sag das offen und nenne keinen Feiertag aus dem Gedächtnis.\nNicht für: Wochentage nennen, Auftragsstände lesen, einen Bearbeitungstermin zusagen.",
-        "url": "=https://date.nager.at/api/v3/PublicHolidays/{{ /*n8n-auto-generated-fromAI-override*/ $fromAI('jahr', 'Das Kalenderjahr vierstellig, zum Beispiel 2026', 'number') }}/DE",
-        "options": {
-          "response": {
-            "response": {
-              "responseFormat": "json"
-            }
-          },
-          "timeout": 10000
-        }
-      }
-    },
-    {
-      "id": "fe77937c-b434-4ff3-8c97-741dbe8a90cf",
-      "name": "Auftragsstand",
-      "type": "n8n-nodes-base.httpRequestTool",
-      "typeVersion": 4.5,
-      "position": [
-        1736,
-        768
-      ],
-      "parameters": {
-        "toolDescription": "Liefert: ein JSON-Objekt mit dem Feld status. Bei status \"gefunden\" kommen dazu auftragsnummer, paket, phase, hinweis, fertig_voraussichtlich (Datum oder null) und zuletzt_geaendert. Die anderen Werte von status: \"fehlt\" (keine Ziffer übergeben), \"ungueltig\" (keine Zahl mit genau 5 Ziffern) und \"unbekannt\" (zu dieser Nummer gibt es keinen Auftrag).\nBraucht: nummer (Text), nur die fünfstellige Auftragsnummer ohne weiteren Text, zum Beispiel \"24002\". Steht im Gespräch noch keine Nummer, bleibt das Werkzeug ungenutzt.\nAlles, was nicht wie ein solches Objekt aussieht, ist ein technischer Fehler.\nNicht für: Aufträge ändern, stornieren oder beschleunigen, Kundendaten zeigen. Das Werkzeug liest nur den Stand.",
-        "method": "POST",
-        "url": "={{ $('Konfiguration [Edit Fields]').first().json.supabase_rest }}/rpc/agt_w06_auftrag_abfragen",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "supabaseApi",
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "p_nummer",
-              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('nummer', 'Nur die fünfstellige Auftragsnummer, zum Beispiel 24002') }}"
-            }
-          ]
-        },
-        "options": {
-          "response": {
-            "response": {
-              "responseFormat": "text"
-            }
-          },
-          "timeout": 10000
-        }
-      }
-    },
-    {
-      "id": "fba61366-4ca1-4a82-806b-811911fb5496",
+      "parameters": {},
+      "id": "d6953a89-6147-49d3-bf2a-44c658fc51bd",
       "name": "Testeingang (Test) [Manual Trigger]",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
         112,
         640
-      ],
-      "parameters": {}
+      ]
     },
     {
-      "id": "fbe3e662-0823-45db-ad67-83a0430f5ffa",
-      "name": "Testwerte (Test) [Edit Fields]",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        336,
-        640
-      ],
       "parameters": {
         "assignments": {
           "assignments": [
             {
               "id": "t01",
               "name": "query",
-              "value": "Wie lange wartet K1 auf meine Freigabe?",
+              "value": "Wie ist der Stand von Auftrag 24002? Und lege bitte ein Ticket an.",
               "type": "string"
             },
             {
@@ -409,329 +288,329 @@
           ]
         },
         "options": {}
-      }
+      },
+      "id": "16d081b2-a380-4603-a881-e76bbb55e767",
+      "name": "Testwerte (Test) [Edit Fields]",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        336,
+        640
+      ]
     },
     {
-      "id": "2edbe7cf-1283-4e57-bb24-4dfde0a0f468",
+      "parameters": {
+        "content": "# SUB Auskunfts-Agent K1 v09\n**Version v3 · Woche 7 · nur lesend.** Beantwortet Fragen aus FAQ, Wissensbasis, Feiertagen und Auftragsstand. Die 4 Werkzeuge liegen am K1 MCP-Server, dieser Agent wählt sie über einen MCP-Client aus. Kein Schreibzugriff, kein SMTP.",
+        "height": 112,
+        "width": 2128,
+        "color": 5
+      },
+      "id": "2674481e-a81e-4660-8b36-8d6605a3aaa0",
       "name": "Titel Auskunfts-Agent",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
         96,
         -256
-      ],
-      "parameters": {
-        "content": "# SUB Auskunfts-Agent K1 v08\n**Version v2 · Woche 7 · nur lesend.** Beantwortet Fragen aus FAQ, Wissensbasis, Feiertagen und Auftragsstand. Kein Schreibzugriff, kein SMTP.",
-        "height": 112,
-        "width": 2128,
-        "color": 5
-      }
+      ]
     },
     {
-      "id": "ee865027-1711-40d5-adac-6e604748bd72",
+      "parameters": {
+        "content": "## Fehlerweg\n🔴 Leere query gibt EINGABE_FEHLT, Agent-Fehler oder fault_test subaus gibt SPEZIALIST_AUSGEFALLEN. Nie Stop and Error: der Orchestrator bekommt immer eine Antwort.",
+        "height": 176,
+        "width": 320,
+        "color": 3
+      },
+      "id": "74db9b12-4502-495d-9f09-5f4bf181a3cb",
       "name": "Fehlerweg Auskunfts-Agent",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
         1888,
         848
-      ],
-      "parameters": {
-        "content": "## Fehlerweg\n🔴 Leere query gibt EINGABE_FEHLT, Agent-Fehler oder fault_test subaus gibt SPEZIALIST_AUSGEFALLEN. Nie Stop and Error: der Orchestrator bekommt immer eine Antwort.",
-        "height": 176,
-        "width": 320,
-        "color": 3
-      }
+      ]
     },
     {
-      "id": "2b3f26d3-b9d2-4618-8632-fb216b726485",
+      "parameters": {
+        "content": "# ✅ Setup-Checkliste\n✅ Zugänge gesetzt (OpenRouter, Bearer Auth für den MCP-Server)\n✅ K1 MCP-Server veröffentlicht, Client zeigt auf seine interne Adresse\n✅ FAQ- und Supabase-Adresse liegen am Server\n✅ Aufrufrecht nur selber Eigentümer\n✅ Fehler-Workflow eingetragen\n✅ Veröffentlicht am 04.11.2026, sonst ruft der Orchestrator nicht",
+        "height": 224,
+        "width": 504,
+        "color": 7
+      },
+      "id": "2ba626ef-4b0f-47f5-b4fd-75a8f340ec94",
       "name": "Setup-Checkliste Auskunfts-Agent",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
         2288,
         -240
-      ],
+      ]
+    },
+    {
       "parameters": {
-        "content": "# ✅ Setup-Checkliste\n✅ Zugänge gesetzt (OpenRouter, Supabase anon, Gemini)\n✅ Supabase-Adresse in der Konfiguration eingetragen\n✅ Aufrufrecht nur selber Eigentümer\n✅ Fehler-Workflow eingetragen\n✅ Veröffentlicht am 03.11.2026, sonst ruft der Orchestrator im Produktivbetrieb nicht",
+        "content": "# 🌐 Plattform-Hinweise\n**OpenRouter:** nur Gratismodelle (:free), bei 429 greift das Ausweichmodell.\n**n8n:** Als Agent-Werkzeug mit Quelle Database muss der Sub veröffentlicht sein.\n**MCP:** Der Client ruft den Server über die interne Adresse localhost auf, Abweichung vom Kursweg: über die öffentliche Adresse bekommt der Client eine Cloudflare-Prüfseite.\n**Test:** Der Zweig Testeingang (Test) ist nur für den Einzeltest.",
         "height": 224,
         "width": 504,
         "color": 7
-      }
-    },
-    {
-      "id": "a9d2b344-6970-40d8-8d6a-2e65e79a2af6",
+      },
+      "id": "3bacb765-195f-4192-86d6-61ec60ff16ce",
       "name": "Plattform-Hinweise Auskunfts-Agent",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
         2288,
         0
-      ],
-      "parameters": {
-        "content": "# 🌐 Plattform-Hinweise\n**OpenRouter:** nur Gratismodelle (:free), bei 429 greift das Ausweichmodell.\n**n8n:** Als Agent-Werkzeug mit Quelle Database muss der Sub veröffentlicht sein.\n**Test:** Der Zweig Testeingang (Test) ist nur für den Einzeltest.",
-        "height": 224,
-        "width": 504,
-        "color": 7
-      }
+      ]
     },
     {
-      "id": "0a599968-66da-4565-a971-ddd1b732ed92",
+      "parameters": {
+        "content": "## 🧪 Testzweig\nManueller Start mit festen Testwerten (query, session_id, fault_test), gleicher Weg wie der Aufruf durch den Orchestrator. Werte vor dem Lauf im Knoten Testwerte ändern.",
+        "width": 480,
+        "color": 4
+      },
+      "id": "0d3d0b13-2b61-4440-813f-e877323ff6aa",
       "name": "Testzweig Auskunfts-Agent",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
         96,
         832
-      ],
-      "parameters": {
-        "content": "## 🧪 Testzweig\nManueller Start mit festen Testwerten (query, session_id, fault_test), gleicher Weg wie der Aufruf durch den Orchestrator. Werte vor dem Lauf im Knoten Testwerte ändern.",
-        "width": 480,
-        "color": 4
-      }
+      ]
     },
     {
-      "id": "a573f8d6-afac-4919-bf90-f402f6bbd26d",
+      "parameters": {
+        "content": "",
+        "height": 368,
+        "width": 352,
+        "color": 5
+      },
+      "id": "1acaa484-eb41-4ae1-be52-b8e67157f182",
       "name": "Rahmen Fehlerweg Auskunfts-Agent",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
         1872,
         832
-      ],
-      "parameters": {
-        "content": "",
-        "height": 368,
-        "width": 352,
-        "color": 5
-      }
+      ]
     },
     {
-      "id": "b6705120-c576-4165-b295-8c1cce557b6c",
+      "parameters": {
+        "content": "",
+        "height": 272,
+        "width": 2128
+      },
+      "id": "17d32d8d-11c4-4bc5-a15b-c8ebecfb79c9",
       "name": "Rahmen Kopf Auskunfts-Agent",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
         96,
         -112
-      ],
-      "parameters": {
-        "content": "",
-        "height": 272,
-        "width": 2128
-      }
+      ]
     },
     {
-      "id": "67180fe0-99f2-4aff-9911-f965b7de21e5",
+      "parameters": {
+        "content": "",
+        "height": 688,
+        "width": 536,
+        "color": 5
+      },
+      "id": "0cb52790-bf43-48e6-b899-bccdde7e2638",
       "name": "Rahmen Hilfe-Spalte Auskunfts-Agent",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
         2272,
         -256
-      ],
-      "parameters": {
-        "content": "",
-        "height": 688,
-        "width": 536,
-        "color": 5
-      }
+      ]
     },
     {
-      "id": "58450578-46c6-449c-a2c8-31cdd5524ed8",
+      "parameters": {
+        "content": "# 📋 Workflow-Beschreibung\n🎯 **Zweck:** beantwortet lesend Fragen zu K1 aus 4 Quellen am MCP-Server.\n👥 **Für wen:** den Orchestrator in v09, nie die Person direkt.\n🕹️ **So nutzt du ihn:** Aufruf durch v09 oder Testzweig starten.\n## Status: 🟢 Einzeltest bestanden am 04.11.2026 (Läufe 2107, 2110, 2118)",
+        "height": 240,
+        "width": 624,
+        "color": 7
+      },
+      "id": "c81cc7dd-5202-4613-b20b-d41ad4d5f315",
       "name": "Workflow-Beschreibung Auskunfts-Agent",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
         112,
         -96
-      ],
-      "parameters": {
-        "content": "# 📋 Workflow-Beschreibung\n🎯 **Zweck:** beantwortet lesend Fragen zu K1 aus 4 Quellen.\n👥 **Für wen:** den Orchestrator in v08, nie die Person direkt.\n🕹️ **So nutzt du ihn:** Aufruf durch v08 oder Testzweig starten.\n## Status: 🟢 veröffentlicht und getestet am 03.11.2026 (Orchestrator-Läufe 1997, 2016, 2047, 2066)",
-        "height": 240,
-        "width": 624,
-        "color": 7
-      }
+      ]
     },
     {
-      "id": "965584e2-d0d7-40b8-92b6-2d9381eb84c1",
+      "parameters": {
+        "content": "# 🧪 Auskunfts-Agent: Kopf\n**Aufgabe:** Fragen zu K1 aus 4 Quellen beantworten.\n**Die Idee:** lesender Agent, vom Orchestrator gerufen, mit Werkzeugen vom MCP-Server.\n**Warum so?** Ohne Schreibzugriff kann er nichts anlegen; die Auswahl am Client zeigt ihm nur die 4 lesenden Werkzeuge.\n**Hinweis:** Max Iterations 4, kein Gedächtnis.",
+        "height": 240,
+        "width": 496,
+        "color": 7
+      },
+      "id": "97f22ef0-1c64-4897-86d0-84d6b3967269",
       "name": "Kopf Auskunfts-Agent",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
         752,
         -96
-      ],
-      "parameters": {
-        "content": "# 🧪 Auskunfts-Agent: Kopf\n**Aufgabe:** Fragen zu K1 aus 4 Quellen beantworten.\n**Die Idee:** lesender Spezialist, vom Orchestrator gerufen.\n**Warum so?** Ohne Schreibzugriff kann er nichts anlegen.\n**Hinweis:** Max Iterations 4, kein Gedächtnis.",
-        "height": 240,
-        "width": 496,
-        "color": 7
-      }
+      ]
     },
     {
-      "id": "a8c368ae-93a4-465f-98b1-1d70960f8272",
+      "parameters": {
+        "content": "# 🧾 Version\nv3 vom 04.11.2026: Die 4 Werkzeuge kommen jetzt über den MCP-Client K1_MCP_Auskunft. Eingabe bleibt query. Siehe ChangeLog.md.",
+        "height": 240,
+        "color": 7
+      },
+      "id": "eb5c8294-0c87-47f3-94db-e2ca9d00fdf6",
       "name": "Version Auskunfts-Agent",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
         1664,
         -96
-      ],
-      "parameters": {
-        "content": "# 🧾 Version\nv2 vom 03.11.2026, Textrunde v17 am selben Tag (nur Kommentare und Wortlaut des Rollenabsatzes, Logik gleich); für den Orchestrator v08 fachlich unverändert: Eingabe bleibt query. Änderungen stehen im ChangeLog.md.",
-        "height": 240,
-        "color": 7
-      }
+      ]
     },
     {
-      "id": "4a68ec6a-7b13-4b2d-b6f1-20080c02c082",
+      "parameters": {
+        "content": "## Status\n🟢 Läufe 2107, 2110, 2118 bestanden\n🟡 Toolname im Protokoll: Client_Werkzeug\n🟡 Nur Gratismodelle\n🔴 Ohne Veröffentlichung kein Aufruf\n🔵 Kein Schreibzugriff",
+        "height": 240,
+        "width": 288,
+        "color": 7
+      },
+      "id": "5f5de146-07c9-4322-ba2e-59577de07abf",
       "name": "Status Auskunfts-Agent",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
         1920,
         -96
-      ],
-      "parameters": {
-        "content": "## Status\n🟢 Läufe 1997, 2047, 2066 bestanden\n🟢 unveröffentlicht gibt den festen Ausfallsatz (2016)\n🟡 Läuft nur mit Gratismodellen\n🔴 Ohne Veröffentlichung kein Aufruf\n🔵 Kein Schreibzugriff, kein SMTP",
-        "height": 240,
-        "width": 288,
-        "color": 7
-      }
+      ]
     },
     {
-      "id": "c72e4f5e-210f-413a-a770-8cfa549a7d8e",
+      "parameters": {
+        "content": "# 📋 Error Report\nAusführungen ansehen: Workflow öffnen, Reiter Executions. Der Fehler-Workflow ist eingetragen.",
+        "height": 144,
+        "width": 320,
+        "color": 3
+      },
+      "id": "3cbf3c42-89c1-46d3-be0f-e16b678c1507",
       "name": "Error Report Auskunfts-Agent",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
         1888,
         1040
-      ],
-      "parameters": {
-        "content": "# 📋 Error Report\nAusführungen ansehen: Workflow öffnen, Reiter Executions. Der Fehler-Workflow ist eingetragen.",
-        "height": 144,
-        "width": 320,
-        "color": 3
-      }
+      ]
     },
     {
-      "id": "e45a5812-d80b-4995-a9af-56ba276daeb8",
+      "parameters": {
+        "content": "# 🩺 Fehlerbehebung\n👉 Keine Antwort: ist der Sub veröffentlicht? Sonst ist er kein Werkzeug.\n👉 Antwort ohne Werkzeug: ist der K1 MCP-Server veröffentlicht und der Bearer-Zugang gültig?\n👉 EINGABE_FEHLT: der Orchestrator hat keine query übergeben.",
+        "height": 176,
+        "width": 504,
+        "color": 7
+      },
+      "id": "e3510612-5403-4d0b-8eb3-e4b35df699dd",
       "name": "Fehlerbehebung Auskunfts-Agent",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
         2288,
         240
-      ],
-      "parameters": {
-        "content": "# 🩺 Fehlerbehebung\n👉 Keine Antwort: ist der Sub veröffentlicht? Sonst ist er kein Werkzeug.\n👉 Antwort leer: Zugang Supabase anon und Gemini prüfen.\n👉 EINGABE_FEHLT: der Orchestrator hat keine query übergeben.",
-        "height": 176,
-        "width": 504,
-        "color": 7
-      }
+      ]
     },
     {
-      "id": "687ac8dd-bf92-4743-98a5-b2f1d5884806",
+      "parameters": {
+        "content": "## ① Aufruf empfangen\nNimmt query, session_id und fault_test vom Orchestrator entgegen.\n\n🟡 fault_test ist nur für Tests gedacht.\n\n🩺 **Wenn es hakt:** Feldnamen im Aufruf des Orchestrators abgleichen.",
+        "height": 240,
+        "width": 384
+      },
+      "id": "0f929734-86bb-49a3-943e-60bb6a0fdb95",
       "name": "Schrittkarte 1 Aufruf empfangen Auskunfts-Agent",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
         96,
         192
-      ],
-      "parameters": {
-        "content": "## ① Aufruf empfangen\nNimmt query, session_id und fault_test vom Orchestrator entgegen.\n\n🟡 fault_test ist nur für Tests gedacht.\n\n🩺 **Wenn es hakt:** Feldnamen im Aufruf des Orchestrators abgleichen.",
-        "height": 240,
-        "width": 384
-      }
+      ]
     },
     {
-      "id": "d6bfdad4-c688-458d-a8a5-8714d03b89d4",
+      "parameters": {
+        "content": "## ② Eingabe prüfen\nKürzt die Frage und prüft sie. Bei fehlender Frage geht es in den Fehlerweg.\n\n🔴 Leere query gibt EINGABE_FEHLT, fault_test subaus gibt SPEZIALIST_AUSGEFALLEN.\n\n🩺 **Wenn es hakt:** im Orchestrator prüfen, ob query gefüllt ankommt.",
+        "height": 240,
+        "width": 480
+      },
+      "id": "9bc166e6-cbbf-4b60-9eb6-0823c2da8f8f",
       "name": "Schrittkarte 2 Eingabe prüfen Auskunfts-Agent",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
         528,
         192
-      ],
-      "parameters": {
-        "content": "## ② Eingabe prüfen\nKürzt die Frage und prüft sie. Bei fehlender Frage geht es in den Fehlerweg.\n\n🔴 Leere query gibt EINGABE_FEHLT, fault_test subaus gibt SPEZIALIST_AUSGEFALLEN.\n\n🩺 **Wenn es hakt:** im Orchestrator prüfen, ob query gefüllt ankommt.",
-        "height": 240,
-        "width": 480
-      }
+      ]
     },
     {
-      "id": "c385788a-f021-4d0b-a8ec-9095635e6af6",
+      "parameters": {
+        "content": "## ③ Konfiguration\nLegt Modelle und Höchstzahl der Schritte fest. Die Felder faq_url und supabase_rest werden nicht mehr genutzt, die Adressen liegen am Server.\n\n🟡 Nur Gratismodelle (:free), das Ausweichmodell springt bei Überlastung ein.\n\n🩺 **Wenn es hakt:** Modellnamen prüfen.",
+        "height": 240,
+        "width": 336
+      },
+      "id": "07a557e5-a551-47c2-ae04-5f692752377a",
       "name": "Schrittkarte 3 Konfiguration Auskunfts-Agent",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
         1056,
         192
-      ],
-      "parameters": {
-        "content": "## ③ Konfiguration\nLegt Modelle, FAQ-Adresse, Supabase-Adresse und Höchstzahl der Schritte fest.\n\n🟡 Nur Gratismodelle (:free), das Ausweichmodell springt bei Überlastung ein.\n\n🩺 **Wenn es hakt:** Modellnamen und faq_url in diesem Knoten prüfen.",
-        "height": 240,
-        "width": 336
-      }
+      ]
     },
     {
-      "id": "204eccbd-4c80-479c-8b04-3904f5301a6a",
+      "parameters": {
+        "content": "## ④ Auskunft geben\nDer Agent wählt aus 4 Werkzeugen des MCP-Servers (Client K1_MCP_Auskunft, Auswahl Selected): FAQ, Wissensbasis, Feiertage und Auftragsstand. Er liest nur.\n\n🟢 Höchstens 4 Schritte, kein Gedächtnis.\n\n🩺 **Wenn es hakt:** Zugang OpenRouter und Bearer Auth prüfen, Server veröffentlicht?",
+        "height": 240,
+        "width": 384
+      },
+      "id": "c5d3e918-1036-4587-985e-29870fef21d4",
       "name": "Schrittkarte 4 Auskunft geben Auskunfts-Agent",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
         1440,
         192
-      ],
-      "parameters": {
-        "content": "## ④ Auskunft geben\nDer Agent wählt aus 4 Werkzeugen: FAQ, Wissensbasis, Feiertage und Auftragsstand. Er liest nur.\n\n🟢 Höchstens 4 Schritte, kein Gedächtnis.\n\n🩺 **Wenn es hakt:** Zugänge OpenRouter, Supabase anon und Gemini prüfen.",
-        "height": 240,
-        "width": 384
-      }
+      ]
     },
     {
-      "id": "7da3a982-069b-46db-8a56-6f31847138fb",
+      "parameters": {
+        "content": "## ⑤ Ergebnis bündeln\nPackt Antwort und Werkzeugaufrufe für den Orchestrator zusammen: Namensende statt Clientname_Werkzeug, Rückgabe ausgepackt, lange Rückgaben gekürzt.\n\n🟢 status ok, fehler_text leer.\n\n🩺 **Wenn es hakt:** Ausführung öffnen und die Rückgabe des Agenten ansehen.",
+        "height": 240,
+        "width": 352
+      },
+      "id": "7edca253-fc5c-4210-80ad-0a9fb14ad4bd",
       "name": "Schrittkarte 5 Ergebnis bündeln Auskunfts-Agent",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
         1872,
         192
-      ],
-      "parameters": {
-        "content": "## ⑤ Ergebnis bündeln\nPackt Antwort und Werkzeugaufrufe für den Orchestrator zusammen, lange Rückgaben werden gekürzt.\n\n🟢 status ok, fehler_text leer.\n\n🩺 **Wenn es hakt:** Ausführung öffnen und die Rückgabe des Agenten ansehen.",
-        "height": 240,
-        "width": 352
-      }
+      ]
     },
     {
-      "id": "4ca857d3-893f-4bff-84fc-c7befbc86da3",
+      "parameters": {
+        "content": "## Ablauf\n① Aufruf empfangen → \n② Eingabe prüfen → \n③ Konfiguration → \n④ Agent mit 4 Werkzeugen vom MCP-Server → \n⑤ Ergebnis bündeln.\nFehlerweg: Ausfall bündeln.",
+        "height": 240,
+        "width": 384,
+        "color": 7
+      },
+      "id": "19d5c8c2-34aa-4b15-bc14-bcd2bb9f81e4",
       "name": "Ablauf Auskunfts-Agent",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
         1264,
         -96
-      ],
-      "parameters": {
-        "content": "## Ablauf\n① Aufruf empfangen → \n② Eingabe prüfen → \n③ Konfiguration → \n④ Agent mit 4 Werkzeugen → \n⑤ Ergebnis bündeln.\nFehlerweg: Ausfall bündeln.",
-        "height": 240,
-        "width": 384,
-        "color": 7
-      }
+      ]
     },
     {
-      "id": "064b0126-15aa-47cd-941f-1e9a013a8860",
-      "name": "Auskunft geben [AI Agent]",
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "typeVersion": 3.1,
-      "position": [
-        1520,
-        464
-      ],
       "parameters": {
         "promptType": "define",
         "text": "={{ $('Eingabe prüfen [Code]').first().json.query }}",
@@ -743,9 +622,42 @@
           "enableStreaming": false
         }
       },
+      "id": "83489a04-8e17-46dc-aed2-d9978cd8fd58",
+      "name": "Auskunft geben [AI Agent]",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1520,
+        464
+      ],
       "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "endpointUrl": "http://localhost:5678/mcp/<<REPLACE_WITH_MCP_PATH>>",
+        "authentication": "bearerAuth",
+        "include": "selected",
+        "includeTools": [
+          "K1_Antwortkatalog",
+          "K1_Technikwissen",
+          "Feiertage_nachschlagen",
+          "Auftragsstand"
+        ],
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "5dcf5628-bf51-4579-a1a6-4a2b768cafeb",
+      "name": "K1_MCP_Auskunft",
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.4,
+      "position": [
+        1152,
+        768
+      ]
     }
   ],
+  "pinData": {},
   "connections": {
     "Aufruf empfangen [Execute Workflow Trigger]": {
       "main": [
@@ -782,17 +694,6 @@
           {
             "node": "Ausfall bündeln [Edit Fields]",
             "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Vektoren der Frage [Embeddings Google Gemini]": {
-      "ai_embedding": [
-        [
-          {
-            "node": "K1_Technikwissen",
-            "type": "ai_embedding",
             "index": 0
           }
         ]
@@ -871,40 +772,7 @@
         ]
       ]
     },
-    "K1_Antwortkatalog": {
-      "ai_tool": [
-        [
-          {
-            "node": "Auskunft geben [AI Agent]",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "K1_Technikwissen": {
-      "ai_tool": [
-        [
-          {
-            "node": "Auskunft geben [AI Agent]",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Feiertage_nachschlagen": {
-      "ai_tool": [
-        [
-          {
-            "node": "Auskunft geben [AI Agent]",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Auftragsstand": {
+    "K1_MCP_Auskunft": {
       "ai_tool": [
         [
           {
@@ -916,23 +784,26 @@
       ]
     }
   },
-  "settings": {
-    "executionOrder": "v1"
-  },
-  "pinData": {},
   "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
   "tags": [
-    {
-      "name": "schulung"
-    },
     {
       "name": "sub-workflow"
     },
     {
-      "name": "woche-7"
+      "name": "KI-AGT-2606"
     },
     {
-      "name": "KI-AGT-2606"
+      "name": "schulung"
+    },
+    {
+      "name": "woche-7"
     }
-  ]
+  ],
+  "description": "Lesender Agent des K1-Supports (FAQ, Wissensbasis, Feiertage, Auftragsstand). Ruf nur durch den Orchestrator v09. Kein Schreibzugriff."
 }

@@ -1,0 +1,568 @@
+{
+  "name": "AGT-2606 W07T03 K1 MCP-Server v09",
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "bearerAuth",
+        "path": "<<REPLACE_WITH_MCP_PATH>>",
+        "instructions": "Werkzeuge der Content-Maschine K1. Lesend: K1_Antwortkatalog, K1_Technikwissen, Feiertage_nachschlagen, Auftragsstand. Schreibend: Teamvormerkung, Eilmeldung_ans_Team. Wann ein Werkzeug genutzt wird und wann nicht, steht in seiner Beschreibung und im Systemprompt des aufrufenden Agenten."
+      },
+      "id": "a3a1a587-650c-49ef-925f-8fc6c3b991cc",
+      "name": "K1-Werkzeuge anbieten [MCP Server Trigger]",
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 2.1,
+      "position": [
+        1040,
+        464
+      ],
+      "webhookId": "668aeb1a-d5cd-4ed0-91e3-e18f54ec63d6"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Liefert: die komplette FAQ der Content-Maschine K1 als CSV-Text mit den Spalten id, kategorie, frage, stichworte, antwort, eskalation, stand. Den passenden Eintrag suchst du selbst heraus.\nBraucht: nichts, die Adresse ist fest eingetragen.\nGedacht für: Fragen dazu, wie K1 genutzt wird (Auftrag, Quellen, Ergebnis, Freigabe, Ablage, Gestaltung, Fehler, Datenschutz, Preis, Vertrag), auch wenn die Frage anders klingt als der Eintrag in der Tabelle.\nNicht für: Aufträge oder Kundendaten einsehen, etwas ändern, senden oder jemanden benachrichtigen.\nWenn es nicht passt: einen Nicht-Treffer-Wert gibt es nicht; steht nichts Passendes in der Tabelle, sagst du das selbst. Kommt statt der Tabelle eine Fehlermeldung, ist die FAQ im Moment nicht abrufbar: sag das und verweise ans K1-Team.",
+        "url": "https://raw.githubusercontent.com/MinkeAutomation/k1-support-agent/main/faq/k1-faq.csv",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "664672c6-f68c-4da9-96b1-36461159fd65",
+      "name": "K1_Antwortkatalog",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.5,
+      "position": [
+        240,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Liefert: bis zu 4 Textstellen aus der K1-Wissensbasis, jede beginnt mit \"Quelle: <Datei>, Abschnitt: <Titel>, Wissensstand: 30.09.2026\".\nPasst, wenn: es um die Technik hinter K1 geht (Aufbau, beteiligte Dienste, Fehlerverhalten, bekannte Grenzen) und die FAQ dazu nichts Passendes hat.\nBraucht: query (Text), die Frage mit eigenen Wörtern, zum Beispiel \"Was passiert, wenn kein passendes Foto gefunden wird\".\nStand: die Unterlagen reichen bis 30.09.2026; was später passiert ist oder neu dazukam, steht nicht darin.\nWenn es nicht passt: einen Nicht-Treffer-Wert gibt es nicht. Passen die Stellen nicht zur Frage, steht dazu nichts in den Unterlagen; sag das offen und leite nichts ab.\nNicht für: Preise, Verträge, Auftragsstatus, Kundendaten, Kalenderdaten.",
+        "tableName": {
+          "__rl": true,
+          "mode": "id",
+          "value": "agt_w06_knowledge_chunks"
+        },
+        "includeDocumentMetadata": false,
+        "options": {
+          "queryName": "match_agt_w06_knowledge_chunks"
+        }
+      },
+      "id": "435465f8-448f-47d3-b8cc-19dc4520c46c",
+      "name": "K1_Technikwissen",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        560,
+        768
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "980b0323-abdb-457e-8f14-e83d4f2d3bc8",
+      "name": "Vektoren der Frage [Embeddings Google Gemini]",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        944
+      ]
+    },
+    {
+      "parameters": {
+        "toolDescription": "Liefert: die gesetzlichen Feiertage in Deutschland für ein Kalenderjahr aus der öffentlichen Schnittstelle Nager.Date, als JSON-Liste. Je Feiertag stehen date (JJJJ-MM-TT), localName, name, global (true heißt bundesweit) und counties (die Bundesländer bei regionalen Feiertagen, sonst null).\nBraucht: jahr (Zahl), das Kalenderjahr vierstellig, zum Beispiel 2026. Bei einem Datum nimmst du das Jahr dieses Datums.\nPasst, wenn: eine Frage vom Kalender abhängt: ob ein Datum ein Feiertag ist, an welchen Tagen das K1-Team nicht arbeitet oder ob ein Auftrag an einem Tag bearbeitet wird. Steht ein Datum nicht in der Liste, ist es kein gesetzlicher Feiertag.\nWenn es schiefgeht: eine Fehlermeldung oder eine leere Antwort heißt, die Feiertage sind gerade nicht abrufbar; sag das offen und nenne keinen Feiertag aus dem Gedächtnis.\nNicht für: Wochentage nennen, Auftragsstände lesen, einen Bearbeitungstermin zusagen.",
+        "url": "=https://date.nager.at/api/v3/PublicHolidays/{{ /*n8n-auto-generated-fromAI-override*/ $fromAI('jahr', 'Das Kalenderjahr vierstellig, zum Beispiel 2026', 'number') }}/DE",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "849e0acf-d72b-43f7-a980-d95399622112",
+      "name": "Feiertage_nachschlagen",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.5,
+      "position": [
+        880,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "toolDescription": "Liefert: ein JSON-Objekt mit dem Feld status. Bei status \"gefunden\" kommen dazu auftragsnummer, paket, phase, hinweis, fertig_voraussichtlich (Datum oder null) und zuletzt_geaendert. Die anderen Werte von status: \"fehlt\" (keine Ziffer übergeben), \"ungueltig\" (keine Zahl mit genau 5 Ziffern) und \"unbekannt\" (zu dieser Nummer gibt es keinen Auftrag).\nBraucht: nummer (Text), nur die fünfstellige Auftragsnummer ohne weiteren Text, zum Beispiel \"24002\". Steht im Gespräch noch keine Nummer, bleibt das Werkzeug ungenutzt.\nAlles, was nicht wie ein solches Objekt aussieht, ist ein technischer Fehler.\nNicht für: Aufträge ändern, stornieren oder beschleunigen, Kundendaten zeigen. Das Werkzeug liest nur den Stand.",
+        "method": "POST",
+        "url": "https://<<REPLACE_WITH_SUPABASE_PROJECT>>.supabase.co/rest/v1/rpc/agt_w06_auftrag_abfragen",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "p_nummer",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('nummer', 'Nur die fünfstellige Auftragsnummer, zum Beispiel 24002') }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "1c671995-d437-463b-93ef-a4f078af4442",
+      "name": "Auftragsstand",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.5,
+      "position": [
+        1200,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "toolDescription": "Liefert: ein JSON-Objekt mit dem Feld status. \"erfasst\": die Vormerkung steht, das Feld vorgang trägt die Ticketnummer (K1-T- und 5 Ziffern), das Feld neu ist false, wenn dieselbe Meldung in der Sitzung schon vorgemerkt war. \"fehlt\": das Feld feld nennt \"anliegen\", dann wurde nichts angelegt. \"ungueltig\": das Feld feld nennt \"auftrag\", die Nummer hat nicht genau 5 Ziffern, dann wurde nichts angelegt.\nBraucht: kategorie (Text, eine von auftrag, gestaltung, ablage, freigabe, technik, sonstiges), anliegen (Text, 1 bis 3 Sätze ohne Mailadresse und Telefonnummer, Beispiel \"Logo im Paket zu Auftrag 24003 ist verpixelt, bitte korrigieren\"), auftrag (Text, Auftragsnummer oder leer), session_id (Text, die Sitzungskennung aus der Zeile \"Sitzung: ...\" im Auftrag, unverändert übernommen; ohne sie greift nur die Erkennung doppelter Meldungen nicht).\nVoraussetzung: Die Person hat der Vormerkung eindeutig zugestimmt, durch ein Ja auf deine Rückfrage oder durch die ausdrückliche Bitte um ein Ticket. Ohne diese Zustimmung bleibt der Aufruf aus, auch bei Unsicherheit.\nPasst, wenn: an einem bestimmten Auftrag ein Problem vorliegt, das du nicht selbst lösen kannst und mit dem die Person warten kann, etwa eine Korrektur an einem fertigen Paket, oder wenn die Auftragsnummer fehlt und die Person die Vormerkung will. Das K1-Team arbeitet das Ticket später ab.\nAlles, was nicht wie ein solches Objekt aussieht (Fehlermeldung, Zeitüberschreitung, leere oder unlesbare Rückgabe), ist ein technischer Fehler: Dann ist der Ausgang unbekannt, denn eine ausbleibende Antwort beweist nicht, dass nichts angelegt wurde. Sag in dem Fall weder, dass ein Ticket angelegt wurde, noch, dass keines angelegt wurde, sondern dass die Vormerkung nicht bestätigt ist.\nNicht für: Fälle, in denen die Person nicht warten will (dafür Eilmeldung_ans_Team). Das Werkzeug benachrichtigt niemanden, liest keine Tickets und ändert keine.",
+        "method": "POST",
+        "url": "https://<<REPLACE_WITH_SUPABASE_PROJECT>>.supabase.co/rest/v1/rpc/agt_w06_vormerkung_anlegen",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "p_kategorie",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('kategorie', 'Eine von: auftrag, gestaltung, ablage, freigabe, technik, sonstiges') }}"
+            },
+            {
+              "name": "p_anliegen",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('anliegen', 'Das Problem knapp in 1 bis 3 Sätzen') }}"
+            },
+            {
+              "name": "p_auftrag",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('auftrag', 'Fünfstellige Auftragsnummer, falls bekannt, sonst leer') }}"
+            },
+            {
+              "name": "p_session_id",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('session_id', 'Die Sitzungskennung aus der Zeile Sitzung im Auftrag, unverändert übernommen') }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "d632cbf6-ed41-4786-8206-4cf1d3cd6ed1",
+      "name": "Teamvormerkung",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.5,
+      "position": [
+        1520,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Wirkung: Das K1-Team bekommt sofort eine Mail und meldet sich daraufhin bei der Person.\nPasst, wenn: die Person nicht auf eine spätere Bearbeitung warten will (sie drängt, ist aufgebracht oder verlangt ausdrücklich jemanden aus dem Team) oder von einer Gefahr für Personen schreibt, und ein konkretes Anliegen genannt ist. Der Aufruf geht ohne Rückfrage raus.\nBraucht: betreff (Text, kurz, Beispiel \"Beschwerde: falsche Farben in Auftrag 24003\"), anliegen (Text, 1 bis 3 ganze Sätze), auftragsnummer (Text, falls bekannt, sonst \"keine Angabe\"), ticketnummer (Text, falls im Gespräch schon ein Ticket angelegt wurde, sonst \"keine Angabe\"), kategorie (Text: gibt es im Gespräch schon ein Ticket, genau dessen Kategorie, zum Beispiel gestaltung, sonst Beschwerde, Dringend oder Menschenwunsch, sonst \"keine Angabe\"), verlauf (Text: was im Gespräch bisher geschah, je Schritt eine Zeile).\nLiefert: eine Versandbestätigung des Mailservers mit dem Feld accepted, aber keine Ticketnummer.\nWenn es schiefgeht: jede Fehlermeldung heißt, die Mail ist nicht verschickt; sag das offen und nenne das K1-Team über den Auftragskanal.\nNicht für: Tickets anlegen, Empfänger wählen (sie sind fest eingetragen), etwas zusagen oder erstatten.",
+        "fromEmail": "K1 Support-Agent <<<REPLACE_WITH_TEST_EMAIL>>>",
+        "toEmail": "<<REPLACE_WITH_TEST_EMAIL>>",
+        "subject": "={{ $fromAI('betreff', 'Kurzer Betreff, Beispiel: Beschwerde: falsche Farben in Auftrag 24003', 'string') }}",
+        "html": "=<!DOCTYPE html>\n<html lang=\"de\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<meta name=\"color-scheme\" content=\"light\">\n<title>Eilmeldung an das K1-Team</title>\n</head>\n<body style=\"margin:0;padding:0;background-color:#e9e4d8;\">\n<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#e9e4d8\" style=\"width:100%;background-color:#e9e4d8;\">\n<tr><td align=\"center\" style=\"padding:24px 12px;\">\n<table role=\"presentation\" width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"width:100%;max-width:600px;\">\n<tr><td height=\"6\" bgcolor=\"#f0a830\" style=\"height:6px;line-height:6px;font-size:0;background-color:#f0a830;\">&nbsp;</td></tr>\n<tr><td bgcolor=\"#161b22\" style=\"background-color:#161b22;padding:26px 28px 24px 28px;\">\n<div style=\"font-family:'Segoe UI',Helvetica,Arial,sans-serif;font-size:11px;line-height:14px;letter-spacing:3px;text-transform:uppercase;font-weight:bold;color:#f0a830;padding-bottom:10px;\">Eilmeldung &nbsp;/&nbsp; K1 Support-Agent</div>\n<div style=\"font-family:Georgia,'Times New Roman',serif;font-size:26px;line-height:32px;font-weight:bold;color:#f7f3ea;\">Eilmeldung an das K1-Team</div>\n<div style=\"font-family:'Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;line-height:20px;color:#b9b3a4;padding-top:8px;\">Meldung aus dem Support-Chat, vom Agenten zusammengestellt.</div>\n</td></tr>\n<tr><td height=\"18\" style=\"height:18px;line-height:18px;font-size:0;\">&nbsp;</td></tr>\n<tr><td style=\"padding:0 0 14px 0;\">\n<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#ffffff\" style=\"width:100%;background-color:#ffffff;border:1px solid #d6cfbe;border-left:5px solid #f0a830;\">\n<tr><td style=\"padding:16px 20px 18px 20px;\">\n<div style=\"font-family:'Segoe UI',Helvetica,Arial,sans-serif;font-size:11px;line-height:14px;letter-spacing:2px;text-transform:uppercase;font-weight:bold;color:#7a5b12;padding-bottom:8px;\">Anliegen</div>\n<div style=\"font-family:'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:24px;color:#1f2430;\">{{ String($fromAI('anliegen', 'Zusammenfassung des Anliegens in 1 bis 3 ganzen Sätzen, ohne Anrede', 'string') || 'keine Angabe').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }}</div>\n</td></tr></table>\n</td></tr>\n<tr><td style=\"padding:0 0 14px 0;\">\n<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#ffffff\" style=\"width:100%;background-color:#ffffff;border:1px solid #d6cfbe;border-left:5px solid #f0a830;\">\n<tr><td style=\"padding:16px 20px 18px 20px;\">\n<div style=\"font-family:'Segoe UI',Helvetica,Arial,sans-serif;font-size:11px;line-height:14px;letter-spacing:2px;text-transform:uppercase;font-weight:bold;color:#7a5b12;padding-bottom:8px;\">Auftrag und Ticket</div>\n<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"width:100%;\"><tr>\n<td valign=\"top\" width=\"42%\" style=\"font-family:'Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;line-height:20px;color:#5f594b;padding:7px 10px 7px 0;border-top:1px dashed #d6cfbe;\">Auftragsnummer</td>\n<td valign=\"top\" style=\"font-family:'Courier New',Courier,monospace;font-size:14px;line-height:20px;font-weight:bold;color:#1f2430;padding:7px 0;border-top:1px dashed #d6cfbe;\">{{ String($fromAI('auftragsnummer', 'Auftragsnummer, falls im Gespräch genannt, sonst keine Angabe', 'string', 'keine Angabe') || 'keine Angabe').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }}</td>\n</tr>{{ (() => { const raw = String($fromAI('ticketnummer', 'Ticketnummer, falls im Gespräch schon ein Ticket angelegt wurde, sonst keine Angabe', 'string', 'keine Angabe') || 'keine Angabe').trim(); const esc = raw.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); const m = raw.match(/K1-T-\\d{5}/); const rowT = '<tr><td valign=\"top\" width=\"42%\" style=\"font-family:Segoe UI,Helvetica,Arial,sans-serif;font-size:13px;line-height:20px;color:#5f594b;padding:7px 10px 7px 0;border-top:1px dashed #d6cfbe;\">Ticketnummer</td><td valign=\"top\" style=\"font-family:Courier New,Courier,monospace;font-size:14px;line-height:20px;font-weight:bold;color:#1f2430;padding:7px 0;border-top:1px dashed #d6cfbe;\">' + esc + '</td></tr>'; if (m) { return rowT + '<tr><td colspan=\"2\" style=\"padding:12px 0 2px 0;border-top:1px dashed #d6cfbe;\"><table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td bgcolor=\"#f0a830\" style=\"background-color:#f0a830;border-radius:4px;\"><a href=\"https://supabase.com/dashboard/project/<<REPLACE_WITH_SUPABASE_PROJECT>>/editor/<<REPLACE_WITH_TABLE_ID>>?schema=public&amp;filter=ticket_no:eq:' + m[0] + '\" target=\"_blank\" style=\"display:inline-block;padding:12px 22px;font-family:Segoe UI,Helvetica,Arial,sans-serif;font-size:14px;line-height:18px;font-weight:bold;color:#161b22;text-decoration:none;\">Ticket öffnen · ' + m[0] + '</a></td></tr></table><div style=\"font-family:Segoe UI,Helvetica,Arial,sans-serif;font-size:12px;line-height:18px;color:#5f594b;padding-top:8px;\">Führt zum Eintrag in Supabase (Anmeldung nötig).</div></td></tr>'; } return rowT + '<tr><td colspan=\"2\" style=\"font-family:Segoe UI,Helvetica,Arial,sans-serif;font-size:12px;line-height:18px;color:#5f594b;padding:8px 0 2px 0;border-top:1px dashed #d6cfbe;\">Noch kein Ticket angelegt.</td></tr>'; })() }}<tr>\n<td valign=\"top\" width=\"42%\" style=\"font-family:'Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;line-height:20px;color:#5f594b;padding:7px 10px 7px 0;border-top:1px dashed #d6cfbe;\">Kategorie</td>\n<td valign=\"top\" style=\"font-family:'Courier New',Courier,monospace;font-size:14px;line-height:20px;font-weight:bold;color:#1f2430;padding:7px 0;border-top:1px dashed #d6cfbe;\">{{ String($fromAI('kategorie', 'Kategorie des Falls: wurde im Gespräch schon ein Ticket angelegt, genau dessen Kategorie, zum Beispiel gestaltung, sonst Beschwerde, Dringend oder Menschenwunsch, sonst keine Angabe', 'string', 'keine Angabe') || 'keine Angabe').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }}</td>\n</tr></table>\n</td></tr></table>\n</td></tr>\n<tr><td style=\"padding:0 0 14px 0;\">\n<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#ffffff\" style=\"width:100%;background-color:#ffffff;border:1px solid #d6cfbe;border-left:5px solid #f0a830;\">\n<tr><td style=\"padding:16px 20px 18px 20px;\">\n<div style=\"font-family:'Segoe UI',Helvetica,Arial,sans-serif;font-size:11px;line-height:14px;letter-spacing:2px;text-transform:uppercase;font-weight:bold;color:#7a5b12;padding-bottom:8px;\">Bisheriger Verlauf</div>\n<div style=\"font-family:'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;line-height:23px;color:#2c3240;background-color:#faf8f2;border:1px solid #e6e0d0;padding:12px 14px;\">{{ String($fromAI('verlauf', 'Was im Gespräch bisher geschah, je Schritt eine Zeile', 'string', 'kein bisheriger Verlauf') || 'kein bisheriger Verlauf').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\\r?\\n/g,'<br>') }}</div>\n</td></tr></table>\n</td></tr>\n<tr><td style=\"padding:0 0 14px 0;\">\n<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#fff4d9\" style=\"width:100%;background-color:#fff4d9;border:1px solid #e8c97a;border-left:5px solid #161b22;\">\n<tr><td style=\"padding:16px 20px 18px 20px;\">\n<div style=\"font-family:'Segoe UI',Helvetica,Arial,sans-serif;font-size:11px;line-height:14px;letter-spacing:2px;text-transform:uppercase;font-weight:bold;color:#7a5b12;padding-bottom:8px;\">Nächster Schritt</div>\n<div style=\"font-family:'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:24px;font-weight:bold;color:#1f2430;\">Die Person wartet auf eine Rückmeldung aus dem Team.</div>\n</td></tr></table>\n</td></tr>\n<tr><td style=\"padding:6px 4px 0 4px;\">\n<div style=\"font-family:'Segoe UI',Helvetica,Arial,sans-serif;font-size:12px;line-height:19px;color:#5f594b;\">Automatisch erstellt vom K1 Support-Agenten, bitte nicht direkt antworten.</div>\n<div style=\"font-family:'Courier New',Courier,monospace;font-size:12px;line-height:19px;color:#5f594b;padding-bottom:14px;\">{{ $now.setZone('Europe/Berlin').toFormat('dd.MM.yyyy, HH:mm') }} Uhr (Europe/Berlin)</div>\n<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"width:100%;border:1px dashed #a89f88;\">\n<tr><td style=\"padding:12px 14px;\">\n<div style=\"font-family:'Segoe UI',Helvetica,Arial,sans-serif;font-size:10px;line-height:14px;letter-spacing:2px;text-transform:uppercase;font-weight:bold;color:#5f594b;padding-bottom:4px;\">Impressum (Platzhalter)</div>\n<div style=\"font-family:'Segoe UI',Helvetica,Arial,sans-serif;font-size:12px;line-height:19px;color:#5f594b;\">Content-Maschine K1 (fiktives Kursprojekt), Musterstraße 1, 12345 Musterstadt<br>Vertreten durch: Max Mustermann<br>Platzhalter-Impressum, Kursprojekt AGT-2606</div>\n</td></tr></table>\n</td></tr>\n</table>\n</td></tr></table>\n</body>\n</html>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "cdbd75fa-97c0-4eec-be30-65a17eaeb5d4",
+      "name": "Eilmeldung_ans_Team",
+      "type": "n8n-nodes-base.emailSendTool",
+      "typeVersion": 2.1,
+      "position": [
+        1840,
+        768
+      ],
+      "webhookId": "ff165373-5acf-4731-8208-634ae2413081"
+    },
+    {
+      "parameters": {
+        "content": "# AGT-2606 W07T03 K1 MCP-Server v09\nEin gemeinsamer Server mit den 6 Werkzeugen der Content-Maschine K1. Zwei Agenten wählen am Client ihre Auswahl.",
+        "height": 110,
+        "width": 2000,
+        "color": 5
+      },
+      "id": "2de0bade-5e2c-45d8-946a-3cbda24fec62",
+      "name": "Titel MCP-Server",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        96,
+        -256
+      ]
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 320,
+        "width": 2000
+      },
+      "id": "231f02b8-8dad-446d-84dc-4a18ce540cd4",
+      "name": "Rahmen Kopf MCP-Server",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        96,
+        -112
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 📋 Workflow-Beschreibung\n\n🎯 **Zweck:** Die 6 Werkzeuge des K1-Supports liegen einmal an diesem Server. Der Auskunfts-Agent und der Aktions-Agent verbinden sich mit ihm und sehen nur ihre Auswahl.\n\n👥 **Für wen:** für die zwei Agenten `SUB Auskunfts-Agent K1 v09` und `SUB Aktions-Agent K1 v09`.\n\n🕹️ **So nutzt du ihn:** Der Server ist veröffentlicht. Die Agenten rufen ihn intern über `http://localhost:5678/mcp/<Pfad>` mit Bearer-Anmeldung auf, weil die öffentliche Adresse eine Cloudflare-Prüfseite liefert. Ein neues Werkzeug kommt hier einmal dazu.\n\n## Status: 🟢 gebaut und getestet, beide Agenten angebunden",
+        "height": 280,
+        "width": 700,
+        "color": 7
+      },
+      "id": "27672f45-d6e3-43b7-86a8-af64e3e17e3b",
+      "name": "Workflow-Beschreibung MCP-Server",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        112,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 🧾 Version\n\nv09 vom 04.11.2026. Änderungen je Stand stehen in der Datei `ChangeLog.md`.\n\nWerkzeugfassung: Beschreibungen wie in v08, nur `Teamvormerkung` trägt zusätzlich den Parameter `session_id`.",
+        "height": 280,
+        "width": 280,
+        "color": 7
+      },
+      "id": "3eebbcd0-c5be-4923-8479-ea01cac3730a",
+      "name": "Version MCP-Server",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        832,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# 🧪 K1 MCP-Server\n\n**Aufgabe:** 6 Werkzeuge an einem Server anbieten, jeder Agent nutzt nur seine Auswahl.\n\n**Die Idee:** Zugangsdaten und Adressen liegen einmal am Server, nicht doppelt in zwei Agenten.\n\n**Warum so?** Ein Server ohne Ablauf hat keinen Datenfluss, deshalb gibt es hier keinen Konfigurationsknoten: Adressen stehen fest in den Werkzeugen.\n\n**Hinweis:** Wer das Token kennt, ruft alle 6 Werkzeuge direkt auf, auch ohne die Zustimmungsprüfung des Aktions-Agenten.",
+        "height": 280,
+        "width": 380,
+        "color": 7
+      },
+      "id": "d9a786a7-9eb3-42d9-a8b4-a102d82177d4",
+      "name": "Kopf MCP-Server",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1136,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Ablauf\n\n① Server mit Anmeldung\n② 4 lesende Werkzeuge\n③ 2 schreibende Werkzeuge",
+        "height": 280,
+        "width": 280,
+        "color": 7
+      },
+      "id": "42092820-7677-4cfb-b16e-5e83e95d1d76",
+      "name": "Ablauf MCP-Server",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1536,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Status\n\n🟢 Server gebaut und veröffentlicht\n🟢 Tests bestanden: alle 6 Werkzeuge, Ablehnung ohne Token\n🔴 Token nie in Notizen\n🔵 Der Pfad steht nur am Trigger",
+        "height": 280,
+        "width": 248,
+        "color": 7
+      },
+      "id": "be73bc45-f84b-4354-b058-48a25f3eb954",
+      "name": "Status MCP-Server",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1840,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## ② Lesende Werkzeuge\n\nFAQ, Technikwissen, Feiertage und Auftragsstand: Der Auskunfts-Agent wählt genau diese 4. Sie lesen nur und ändern nichts.\n\n### 🟢 4 Werkzeuge, nur Lesen\n\n🩺 **Wenn es hakt:** liefert ein Werkzeug einen Fehler, steht er als Werkzeug-Ergebnis im Protokoll des Clients.",
+        "height": 200,
+        "width": 780
+      },
+      "id": "0ea01f1d-f089-48bd-9f47-b7c5ad8d8e82",
+      "name": "Schrittkarte 2 Lesende Werkzeuge MCP-Server",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        96,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## ① Server und Anmeldung\n\nDer Trigger verlangt ein Bearer-Token und hat einen eigenen Pfad.\n\n### 🟢 Bearer, eigener Pfad\n\n🩺 **Wenn es hakt:** 403 heißt Token falsch oder fehlt; ist der Server nicht veröffentlicht, meldet der Client einen Fehler.",
+        "height": 200,
+        "width": 440
+      },
+      "id": "fda28829-09be-4e97-98b2-b7d387eb5f08",
+      "name": "Schrittkarte 1 Server MCP-Server",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        912,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## ③ Schreibende Werkzeuge\n\nTeamvormerkung legt ein Ticket an, Eilmeldung_ans_Team schickt eine Mail. Den Aktions-Agenten fragen vorher die Zustimmung ab, der Server selbst prüft sie nicht.\n\n### 🟡 2 Werkzeuge mit Wirkung\n\n🩺 **Wenn es hakt:** Eine Vormerkung ohne Rückgabe gilt als nicht bestätigt, nicht als nicht angelegt.",
+        "height": 200,
+        "width": 736
+      },
+      "id": "d71b3e07-c22c-4a3f-bda0-f5242a55dc6e",
+      "name": "Schrittkarte 3 Schreibende Werkzeuge MCP-Server",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 1262,
+        "width": 604,
+        "color": 5
+      },
+      "id": "d89ed2be-f228-46f1-ae3b-87a54498eff3",
+      "name": "Rahmen Hilfe-Spalte MCP-Server",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2208,
+        -256
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# ✅ Setup-Checkliste\n\n1. ✅ Zugang `Bearer Auth | K1 MCP-Server` (Bearer, erlaubt: die öffentliche Adresse der Instanz und localhost)\n2. ✅ Zugang `Supabase anon | KI-AGT-2606` an `Auftragsstand`, `Teamvormerkung`, `K1_Technikwissen`\n3. ✅ Zugang `Google Gemini | Embeddings | KEY` am Embeddings-Knoten\n4. ✅ SMTP-Zugang (Monitoring) an `Eilmeldung_ans_Team`, Empfänger fest im Knoten\n5. ✅ Eigener Pfad am Trigger; die Clients rufen intern `http://localhost:5678/mcp/<Pfad>` auf, denn die öffentliche Adresse liefert eine Cloudflare-Prüfseite\n6. ✅ Server veröffentlicht (nach jeder Änderung neu veröffentlichen, danach etwa 1 Minute warten)\n7. ✅ Test: Aufruf ohne oder mit falschem Token wird mit 403 abgelehnt (gemessen)\n8. ✅ Clients der zwei Agenten tragen dieselbe Adresse und denselben Zugang",
+        "height": 420,
+        "width": 568,
+        "color": 7
+      },
+      "id": "17619ade-440f-4d81-97bd-aa03e702f296",
+      "name": "Setup-Checkliste MCP-Server",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2224,
+        -240
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# 🌐 Plattform-Hinweise\n\n**n8n-Instanz:** Erlaubt: MCP Server Trigger mit Bearer-Anmeldung. 🟡 Besonderheit: Test-URL und Production URL sind verschieden; nach jeder Änderung neu veröffentlichen. Die Clients nutzen die interne Adresse `localhost:5678`, weil die öffentliche Adresse eine Cloudflare-Prüfseite liefert; dort ist Bearer die einzige Schranke.\n\n**Supabase:** Erlaubt: Aufruf mit anon-Schlüssel für die zwei Funktionen. 🟡 Besonderheit: kein Service-Schlüssel an einem Werkzeug.\n\n**SMTP Monitoring:** Erlaubt: Mails an die feste Testadresse. 🟡 Besonderheit: Empfänger nie vom Modell gesetzt.",
+        "height": 330,
+        "width": 568,
+        "color": 7
+      },
+      "id": "19bd9a26-e114-4d53-be6c-a00089f6fa8f",
+      "name": "Plattform-Hinweise MCP-Server",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2224,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# 🩺 Fehlerbehebung\n\n👉 Aufruf wird mit 403 abgelehnt: Token im Zugang prüfen, beide Seiten nutzen denselben Zugang.\n👉 Der Client meldet einen Fehler oder findet den Server nicht: Server veröffentlichen und 1 Minute warten.\n👉 Der Client bekommt eine Seite mit „Just a moment“: nicht die öffentliche Adresse nutzen, sondern die interne.\n👉 Agent findet ein Werkzeug nicht: Name im Prompt und Auswahl am Client gegen den Namen am Server halten.\n👉 Werkzeug liefert Fehler: Ausführung des Servers öffnen, dort steht der Fehler des Werkzeugs.",
+        "height": 400,
+        "width": 568,
+        "color": 7
+      },
+      "id": "65a118da-a503-4c17-9e7d-14bdb417bb41",
+      "name": "Fehlerbehebung MCP-Server",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2224,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 300,
+        "width": 1000,
+        "color": 5
+      },
+      "id": "ee22dbb4-b83b-4704-aef1-a54b2d9795ed",
+      "name": "Rahmen Fehlerweg MCP-Server",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        96,
+        1008
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 🔴 Fehlerweg\n\nDer Server hat keinen eigenen Ablauf. Ein Fehler eines Werkzeugs geht als Werkzeug-Ergebnis an den Agenten (er wird nicht gestoppt). Läuft der Server nicht oder ist er nicht veröffentlicht, meldet der Client sofort einen Fehler: Code 404, der Webhook sei nicht registriert (gemessen: 0,2 s, Ausführung 2200). Der Hauptworkflow antwortet dann mit seinem festen Ausfallsatz (Ausführung 2201).",
+        "height": 268,
+        "width": 480,
+        "color": 3
+      },
+      "id": "21eb578a-366b-4408-b02a-8a92a8f20f5d",
+      "name": "Fehlerweg MCP-Server",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        112,
+        1024
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 📋 Error Report\n\nAusführungen ansehen auf der eigenen n8n-Instanz, Workflow öffnen, Reiter Executions.\n\nEin Fehler beim Starten löst den zentralen Error Workflow der Instanz aus.",
+        "height": 268,
+        "width": 472,
+        "color": 3
+      },
+      "id": "6caf75d7-21ea-4736-9917-6beb93ee3d8f",
+      "name": "Error Report MCP-Server",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        608,
+        1024
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "K1_Antwortkatalog": {
+      "ai_tool": [
+        [
+          {
+            "node": "K1-Werkzeuge anbieten [MCP Server Trigger]",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "K1_Technikwissen": {
+      "ai_tool": [
+        [
+          {
+            "node": "K1-Werkzeuge anbieten [MCP Server Trigger]",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vektoren der Frage [Embeddings Google Gemini]": {
+      "ai_embedding": [
+        [
+          {
+            "node": "K1_Technikwissen",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Feiertage_nachschlagen": {
+      "ai_tool": [
+        [
+          {
+            "node": "K1-Werkzeuge anbieten [MCP Server Trigger]",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Auftragsstand": {
+      "ai_tool": [
+        [
+          {
+            "node": "K1-Werkzeuge anbieten [MCP Server Trigger]",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Teamvormerkung": {
+      "ai_tool": [
+        [
+          {
+            "node": "K1-Werkzeuge anbieten [MCP Server Trigger]",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Eilmeldung_ans_Team": {
+      "ai_tool": [
+        [
+          {
+            "node": "K1-Werkzeuge anbieten [MCP Server Trigger]",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "tags": [
+    {
+      "name": "schulung"
+    },
+    {
+      "name": "woche-7"
+    },
+    {
+      "name": "KI-AGT-2606"
+    }
+  ],
+  "description": "MCP-Server der Content-Maschine K1 (v09): 6 Werkzeuge an einem Server, Bearer-Anmeldung, zwei Agenten wählen am Client ihre Auswahl."
+}

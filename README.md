@@ -4,6 +4,8 @@ n8n-Agent für Fragen zur Content-Maschine K1: ein Orchestrator verteilt jede An
 
 ## Stand
 
+**v09 vom 04.11.2026.** Die 6 Werkzeuge der beiden Agenten liegen jetzt einmal an einem gemeinsamen MCP-Server (MCP Server Trigger mit Bearer-Anmeldung, eigener Workflow). Jeder Agent hat statt seiner einzelnen Werkzeug-Knoten einen MCP Client und wählt dort seine Auswahl: der Auskunfts-Agent 4 lesende Werkzeuge, der Aktions-Agent die 2 schreibenden. Der Client erreicht den Server über die interne Adresse der Instanz, weil die öffentliche Adresse ihm eine Prüfseite liefert. Der Hauptworkflow bleibt in Logik und Prompt unverändert, nur die Verweise auf die Agenten und die Notizen sind angepasst. Gesamttest 17 Läufe in 7 Fällen, alle bestanden; dazu 5 Nachläufe nach Notizkorrekturen (einer mit Abweichung vom erwarteten Fall, in der Testtabelle benannt), 8 Einzeltests am Server (ohne Token 403) und 10 an den Agenten ([Testtabelle v09](docs/testtabelle-w07t03-v09.md)). Beim Aktions-Agenten ist der Kontext im Fehlerweg leer; ein Beleg mit Ticketnummer entfällt dort, der Hauptworkflow hängt den vorsichtigen Hinweis an. Die Konfiguration im Workflow zählt weiter `v16`, nach außen heißt der Stand v09 ([Versionsmatrix](docs/versionsmatrix.md)).
+
 **v08 vom 03.11.2026.** Übergabefelder und Umgang mit Ausfällen: der Orchestrator übergibt dem Aktions-Agenten feste Felder (`query`, `zustimmung`, neu `prioritaet`), dem Auskunfts-Agenten nur `query`. Fällt ein Agent aus oder antwortet er nicht brauchbar, kommt ein fester Satz; bestätigte Aktionen stehen in einem festen Absatz aus den Belegen. Schlussreihe 9 Läufe, 7 bestanden, 2 nicht bestanden (L1, A1); nach der Änderung für L1 6 Läufe, alle bestanden; Kontrolle am Endstand 6 Läufe, alle bestanden, darunter F4b und der Bonus B1 (Orchestrator einmal mit Max Iterations 1, sonst 5, Agenten 4) mit überarbeiteter Eingabe. In den Testreihen ist der Ticketpfad nicht live gemessen; live belegt ist das Testticket K1-T-01056 aus Lauf 1936. Die Konfiguration im Workflow zählt die Baurunden des Tages intern bis `v16`; die letzte Runde `v17` fasste nur Texte neu und ließ das Feld bei `v16`. Nach außen heißt der Stand v08 ([Versionsmatrix](docs/versionsmatrix.md)).
 
 **v07 vom 02.11.2026.** Der Agent ist in einen Orchestrator und 2 Agenten geteilt: der Auskunfts-Agent hat nur die 4 lesenden Werkzeuge, der Aktions-Agent nur Vormerkung und Eilmeldung. Orchestrierungsmodell hierarchisch, in den Tests nacheinander abgearbeitet.
@@ -11,12 +13,13 @@ n8n-Agent für Fragen zur Content-Maschine K1: ein Orchestrator verteilt jede An
 ## Links
 
 - [Wochen-Doku](https://minkeautomation.github.io/k1-support-agent/) mit allen Tagen
+- [Tages-Doku Woche 7 Tag 3 (v09)](https://minkeautomation.github.io/k1-support-agent/w07t03.html)
 - [Tages-Doku Woche 7 Tag 2 (v08)](https://minkeautomation.github.io/k1-support-agent/w07t02.html)
 - [Tages-Doku Woche 7 Tag 1 (v07)](https://minkeautomation.github.io/k1-support-agent/w07t01.html)
 - [ChangeLog](ChangeLog.md)
 - [Versionsmatrix](docs/versionsmatrix.md): je Version Plan, Testtabelle, Tages-Doku und Export, Lücken ausdrücklich als „gab es nicht“
 - [Einrichten und Nachbauen](workflows/README.md)
-- [Ausführliche Fassung des README, Archiv, Stand v05 (nicht auf v07 und v08 nachgezogen)](docs/readme-ausfuehrlich.md); für v08 gelten dieses README, [Einrichten und Nachbauen](workflows/README.md) und die [Tages-Doku](https://minkeautomation.github.io/k1-support-agent/w07t02.html)
+- [Ausführliche Fassung des README, Archiv, Stand v05 (nicht auf v07, v08 und v09 nachgezogen)](docs/readme-ausfuehrlich.md); für v09 gelten dieses README, [Einrichten und Nachbauen](workflows/README.md) und die [Tages-Doku](https://minkeautomation.github.io/k1-support-agent/w07t03.html)
 
 ## Versionen
 
@@ -24,7 +27,8 @@ Je Version Plan, Tests, Workflow-Export und Tages-Doku. Ein Strich heißt: für 
 
 | Version | Datum | Plan | Tests | Workflow | Tages-Doku | Git-Tag |
 |---|---|---|---|---|---|---|
-| v08 | 03.11.2026 | [Plan v08](docs/plan/plan-w07t02-v08.png) | [Testtabelle v08](docs/testtabelle-w07t02-v08.md) (Schlussreihe 9 Läufe, Nachtrag 6, Kontrolle 6) | [Export](workflows/k1-support-agent_2026-11-03_v08.json), [Auskunft](workflows/subs/sub-auskunfts-agent-k1.json), [Aktion](workflows/subs/sub-aktions-agent-k1.json) | [Woche 7 Tag 2](https://minkeautomation.github.io/k1-support-agent/w07t02.html) | `v08` |
+| v09 | 04.11.2026 | [Plan v09](docs/plan/plan-w07t03-v09.png) | [Testtabelle v09](docs/testtabelle-w07t03-v09.md) (gesamt 17 Läufe, Nachläufe 5, Einzeltests Server 8, Agenten 10) | [Export](workflows/k1-support-agent_2026-11-04_v09.json), [Server](workflows/k1-mcp-server_2026-11-04_v09.json), [Auskunft](workflows/subs/sub-auskunfts-agent-k1.json), [Aktion](workflows/subs/sub-aktions-agent-k1.json) | [Woche 7 Tag 3](https://minkeautomation.github.io/k1-support-agent/w07t03.html) | `v09` |
+| v08 | 03.11.2026 | [Plan v08](docs/plan/plan-w07t02-v08.png) | [Testtabelle v08](docs/testtabelle-w07t02-v08.md) (Schlussreihe 9 Läufe, Nachtrag 6, Kontrolle 6) | [Export](workflows/k1-support-agent_2026-11-03_v08.json), Agenten v08 über Tag `v08` | [Woche 7 Tag 2](https://minkeautomation.github.io/k1-support-agent/w07t02.html) | `v08` |
 | v07 | 02.11.2026 | [Plan v07](docs/plan/plan-w07t01-v07.png) | [Testtabelle v07](docs/testtabelle-w07t01-v07.md) (10 Testfälle), [Knotentest](docs/knotentest-pruefknoten.md) | [Export](workflows/k1-support-agent_2026-11-02_v07.json), Agenten v07 über Tag `v07` | [Woche 7 Tag 1](https://minkeautomation.github.io/k1-support-agent/w07t01.html) | `v07` |
 | v06 | 30.10.2026 | gab es nicht, siehe [Versionsmatrix](docs/versionsmatrix.md) | [Testtabelle v06](docs/testtabelle-w06t05-v06.md) (4 Testfälle), [Knotentest](docs/knotentest-pruefknoten.md) | [Export](workflows/k1-support-agent_2026-10-30_v06.json), [Subs](workflows/subs/) | [Woche 6 Tag 5](https://minkeautomation.github.io/k1-support-agent/w06t05.html) | `v06` |
 | v05.1 | 30.10.2026 | gab es nicht, siehe [Versionsmatrix](docs/versionsmatrix.md) | keine eigene Testtabelle, [Knotentest](docs/knotentest-pruefknoten.md) | [Export](workflows/k1-support-agent_2026-10-30_v05.1.json) | [Woche 6 Tag 5](https://minkeautomation.github.io/k1-support-agent/w06t05.html) | `v05.1` |
@@ -42,6 +46,7 @@ Zwei Arten, bewusst getrennt benannt:
 
 | Datei | Version | Was drin steht | Zahl |
 |---|---|---|---|
+| [docs/testtabelle-w07t03-v09.md](docs/testtabelle-w07t03-v09.md) | v09 | Gesamttest über den Hauptworkflow mit MCP-Server, Chat-Antwort ungekürzt, Werkzeug aus dem Ausführungsprotokoll; Nachläufe, Einzeltests am Server und an den Agenten in eigenen Tabellen | Gesamttest 17 Läufe, 17 bestanden; Nachläufe 5, alle PASS (N5 mit Abweichung vom Fall E1, siehe Datei); Einzeltests Server 8 und Agenten 10 |
 | [docs/testtabelle-w07t02-v08.md](docs/testtabelle-w07t02-v08.md) | v08 | Handoff und Fehlerbehandlung, Chat-Antwort ungekürzt, Messart live oder nur Knotentest je Aussage | Schlussreihe 9 Läufe, 7 bestanden; Nachtrag 6 Läufe, 6 bestanden; Kontrolle am Endstand 6 Läufe, 6 bestanden |
 | [docs/testtabelle-w07t01-v07.md](docs/testtabelle-w07t01-v07.md) | v07 | Testfälle Orchestrator mit Agenten, Chat-Antwort ungekürzt, Startzeiten der Unterläufe | Testreihe 10 Testfälle, 10 bestanden; Kontrolle 14 Läufe, 12 bestanden |
 | [docs/knotentest-pruefknoten.md](docs/knotentest-pruefknoten.md) | v05.1, v06, v07 | Knotentest Prüfknoten, je Eingabesatz Kennung, Eingabe, Erwartung, Ergebnis | 289 Prüffälle (198 ersetzt, 91 bleiben stehen), 0 Abweichungen |

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="#FAFAF8" media="(prefers-color-scheme: light)" name="theme-color"/>
+<meta content="#121416" media="(prefers-color-scheme: dark)" name="theme-color"/>
+<title>W07T03 Werkzeuge an einem MCP-Server</title>
+<meta content="Tages-Doku W07T03: die 6 Werkzeuge der beiden Agenten liegen einmal an einem MCP-Server, jeder Agent wählt am Client seine Auswahl. Mit Plan, Architekturentscheidung je Komponente, Test und Messwerten." name="description"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&amp;display=swap" rel="stylesheet"/>
+<link href="assets/doku.css" rel="stylesheet"/>
+</head>
+<body>
+<a class="sprung" href="#inhalt">Zum Inhalt springen</a>
+<div class="huelle">
+<header class="leiste">
+<span>K1 Support-Agent · Woche 7</span>
+<nav aria-label="Seiten">
+<a href="index.html">Wochen-Doku</a>
+<a href="w06t01.html">W6 Tag 1</a>
+<a href="w06t02.html">W6 Tag 2</a>
+<a href="w06t03.html">W6 Tag 3</a>
+<a href="w06t04.html">W6 Tag 4</a>
+<a href="w06t05.html">W6 Tag 5</a>
+<a href="w07t01.html">W7 Tag 1</a>
+<a href="w07t02.html">W7 Tag 2</a>
+<a aria-current="page" href="w07t03.html">W7 Tag 3</a>
+<span aria-disabled="true" class="aus" title="noch nicht dokumentiert">W7 Tag 4</span>
+<span aria-disabled="true" class="aus" title="noch nicht dokumentiert">W7 Tag 5</span>
+<a href="https://github.com/MinkeAutomation/k1-support-agent">Repository</a>
+</nav>
+</header>
+<div class="titelkopf">
+<div>
+<p class="oberzeile"><span aria-hidden="true" class="marke"></span>Tages-Doku W07T03 · Mi 04.11.2026 · Workflow v09</p>
+<h1>Werkzeuge <span class="leise">an einem</span> MCP-Server</h1>
+<p class="untertitel">Grundlage ist der Support-Agent v08 aus Tag 2: ein Orchestrator mit zwei Agenten, einer liest, einer schreibt. In v09 liegen die 6 Werkzeuge nicht mehr doppelt in den Agenten, sondern einmal an einem gemeinsamen MCP-Server. Jeder Agent verbindet sich mit ihm und sieht nur seine Auswahl.</p>
+</div>
+</div>
+<dl aria-label="Kennzahlen v09" class="messleiste">
+<div><dt>Gesamttest</dt><dd>17 von 17<small>Läufe bestanden, 7 Fälle</small></dd></div><div><dt>Werkzeuge am Server</dt><dd>6<small>4 lesend, 2 schreibend</small></dd></div><div><dt>Ohne Token</dt><dd>403<small>Aufruf ohne und mit falschem Token abgelehnt</small></dd></div><div><dt>Arbeitsknoten (Punkt 4)</dt><dd>33 gegen 30<small>v09 gegen v08, ohne Notizen</small></dd></div><div><dt>Einzeltests</dt><dd>8 und 10<small>Fälle am Server, Läufe an den Agenten</small></dd></div>
+</dl>
+<div class="knoepfe">
+<a class="knopf zweit" href="w07t02.html">Vorheriger Tag: W7 Tag 2 <span aria-hidden="true" class="pfeil">←</span></a>
+<a class="knopf" href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/testtabelle-w07t03-v09.md">Testtabelle v09 <span aria-hidden="true" class="pfeil">↗</span></a>
+<a class="knopf" href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/k1-support-agent_2026-11-04_v09.json">Workflow-Export v09 (JSON) <span aria-hidden="true" class="pfeil">↗</span></a>
+<a class="knopf zweit" href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/k1-mcp-server_2026-11-04_v09.json">MCP-Server v09 (JSON) <span aria-hidden="true" class="pfeil">↗</span></a>
+<a class="knopf zweit" href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/ChangeLog.md">ChangeLog <span aria-hidden="true" class="pfeil">↗</span></a>
+<a class="knopf zweit" href="index.html">Wochen-Doku <span aria-hidden="true" class="pfeil">→</span></a>
+</div>
+<main class="inhalt" id="inhalt">
+<div class="merksatz einminute" id="in-1-minute"><span class="ktag">In 1 Minute</span>
+<ul>
+<li><strong>Ziel:</strong> Die Werkzeuge der beiden Agenten an einen MCP-Server legen, beide Agenten daran anbinden und messen, ob das gegenüber der manuellen Einbindung wirklich einfacher ist.</li>
+<li><strong>Ergebnis:</strong> Ein Server mit Bearer-Anmeldung und eigenem Pfad trägt 6 Werkzeuge. Der Auskunfts-Agent wählt 4 lesende, der Aktions-Agent 2 schreibende. Im Ausführungsprotokoll heißen sie <code>Clientname_Werkzeugname</code>.</li>
+<li><strong>Zahl:</strong> Gesamttest 17 Läufe in 7 Fällen, alle bestanden. Aufruf ohne und mit falschem Token: 403. Arbeitsknoten ohne Notizen: 33 gegen 30 in v08.</li>
+<li><strong>Urteil:</strong> Bei 2 Agenten und 6 Werkzeugen war die Anbindung nicht einfacher, der Aufwand lag höher. Der Gewinn zeigt sich erst bei jedem weiteren Werkzeug und Agenten.</li>
+<li><strong>Grenze:</strong> Wer das Token kennt, ruft die schreibenden Werkzeuge direkt am Server auf und umgeht die Zustimmungssperre des Aktions-Agenten (Kapitel 6).</li>
+<li><strong>Link:</strong> Alle Antworten ungekürzt in der <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/testtabelle-w07t03-v09.md">Testtabelle v09</a>.</li>
+</ul></div>
+
+<section aria-labelledby="k1-t" class="kapitel" id="k1">
+<div class="kkopf"><div aria-hidden="true" class="knum">01</div><div>
+<p class="kklein">Kapitel 1</p><h2 id="k1-t">Ziele des Tages und Belege</h2>
+<p class="klede">Die 4 Punkte der Aufgabe und woran man sie sieht.</p>
+</div></div>
+<div aria-labelledby="t-ziele" class="tabelle" role="region" tabindex="0">
+<table class="breit">
+<caption id="t-ziele">Punkte der Tagesaufgabe</caption>
+<thead><tr><th scope="col">Punkt</th><th scope="col">Wie erledigt</th><th scope="col">Beleg</th></tr></thead>
+<tbody>
+<tr><th data-label="Punkt" scope="row">1. Einen MCP-Server an einen Agenten anbinden</th><td data-label="Wie erledigt">Eigener Server als n8n-Workflow: MCP Server Trigger, 6 Werkzeug-Knoten, Bearer-Anmeldung, eigener Pfad. Beide Agenten verbinden sich über einen MCP Client mit ihm.</td><td data-label="Beleg">Server einzeln getestet in den Läufen 2090 und 2097, Client-Weg in 2099, 2107 und 2139</td></tr>
+<tr><th data-label="Punkt" scope="row">2. Prüfen, ob der Agent über MCP auf die Datenquelle zugreift</th><td data-label="Wie erledigt">Im Ausführungsprotokoll heißen die Werkzeuge <code>K1_MCP_Auskunft_Auftragsstand</code> und <code>K1_MCP_Aktion_Eilmeldung_ans_Team</code>: Name des Clients, ein Unterstrich, Name des Werkzeugs.</td><td data-label="Beleg">Läufe 2107 und 2139 (Bilder in Kapitel 8), Gesamttest mit 17 Läufen</td></tr>
+<tr><th data-label="Punkt" scope="row">3. Mindestens 2 Agenten mit demselben Server</th><td data-label="Wie erledigt">Auskunft mit 4 lesenden, Aktion mit 2 schreibenden Werkzeugen. Beide Agenten rufen denselben Server auf: Auskunft in 2107, Aktion über den Hauptworkflow in 2139 und 2174. Die Auswahl zeigen die Client-Knoten (4 und 2 Namen, Bilder in Kapitel 8). Die Zusatzläufe 2197 und 2198 belegen sie nicht: in 2198 rief der Aktions-Agent wegen fehlender Zustimmung kein Werkzeug auf.</td><td data-label="Beleg">Läufe 2107, 2139, 2174 und die Client-Knoten im Bild</td></tr>
+<tr><th data-label="Punkt" scope="row">4. Was war einfacher als eine manuelle Integration</th><td data-label="Wie erledigt">Gemessen, nicht behauptet: Kapitel 7. Kurz: Adressen und Beschreibungen liegen einmal vor, insgesamt wurde der Aufbau größer.</td><td data-label="Beleg">Messwerte in Kapitel 7</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section aria-labelledby="k2-t" class="kapitel" id="k2">
+<div class="kkopf"><div aria-hidden="true" class="knum">02</div><div>
+<p class="kklein">Kapitel 2</p><h2 id="k2-t">Plan v09</h2>
+<p class="klede">Endstand nach allen Baurunden des Tages.</p>
+</div></div>
+<figure><img alt="Plan v09: Hauptworkflow links, daneben die zwei Agenten als Container und rechts der MCP-Server als dritter Container. Die Pfeile enden am ersten Knoten im Container und tragen die Anbindungsart Tool-Anschluss oder MCP Client. Alle Pfeile sind schwarz." height="1818" src="bilder/w07t03-plan-v09.png" width="2600"/><figcaption>Plan v09, Endstand 04.11.2026. Dicker Rand und „Einstieg“ markieren den ersten Knoten im Container, dort endet der Pfeil. <a href="plan/plan-w07t03-v09.png">Volle Auflösung</a>, <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/plan/plan-w07t03-v09.excalidraw">Excalidraw-Datei</a>.</figcaption></figure>
+<p>Die Pfeile vom Orchestrator enden am ersten Knoten im Container des jeweiligen Agenten, <code>Eingabe prüfen</code>, und tragen die Anbindungsart „Tool-Anschluss“. Die Pfeile der beiden MCP Clients enden am ersten Knoten des Servers, dem MCP Server Trigger, und tragen die Anbindungsart „MCP Client“.</p>
+<figure><img alt="Gesamtansicht des MCP-Servers v09 in n8n, dunkel: Titel, Kopfnotizen, drei Schrittkarten, der Trigger mit den 6 Werkzeugen darunter, rechts die Hilfe-Spalte, unten der Fehlerweg" height="939" src="bilder/w07t03-n8n-server-gesamt-v09.png" width="1867"/><figcaption>Gesamtansicht des MCP-Servers in n8n, aufgenommen am 04.11.2026 um 22:04 (nur als Übersicht). Unter dem Trigger hängen die 6 Werkzeuge und der Embeddings-Knoten der Wissensbasis.</figcaption></figure>
+<figure><img alt="Gesamtansicht des Auskunfts-Agenten v09 in n8n, dunkel, mit dem Client K1_MCP_Auskunft statt der Werkzeug-Knoten" height="1080" src="bilder/w07t03-n8n-auskunfts-agent-gesamt-v09.png" width="1920"/><figcaption>Auskunfts-Agent v09: Der Client <code>K1_MCP_Auskunft</code> ersetzt die 4 Werkzeug-Knoten und den Embeddings-Knoten aus v08.</figcaption></figure>
+<figure><img alt="Gesamtansicht des Aktions-Agenten v09 in n8n, dunkel, mit dem Client K1_MCP_Aktion statt der Werkzeug-Knoten" height="1080" src="bilder/w07t03-n8n-aktions-agent-gesamt-v09.png" width="1920"/><figcaption>Aktions-Agent v09: Der Client <code>K1_MCP_Aktion</code> ersetzt die 2 Werkzeug-Knoten.</figcaption></figure>
+</section>
+
+<section aria-labelledby="k3-t" class="kapitel" id="k3">
+<div class="kkopf"><div aria-hidden="true" class="knum">03</div><div>
+<p class="kklein">Kapitel 3</p><h2 id="k3-t">Architekturentscheidung je Komponente</h2>
+<p class="klede">Agent, Entscheidungsmodell, einfacher Knoten oder reiner Code, und warum.</p>
+</div></div>
+<div aria-labelledby="t-arch" class="tabelle" role="region" tabindex="0">
+<table class="breit">
+<caption id="t-arch">Form und Begründung je Komponente</caption>
+<thead><tr><th scope="col">Komponente</th><th scope="col">Form</th><th scope="col">Begründung</th><th scope="col">Verworfene Alternative</th></tr></thead>
+<tbody>
+<tr><th data-label="Komponente" scope="row">Orchestrator <code>Anfrage verteilen [AI Agent]</code></th><td data-label="Form">Agent (Orchestrator in einem Multi-Agenten-System)</td><td data-label="Begründung">Die Anfrage ist offen: Auskunft, Aktion, beides oder keins. Das entscheidet nur ein Sprachmodell nach dem Inhalt. Er hat kein eigenes Fachwerkzeug, nur die zwei Agenten als Werkzeuge am Tool-Anschluss, und bleibt dadurch klein.</td><td data-label="Alternative">Eine Wortliste mit Stichwörtern: verfehlt Umschreibungen.</td></tr>
+<tr><th data-label="Komponente" scope="row"><code>Jev-Weiche</code> (Sub-Workflow)</th><td data-label="Form">Entscheidungsmodell, kein Agent</td><td data-label="Begründung">Die Frage „gehört das Anliegen zu K1?“ ist ein Zahlenwert zwischen 0 und 1. Ein Aufruf genügt, ein Agent mit Werkzeugen wäre teurer und weniger berechenbar. Bei Überlast (429, 529) wiederholt der Sub einmal.</td><td data-label="Alternative">Der Orchestrator entscheidet selbst: kostet bei jeder Fremdfrage einen Agentenlauf.</td></tr>
+<tr><th data-label="Komponente" scope="row"><code>Weiche nach Jev-Wert [Switch]</code></th><td data-label="Form">einfacher Switch, keine KI</td><td data-label="Begründung">Die Schwellen 0,7 und 0,3 sind feste Zahlen. Eine Entscheidung mit voller Kontrolle läuft über Logik, nicht über einen Prompt: Sie kostet keine Token, sie ist nachvollziehbar, und sie greift auch, wenn das Modell sich irrt. Sie ist die Verkettung vor dem Agenten. Das Gesamtsystem ist damit ein Mischaufbau: feste Weiche vorn, danach Orchestrator mit Agenten.</td><td data-label="Alternative">Weiche im Prompt des Orchestrators: nicht prüfbar, kostet Token.</td></tr>
+<tr><th data-label="Komponente" scope="row">Auskunfts-Agent (Sub-Workflow)</th><td data-label="Form">Agent</td><td data-label="Begründung">4 Quellen mit unterschiedlicher Art: FAQ als Tabelle, Wissensbasis mit Vektorsuche, Feiertage über eine Schnittstelle, Auftragsstand als Datenbankabfrage. Welche passt, hängt von der Frage ab. Der Auftragsstand ist Echtzeit und passt in keinen Prompt.</td><td data-label="Alternative">Ein einfacher Sprachmodell-Knoten mit festem Kontext: FAQ, Wissensbasis und Auftragsstand sind zu groß und zu veränderlich.</td></tr>
+<tr><th data-label="Komponente" scope="row">Aktions-Agent (Sub-Workflow)</th><td data-label="Form">Agent, mit 2 deterministischen Sperren</td><td data-label="Begründung">Er wählt zwischen Vormerkung und Eilmeldung und fasst das Anliegen in 1 bis 3 Sätzen zusammen. Beides hängt vom Text ab. Dazu sichert ihn <code>Eingabe prüfen</code> vorher (Zustimmung gegen die echte Nachricht, Priorität), und der Prüfknoten im Hauptworkflow prüft nachher jede Erfolgsmeldung gegen das Werkzeugergebnis.</td><td data-label="Alternative">Schreibende Schritte als feste Workflow-Schritte nach dem Agenten (der Agent ordnet nur ein, das Anlegen läuft im Workflow): wäre die sicherere Form; in v09 nicht gebaut, als Verbesserung offen.</td></tr>
+<tr><th data-label="Komponente" scope="row"><code>Eingabe prüfen [Code]</code> in beiden Agenten</th><td data-label="Form">reiner Code</td><td data-label="Begründung">Handoff-Kontrolle, siehe Kapitel 4. Prüfungen mit eindeutigem Ergebnis gehören in Code, nicht in ein Sprachmodell.</td><td data-label="Alternative">Prüfung im Prompt: ein Prompt ist keine Freigabe.</td></tr>
+<tr><th data-label="Komponente" scope="row"><code>Werkzeugwahl messen [Code]</code> (Prüfknoten)</th><td data-label="Form">reiner Code</td><td data-label="Begründung">Vergleicht die Aussagen der Antwort mit den tatsächlich ausgeführten Werkzeugaufrufen. Code vor Sprachmodell: ein Wort wie „angelegt“ ohne Beleg ist eindeutig prüfbar.</td><td data-label="Alternative">Ein zweites Modell als Prüfer: nicht nötig, kostet Token.</td></tr>
+<tr><th data-label="Komponente" scope="row">MCP-Server (eigener Workflow)</th><td data-label="Form">Werkzeuganbieter, kein Agent</td><td data-label="Begründung">Ein MCP Server Trigger mit 6 Werkzeug-Knoten, ohne eigenen Ablauf. Zugangsdaten und Adressen der Datenquellen liegen einmal dort.</td><td data-label="Alternative">Je Agent eigene Werkzeug-Knoten, wie in v08.</td></tr>
+<tr><th data-label="Komponente" scope="row">MCP Client je Agent</th><td data-label="Form">Anschluss</td><td data-label="Begründung">Auswahl „Selected“: der Auskunfts-Agent nennt 4 Namen, der Aktions-Agent 2. Das hält die Werkzeugzahl je Agent klein.</td><td data-label="Alternative">„All“: jeder Agent sähe alle 6 Werkzeuge.</td></tr>
+<tr><th data-label="Komponente" scope="row">Gedächtnis (Postgres Chat Memory)</th><td data-label="Form">Speicher, nur am Orchestrator</td><td data-label="Begründung">Fenster 10, Schlüssel je Sitzung. Die Agenten bekommen alles Nötige im Feld <code>query</code>.</td><td data-label="Alternative">Gedächtnis in jedem Agenten: mehr Token, doppelte Verläufe.</td></tr>
+<tr><th data-label="Komponente" scope="row">Protokollzeile (Sub-Workflow)</th><td data-label="Form">Sub</td><td data-label="Begründung">Eine Zeile je Lauf mit Weg, Status, Werkzeugen und Kosten; als Sub, weil Haupt und Test sie nutzen.</td><td data-label="Alternative">Direkt im Hauptworkflow: doppelter Code.</td></tr>
+</tbody>
+</table>
+</div>
+<p>Die Verkettung im Hauptworkflow lautet: Frage, <code>Jev-Weiche</code>, <code>Weiche nach Jev-Wert</code>, Orchestrator, Agent, Prüfknoten, Antwort. Die Agenten werden als Werkzeuge (Sub-Workflows) des Orchestrators aufgerufen, nicht nacheinander fest verdrahtet.</p>
+</section>
+
+<section aria-labelledby="k4-t" class="kapitel" id="k4">
+<div class="kkopf"><div aria-hidden="true" class="knum">04</div><div>
+<p class="kklein">Kapitel 4</p><h2 id="k4-t">Handoff-Kontrolle</h2>
+<p class="klede">Was der Orchestrator übergibt und was vor dem Agenten geprüft wird.</p>
+</div></div>
+<p>Der Orchestrator übergibt an die Agenten Felder. Beim Auskunfts-Agenten ist es <code>query</code>, beim Aktions-Agenten <code>query</code>, <code>zustimmung</code> (ja oder nein) und <code>prioritaet</code> (normal oder hoch). Dazu setzt der Workflow selbst 2 feste Felder (<code>person_nachricht</code> und <code>vorige_antwort</code>), die nie das Modell füllt.</p>
+<p>Die Kontrolle läuft deterministisch und vor dem Agenten, im Knoten <code>Eingabe prüfen [Code]</code> am Anfang jedes Agenten:</p>
+<ul>
+<li>Eine leere Frage geht nicht zum Modell, sie liefert den festen Wert <code>EINGABE_FEHLT</code>.</li>
+<li><code>prioritaet</code> wird auf genau <code>hoch</code> oder <code>normal</code> gebracht, ein leeres Feld wird <code>normal</code>.</li>
+<li><code>zustimmung</code> bleibt nur dann <code>ja</code>, wenn die echte Nachricht der Person ein Ticket ausdrücklich verlangt oder ein klares Ja auf eine Rückfrage ist. Das Modell meldet die Zustimmung nur als Behauptung.</li>
+<li>Zusätzlich steht im Prompt des Agenten: Die Zeilen der Felder gelten, nicht der Auftragstext.</li>
+</ul>
+<p>Grenze: Die Prüfung der Zustimmung ist eine Wortliste. Falsch gesperrte Zustimmungen sind die sichere Richtung, eine Umschreibung außerhalb der Liste kann durchrutschen.</p>
+</section>
+
+<section aria-labelledby="k5-t" class="kapitel" id="k5">
+<div class="kkopf"><div aria-hidden="true" class="knum">05</div><div>
+<p class="kklein">Kapitel 5</p><h2 id="k5-t">Server, Anmeldung und die Adresse</h2>
+<p class="klede">Wie der Server angemeldet ist und warum die Clients ihn intern aufrufen.</p>
+</div></div>
+<p><strong>Anmeldung:</strong> Der MCP Server Trigger bietet laut Knoten die Anmeldearten None, n8n User Auth, Bearer Auth und Header Auth, der MCP Client Bearer Auth, Header Auth, MCP OAuth2, Multiple Headers Auth und None. Gemeinsam sind Bearer Auth und Header Auth. Gewählt ist Bearer, weil der Server schreibende Werkzeuge trägt: „None“ ließe jeden mit der Adresse Tickets anlegen und Mails auslösen. Das Token liegt nur im Zugang, nie in Notizen, Export oder Bildern.</p>
+<p><strong>Pfad:</strong> Der Pfad ist eigen gewählt, mit Zufallsanteil, weil die Adresse öffentlich erreichbar ist. Er steht nur am Trigger.</p>
+<p><strong>Test ohne Schlüssel:</strong> Aufrufe ohne Token und mit falschem Token werden mit 403 abgelehnt (<a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/testtabelle-w07t03-v09.md">Testtabelle</a>, Tabelle 3, Fälle S1 und S2).</p>
+<figure><img alt="MCP Server Trigger offen: Test-URL mit unkenntlich gemachtem Pfad, Zugang Bearer Auth, Anmeldeart Bearer Auth, Pfad unkenntlich, Anweisungen für die Clients" height="1080" src="bilder/w07t03-n8n-server-trigger-offen.png" width="1920"/><figcaption>Der MCP Server Trigger: Anmeldeart Bearer Auth mit dem Zugang des Servers, der eigene Pfad ist hier unkenntlich gemacht. Darunter stehen die Anweisungen für die Clients.</figcaption></figure>
+<figure><img alt="Client K1_MCP_Auskunft offen: Endpunkt auf localhost mit unkenntlichem Pfad, Transport HTTP Streamable, Bearer Auth, Auswahl Selected mit 4 Namen, rechts eine Fehlermeldung" height="1080" src="bilder/w07t03-n8n-client-auskunft-offen.png" width="1920"/><figcaption>Client <code>K1_MCP_Auskunft</code> im Auskunfts-Agenten: Endpunkt intern auf <code>localhost</code>, Transport HTTP Streamable, Bearer, Auswahl „Selected“ mit den 4 lesenden Namen. Rechts steht die Fehlermeldung aus Ausführung 2200, siehe Kapitel 8.</figcaption></figure>
+<figure><img alt="Client K1_MCP_Aktion offen: Endpunkt auf localhost mit unkenntlichem Pfad, Bearer Auth, Auswahl Selected mit Teamvormerkung und Eilmeldung_ans_Team" height="1080" src="bilder/w07t03-n8n-client-aktion-offen.png" width="1920"/><figcaption>Client <code>K1_MCP_Aktion</code> im Aktions-Agenten: Auswahl „Selected“ mit 2 Namen, <code>Teamvormerkung</code> und <code>Eilmeldung_ans_Team</code>.</figcaption></figure>
+<p><strong>Bewusste Abweichung, interne Adresse:</strong> Der MCP Client ruft den Server nicht über die öffentliche Adresse auf, sondern intern über <code>http://localhost:5678/mcp/&lt;Pfad&gt;</code> auf dem n8n-Host. Grund: Über die öffentliche Adresse bekam der Client keine Antwort des Servers, sondern eine Prüfseite des vorgeschalteten Schutzdienstes („Just a moment...“), der Client meldete „Authentication failed“ (Lauf 2081). Derselbe Aufruf mit einem HTTP-Request-Knoten kam durch (Läufe 2089 und 2090), der Server selbst war in Ordnung. Die Ursache am Client ist nicht gemessen; ein Verdacht ist die Kennung des Clients. Der Zugang erlaubt deshalb die öffentliche Adresse der Instanz und <code>localhost</code>. Nebenwirkung: Der interne Weg läuft nicht über den Schutzdienst, die Anmeldung am Server ist die einzige Schranke.</p>
+</section>
+
+<section aria-labelledby="k6-t" class="kapitel" id="k6">
+<div class="kkopf"><div aria-hidden="true" class="knum">06</div><div>
+<p class="kklein">Kapitel 6</p><h2 id="k6-t">Sicherheitsgrenze: Token gegen Zustimmungssperre</h2>
+<p class="klede">Was die Auswahl am Client schützt und was nicht.</p>
+</div></div>
+<p>Die Zustimmungssperre (Zustimmung ja nur bei ausdrücklicher Bitte oder Ja auf eine Rückfrage) sitzt im Aktions-Agenten, im Knoten <code>Eingabe prüfen</code>. Der Server prüft die Zustimmung nicht. Wer das Token kennt, kann <code>Teamvormerkung</code> und <code>Eilmeldung_ans_Team</code> direkt am Server aufrufen und umgeht die Sperre. Die Auswahl am Client („Selected“) schützt nur vor den eigenen Agenten, nicht vor Fremden mit Adresse und Token.</p>
+<p>Was dagegen steht: die Bearer-Anmeldung, ein nicht erratbarer Pfad, der interne Aufrufweg, der feste Empfänger der Eilmeldung (nie vom Modell gesetzt) und eine Ablehnung ungültiger Auftragsnummern in der Datenbankfunktion der Vormerkung. Was fehlt, als Verbesserung offen: die schreibenden Werkzeuge auf einen zweiten Server mit eigenem Token zu legen, damit das Lesetoken kein Schreibrecht trägt.</p>
+</section>
+
+<section aria-labelledby="k7-t" class="kapitel" id="k7">
+<div class="kkopf"><div aria-hidden="true" class="knum">07</div><div>
+<p class="kklein">Kapitel 7</p><h2 id="k7-t">Punkt 4: Was war einfacher, was nicht</h2>
+<p class="klede">Gemessen an v08 und v09, nicht behauptet.</p>
+</div></div>
+<div aria-labelledby="t-messung" class="tabelle" role="region" tabindex="0">
+<table class="breit">
+<caption id="t-messung">Vergleich v08 und v09</caption>
+<thead><tr><th scope="col">Messgröße</th><th scope="col">v08, Werkzeuge in den Agenten</th><th scope="col">v09, Werkzeuge am Server</th></tr></thead>
+<tbody>
+<tr><th data-label="Messgröße" scope="row">Arbeitsknoten ohne Notizen, Auskunfts-Agent / Aktions-Agent / Server</th><td data-label="v08">16 / 14 / nicht vorhanden, zusammen 30</td><td data-label="v09">12 / 13 / 8, zusammen 33</td></tr>
+<tr><th data-label="Messgröße" scope="row">Werkzeug-Knoten</th><td data-label="v08">6 in 2 Agenten, dazu 1 Embeddings-Knoten</td><td data-label="v09">6 am Server, dazu 1 Embeddings-Knoten und 2 MCP Clients</td></tr>
+<tr><th data-label="Messgröße" scope="row">Stellen mit Datenbank-Zugang (Supabase anon)</th><td data-label="v08">3 Knoten, verteilt auf beide Agenten</td><td data-label="v09">3 Knoten, alle am Server</td></tr>
+<tr><th data-label="Messgröße" scope="row">Stellen für Gemini und SMTP</th><td data-label="v08">je 1, in den Agenten</td><td data-label="v09">je 1, am Server</td></tr>
+<tr><th data-label="Messgröße" scope="row">zusätzliche Anmeldestellen</th><td data-label="v08">keine</td><td data-label="v09">Bearer an 3 Knoten (Trigger und 2 Clients)</td></tr>
+<tr><th data-label="Messgröße" scope="row">Veröffentlichungsschritte</th><td data-label="v08">2 (beide Agenten)</td><td data-label="v09">3 (Server zuerst, dann beide Agenten)</td></tr>
+<tr><th data-label="Messgröße" scope="row">Adresse einer Datenquelle (FAQ-Tabelle, Datenbank)</th><td data-label="v08">in der Konfiguration jedes Agenten</td><td data-label="v09">einmal im Werkzeug am Server</td></tr>
+<tr><th data-label="Messgröße" scope="row">Neues Werkzeug</th><td data-label="v08">Knoten im Agenten, Zugang im Agenten, Namensliste im Bündel-Knoten</td><td data-label="v09">1 Knoten am Server, den Namen in die Auswahl des Clients und in die Namensliste des Bündel-Knotens</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Einfacher geworden:</strong> Adressen und Zugänge der Datenquellen (Supabase, Gemini, SMTP) liegen einmal am Server statt verteilt auf zwei Agenten. Die Beschreibung eines Werkzeugs steht einmal. Jeder Agent bekommt seine Werkzeuge über eine Zeile (die Auswahl) statt über 4 oder 2 Knoten.</p>
+<p><strong>Nicht einfacher geworden:</strong> Insgesamt sind es mehr Knoten (33 gegen 30) und mehr Anmeldestellen. Ein Veröffentlichungsschritt kommt dazu, und der Server muss vor den Agenten stehen. Die Namensschicht musste übersetzt werden: Im Protokoll heißt ein Werkzeug <code>Clientname_Werkzeugname</code>, die Rückgabe kommt mehrfach verpackt, beide Bündel-Knoten lesen sie deshalb bis zum Inhalt aus. Im Fehlerweg des Aktions-Agenten gehen Ticketnummer und Mailbeleg verloren, weil der Kontext des Clients leer ist.</p>
+<div class="merksatz"><p><strong>Urteil.</strong> Bei 2 Agenten und 6 Werkzeugen war die Anbindung nicht einfacher als die manuelle Integration, der Aufwand lag höher. Der Gewinn zeigt sich erst bei jedem weiteren Werkzeug und jedem weiteren Agenten: Das Werkzeug entsteht einmal am Server, der Agent wählt es per Namen.</p></div>
+</section>
+
+<section aria-labelledby="k8-t" class="kapitel" id="k8">
+<div class="kkopf"><div aria-hidden="true" class="knum">08</div><div>
+<p class="kklein">Kapitel 8</p><h2 id="k8-t">Test</h2>
+<p class="klede">Gesamttest über den Hauptworkflow, Erwartung vor dem Lauf, Werkzeug aus dem Ausführungsprotokoll.</p>
+</div></div>
+<div aria-labelledby="t-tests" class="tabelle" role="region" tabindex="0">
+<table class="breit">
+<caption id="t-tests">Gesamttest, 04.11.2026: 7 Fälle in 17 Läufen</caption>
+<thead><tr><th scope="col">Fall</th><th scope="col">Anfrage</th><th scope="col">Erwartet (vorab)</th><th scope="col">Werkzeug gemessen</th><th scope="col">Läufe und Ergebnis</th></tr></thead>
+<tbody>
+<tr><th data-label="Fall" scope="row">A Auftragsstand</th><td data-label="Anfrage">Wie ist der Stand von Auftrag 24002?</td><td data-label="Erwartet">Auskunfts-Agent, <code>Auftragsstand</code></td><td data-label="Gemessen"><code>Auftragsstand</code></td><td data-label="Läufe und Ergebnis">2123, 2128, 2148: 3 von 3 PASS</td></tr>
+<tr><th data-label="Fall" scope="row">B FAQ</th><td data-label="Anfrage">Wie lange habe ich Zeit für die Freigabe?</td><td data-label="Erwartet"><code>K1_Antwortkatalog</code></td><td data-label="Gemessen"><code>K1_Antwortkatalog</code></td><td data-label="Läufe und Ergebnis">2130, 2150, 2152: 3 von 3 PASS</td></tr>
+<tr><th data-label="Fall" scope="row">C Eilmeldung</th><td data-label="Anfrage">Es hat bei uns im Büro gebrannt, bitte sofort Hilfe vom Team, es geht um Auftrag 24002. TESTLAUF, bitte ignorieren.</td><td data-label="Erwartet">Aktions-Agent, <code>Eilmeldung_ans_Team</code></td><td data-label="Gemessen"><code>Eilmeldung_ans_Team</code></td><td data-label="Läufe und Ergebnis">2139, 2164, 2167: 3 von 3 PASS, je 1 Testmail an die feste Testadresse</td></tr>
+<tr><th data-label="Fall" scope="row">D Zustimmung fehlt</th><td data-label="Anfrage">Das Logo in Auftrag 24003 ist verpixelt, kannst du das vom Team korrigieren lassen?</td><td data-label="Erwartet">kein Werkzeug, Rückfrage</td><td data-label="Gemessen">kein Werkzeug</td><td data-label="Läufe und Ergebnis">2134, 2155, 2157: 3 von 3 PASS, nichts angelegt</td></tr>
+<tr><th data-label="Fall" scope="row">E Ungültige Nummer</th><td data-label="Anfrage">Bitte leg ein Ticket an: Das Logo im Paket zu Auftrag 123 ist verpixelt.</td><td data-label="Erwartet"><code>Teamvormerkung</code>, Antwort „ungültig“, nichts angelegt</td><td data-label="Gemessen"><code>Teamvormerkung</code></td><td data-label="Läufe und Ergebnis">2174: PASS, nur 1 Lauf (siehe Grenzen)</td></tr>
+<tr><th data-label="Fall" scope="row">F Wissensbasis</th><td data-label="Anfrage">Was passiert technisch bei K1, wenn kein passendes Foto gefunden wird?</td><td data-label="Erwartet"><code>K1_Technikwissen</code></td><td data-label="Gemessen"><code>K1_Technikwissen</code></td><td data-label="Läufe und Ergebnis">2132, 2170, 2172: 3 von 3 PASS</td></tr>
+<tr><th data-label="Fall" scope="row">G Server nicht erreichbar</th><td data-label="Anfrage">Wie ist der Stand von Auftrag 24002? bei absichtlich unveröffentlichtem Server</td><td data-label="Erwartet">fester Ausfallsatz, Weg <code>Ausfallpfad</code>, Status <code>tool_error</code></td><td data-label="Gemessen"><code>Auskunfts_Agent</code>, <code>Ausfallpfad</code></td><td data-label="Läufe und Ergebnis">2201 (Einzellauf des Agenten: 2200): PASS</td></tr>
+</tbody>
+</table>
+</div>
+<p>Die Erwartung zum Werkzeug stand vorab fest und traf in jedem Lauf zu. Die Fälle A, B, C, D und F laufen je 3 Mal. Die Antwort des Modells schwankt von Lauf zu Lauf im Wortlaut, die Werkzeugwahl blieb gleich. Die Einzeltests am Server (8 Fälle) und an den Agenten (10 Läufe) und alle Antworten im Wortlaut stehen in der <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/testtabelle-w07t03-v09.md">Testtabelle v09</a>.</p>
+<figure><a href="bilder/w07t03-testtabelle-v09.png"><img alt="Testtabelle: 17 Läufe des Gesamttests mit Eingabe, gemessenem Werkzeug, Urteil und Laufnummer" height="1010" src="bilder/w07t03-testtabelle-v09.png" width="2268"/></a><figcaption>Die 17 Läufe des Gesamttests mit Eingabe, gemessenem Werkzeug, Urteil und Laufnummer.</figcaption></figure>
+
+<h3>Ausführungen im Editor</h3>
+<p>Die folgenden Bilder zeigen echte Läufe. Ein Klick auf ein Bild öffnet es in voller Größe.</p>
+<figure><a href="bilder/w07t03-lauf-2107-auskunft-werkzeugname.png"><img alt="Ausführung 2107 des Auskunfts-Agenten: Protokoll mit K1_MCP_Auskunft, Eingabe nummer 24002 und tool K1_MCP_Auskunft_Auftragsstand" height="1080" src="bilder/w07t03-lauf-2107-auskunft-werkzeugname.png" width="1920"/></a><figcaption><strong>Punkt 2, Lauf 2107.</strong> Der Auskunfts-Agent ruft den Client auf, die Eingabe ist <code>nummer</code> 24002, das Werkzeug heißt im Protokoll <code>K1_MCP_Auskunft_Auftragsstand</code>.</figcaption></figure>
+<figure><a href="bilder/w07t03-lauf-2113-aktion-werkzeugname.png"><img alt="Ausführung 2113 des Aktions-Agenten: Protokoll mit K1_MCP_Aktion, Eingabe mit Kategorie Dringend und Auftragsnummer 24002, tool K1_MCP_Aktion_Eilmeldung_ans_Team, die Antwort des Mailservers ist geschwärzt" height="1080" src="bilder/w07t03-lauf-2113-aktion-werkzeugname.png" width="1920"/></a><figcaption><strong>Zusatz zu Punkt 2, Lauf 2113 (Fehlerweg-Test mit Max Iterations 1).</strong> Der Aktions-Agent ruft die Eilmeldung über den Client auf, das Werkzeug heißt im Protokoll <code>K1_MCP_Aktion_Eilmeldung_ans_Team</code>. Die Antwort des Mailservers ist geschwärzt.</figcaption></figure>
+<figure><a href="bilder/w07t03-lauf-2123-fall-a.png"><img alt="Ausführung 2123 des Hauptworkflows, Fall A: Chat mit der Frage nach Auftrag 24002 und der Antwort, im Ablauf der Aufruf von Auskunfts_Agent" height="1080" src="bilder/w07t03-lauf-2123-fall-a.png" width="1920"/></a><figcaption><strong>Fall A, Lauf 2123.</strong> Links Frage und Antwort im Chat, in der Mitte der Ablauf mit dem Aufruf von <code>Auskunfts_Agent</code>, rechts der Systemprompt des Orchestrators.</figcaption></figure>
+<figure><a href="bilder/w07t03-lauf-2139-fall-c.png"><img alt="Ausführung 2139 des Hauptworkflows, Fall C: Chat mit der Brandmeldung und der Antwort Das K1-Team wurde informiert und Bestätigt: Eilmeldung gesendet, im Ablauf der Aufruf von Aktions_Agent" height="1080" src="bilder/w07t03-lauf-2139-fall-c.png" width="1920"/></a><figcaption><strong>Fall C, Lauf 2139.</strong> Die Antwort lautet „Das K1-Team wurde informiert.“ mit dem Absatz „Bestätigt: Eilmeldung gesendet.“; im Ablauf läuft <code>Aktions_Agent</code>.</figcaption></figure>
+<figure><a href="bilder/w07t03-lauf-2130-antwortkatalog.png"><img alt="Ausführung 2130 des Hauptworkflows, Fall B: Chat mit der Frage nach der Freigabefrist und der Antwort, im Ablauf der Aufruf von Auskunfts_Agent, rechts das gemessene Werkzeug K1_Antwortkatalog" height="1080" src="bilder/w07t03-lauf-2130-antwortkatalog.png" width="1920"/></a><figcaption><strong>Fall B, Lauf 2130.</strong> Links Frage und Antwort im Chat, in der Mitte der Ablauf, rechts die Auswertung der Werkzeugwahl: Der Auskunfts-Agent hat <code>K1_Antwortkatalog</code> genutzt.</figcaption></figure>
+<figure><a href="bilder/w07t03-lauf-2132-technikwissen.png"><img alt="Ausführung 2132 des Hauptworkflows, Fall F: Chat mit der Technikfrage und der Antwort, rechts das gemessene Werkzeug K1_Technikwissen mit der Quellzeile" height="1080" src="bilder/w07t03-lauf-2132-technikwissen.png" width="1920"/></a><figcaption><strong>Fall F, Lauf 2132.</strong> Die Technikfrage läuft über <code>K1_Technikwissen</code>; die Rückgabe des Werkzeugs trägt die Quellzeile mit Abschnitt und Wissensstand.</figcaption></figure>
+<figure><a href="bilder/w07t03-lauf-2134-kein-werkzeug.png"><img alt="Ausführung 2134 des Hauptworkflows, Fall D: Chat mit der Bitte, ein verpixeltes Logo korrigieren zu lassen, und der Rückfrage des Agenten, rechts leere Listen für Zwischenschritte und aufgerufene Agenten" height="1080" src="bilder/w07t03-lauf-2134-kein-werkzeug.png" width="1920"/></a><figcaption><strong>Fall D, Lauf 2134.</strong> Der Agent fragt erst nach der Zustimmung; die Listen der Zwischenschritte und der aufgerufenen Agenten sind leer, es wurde kein Werkzeug aufgerufen und nichts angelegt.</figcaption></figure>
+<figure><a href="bilder/w07t03-lauf-2174-teamvormerkung.png"><img alt="Ausführung 2174 des Hauptworkflows, Fall E: Chat mit der Bitte um ein Ticket zu Auftrag 123 und der Antwort, die Auftragsnummer müsse fünfstellig sein, rechts das Werkzeug Teamvormerkung mit dem Ergebnis ungültig" height="1080" src="bilder/w07t03-lauf-2174-teamvormerkung.png" width="1920"/></a><figcaption><strong>Fall E, Lauf 2174.</strong> Der Aktions-Agent ruft <code>Teamvormerkung</code> mit Zustimmung ja auf, das Werkzeug meldet „ungueltig“ (genau 5 Ziffern), es entsteht keine Vormerkung.</figcaption></figure>
+
+<h3>Fehlerweg bei einem unveröffentlichten Server</h3>
+<p>Der Server wurde kurz unveröffentlicht, außerhalb des Betriebs. Der Auskunfts-Agent endet nach 0,2 Sekunden mit einem Fehler am Client-Knoten (Lauf 2200). Die Fehlermeldung nennt den Code 404 und sagt, der Webhook sei nicht registriert. Der Hauptworkflow antwortet mit dem festen Satz „Das hat gerade nicht geklappt. Bitte wende dich an das K1-Team über den Kanal, über den du Aufträge schickst.“ (Lauf 2201). Danach wurde der Server mit derselben Version wieder veröffentlicht, nach etwa 1 Minute lief der Agent wieder (Lauf 2205).</p>
+<figure><a href="bilder/w07t03-lauf-2200-fehlerweg-auskunft.png"><img alt="Ausführung 2200 des Auskunfts-Agenten bei unveröffentlichtem Server: Lauf in 194 Millisekunden, der Client-Knoten K1_MCP_Auskunft ist rot" height="1080" src="bilder/w07t03-lauf-2200-fehlerweg-auskunft.png" width="1920"/></a><figcaption><strong>Lauf 2200.</strong> Der Auskunfts-Agent bei unveröffentlichtem Server: Der Lauf dauert 194 Millisekunden, der Client-Knoten <code>K1_MCP_Auskunft</code> ist rot, der Agent fängt den Fehler ab.</figcaption></figure>
+<figure><a href="bilder/w07t03-lauf-2201-fehlerweg-haupt.png"><img alt="Ausführung 2201 des Hauptworkflows bei unveröffentlichtem Server: Gesamtansicht des Laufs, der erfolgreich endet" height="1080" src="bilder/w07t03-lauf-2201-fehlerweg-haupt.png" width="1920"/></a><figcaption><strong>Lauf 2201.</strong> Der Hauptworkflow läuft durch und antwortet mit dem festen Ausfallsatz.</figcaption></figure>
+</section>
+
+<section aria-labelledby="k9-t" class="kapitel" id="k9">
+<div class="kkopf"><div aria-hidden="true" class="knum">09</div><div>
+<p class="kklein">Kapitel 9</p><h2 id="k9-t">Grenzen</h2>
+<p class="klede">Was nicht gemessen oder nicht garantiert ist.</p>
+</div></div>
+<ul>
+<li><strong>Kontext im Fehlerweg:</strong> Im Aktions-Agenten ist der Kontext des MCP Clients leer, im Fehlerweg bleibt nur lesbar, ob ein Werkzeug lief. Ticketnummer und Mailbeleg fehlen dort. Der Hauptworkflow hängt dann den Hinweis an, dass ein Teil schon ausgeführt sein kann.</li>
+<li><strong>Parametername:</strong> Das Wissenswerkzeug heißt in der Schnittstelle des Servers <code>input</code>, seine Beschreibung nennt noch <code>query</code> (Schemafehler bei <code>query</code>). Das war in v08 genauso; die Beschreibung blieb unverändert.</li>
+<li><strong>Einstellung <code>availableInMCP</code>:</strong> Sie steht auf <code>true</code> (Voreinstellung) und gehört zum MCP-Zugang der Instanz, nicht zu diesem Server. Mit dem verwendeten Werkzeug ließ sie sich nicht ausschalten.</li>
+<li><strong>Vormerkung nur 1 Mal getestet:</strong> Fall E läuft im Gesamttest mit 1 Lauf (2174), weil ein Aufruf mit leerer Nummer ein echtes Ticket anlegen würde. In diesem Lauf entstand kein Ticket. Im Nachlauf 2227 mit demselben Satz machte das Modell aus „Auftrag 123“ die Nummer 12335 und das Werkzeug legte das Testticket K1-T-01057 an (Testtabelle N5). Die Testzeile ist nicht entfernt; Fall E ist damit nicht stabil.</li>
+<li><strong>Testmails:</strong> 7 Testmails gingen an die feste Testadresse (Server, Einzeltests und Eilmeldungen des Gesamttests).</li>
+<li><strong>Bezeichnung in Prompt und Code:</strong> Der Systemprompt des Orchestrators, Kommentare in den Code-Knoten und zwei Feldwerte tragen noch das ältere Wort für „Agent“. Der Hauptworkflow wurde in v09 bewusst nicht angefasst (Prompt und Code gleich wie in v08), die Notizen sind auf „Agent“ umgestellt. Die Feldwerte liest der Hauptworkflow, eine Umbenennung braucht eine neue Version und neue Tests.</li>
+<li><strong>Konfigurationswert:</strong> Der Hauptworkflow trägt in der Konfiguration weiter <code>workflow_version</code> <code>v16</code> (Stand v08), weil nichts in ihm geändert wurde.</li>
+<li><strong>Plattform-Guardrails</strong> des Modellanbieters sind nicht aktiviert (offener Punkt, nicht Teil der Tagesaufgabe).</li>
+<li><strong>Wortlisten:</strong> Zustimmungssperre und Prüfknoten arbeiten mit Wortlisten und haben bekannte Lücken (Details in der <a href="w07t02.html">Dokumentation zu Tag 2</a>).</li>
+</ul>
+</section>
+
+<section aria-labelledby="k10-t" class="kapitel" id="k10">
+<div class="kkopf"><div aria-hidden="true" class="knum">10</div><div>
+<p class="kklein">Kapitel 10</p><h2 id="k10-t">Dateien und ChangeLog</h2>
+<p class="klede">Was zu v09 im Repository liegt.</p>
+</div></div>
+<div aria-labelledby="t-dateien" class="tabelle" role="region" tabindex="0">
+<table class="mittel">
+<caption id="t-dateien">Dateien zu v09</caption>
+<thead><tr><th scope="col">Datei</th><th scope="col">Inhalt</th></tr></thead>
+<tbody>
+<tr><th data-label="Datei" scope="row"><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/k1-support-agent_2026-11-04_v09.json"><code>workflows/k1-support-agent_2026-11-04_v09.json</code></a></th><td data-label="Inhalt">Hauptworkflow v09</td></tr>
+<tr><th data-label="Datei" scope="row"><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/k1-mcp-server_2026-11-04_v09.json"><code>workflows/k1-mcp-server_2026-11-04_v09.json</code></a></th><td data-label="Inhalt">MCP-Server v09</td></tr>
+<tr><th data-label="Datei" scope="row"><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/subs/sub-auskunfts-agent-k1.json"><code>workflows/subs/sub-auskunfts-agent-k1.json</code></a></th><td data-label="Inhalt">Auskunfts-Agent v09</td></tr>
+<tr><th data-label="Datei" scope="row"><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/subs/sub-aktions-agent-k1.json"><code>workflows/subs/sub-aktions-agent-k1.json</code></a></th><td data-label="Inhalt">Aktions-Agent v09</td></tr>
+<tr><th data-label="Datei" scope="row"><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/testtabelle-w07t03-v09.md"><code>docs/testtabelle-w07t03-v09.md</code></a></th><td data-label="Inhalt">Testtabelle mit allen Läufen</td></tr>
+<tr><th data-label="Datei" scope="row"><a href="plan/plan-w07t03-v09.png"><code>docs/plan/plan-w07t03-v09.png</code></a></th><td data-label="Inhalt">Plan auf dem Endstand</td></tr>
+<tr><th data-label="Datei" scope="row"><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/ChangeLog.md"><code>ChangeLog.md</code></a></th><td data-label="Inhalt">Änderungen je Version mit Grund</td></tr>
+</tbody>
+</table>
+</div>
+<p>Abschnitt v09 im <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/ChangeLog.md">ChangeLog</a>, mit den Baurunden, allen Laufnummern und den bekannten Grenzen. Je Version Plan, Tests, Workflow und Doku in der <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/versionsmatrix.md">Versionsmatrix</a>.</p>
+</section>
+</main>
+<footer class="fuss">
+<span>Patrick Minkler · K1 Support-Agent</span>
+<span>Stand 04.11.2026 · v09</span>
+</footer>
+</div>
+</body>
+</html>
