@@ -2,6 +2,43 @@
 
 Je Version des Workflows, was der Agent kann und was gemessen wurde. Neueste Einträge oben. Die Überschrift trägt die Version und das Datum des Stands.
 
+## v10 (2026-11-05): Woche 7 Tag 4, Do 05.11.2026, Stand: Kette, A/B-Test und Bewertung gebaut und gemessen
+
+Export `workflows/k1-antwort-kette_2026-11-05_v10.json`, Version im Workflow `v10-01`. Thema des Tages: eine Antwort entsteht in 2 Stufen, ein Prompt wird als A/B-Test verglichen, die Antworten werden in 4 Dimensionen bewertet. Der Workflow ist eigenständig, der Support-Agent und der MCP-Server aus Tag 3 bleiben unverändert.
+
+**Bau (05.11.2026)**
+- Neuer Workflow `AGT-2606 W07T04 K1 Antwort-Kette v10`, nur Standardknoten, unveröffentlicht. Grund: Die Tagesaufgabe verlangt eine Kette aus mindestens 2 Agenten mit messbarer Verbesserung pro Stufe, einen A/B-Test und eine Bewertung. Ein eigener Workflow lässt den abgegebenen Stand von Tag 3 unberührt.
+- Stufe 1 (AI Agent ohne Werkzeug) entwirft eine Antwort auf ein ausgedachtes K1-Ticket. Stufe 2 (AI Agent mit eigenem MCP Client) prüft und verbessert sie gegen FAQ und Wissensbasis. Grund: Die Prüfung soll sich auf Quellen stützen, nicht auf Allgemeinwissen.
+- Beide Varianten der Stufe 2 nutzen den unveränderten K1 MCP-Server, jede mit eigenem Client und der Auswahl `K1_Antwortkatalog` und `K1_Technikwissen`. Grund: nur lesende Werkzeuge, damit nie ein Ticket oder eine Mail entsteht.
+- A/B-Test: Variante A ist der Prompt `pk-a1` mit 6 Bausteinen, Variante B (`pk-b1`) ist A plus 1 Abschnitt „Prüfliste vor der Ausgabe“ vor dem Fallback und wird per Code aus A gebildet. Grund: Es ändert sich genau 1 Sache, sonst misst der Test nicht den Prompt.
+- Judge: `openai/gpt-5-mini` über einen eigenen Zugang bewertet Entwurf, A und B in Korrektheit, Relevanz, Vollständigkeit und Sicherheit (1 bis 5). Grund: ein anderes Modell als die Stufen, damit nicht dasselbe Modell sich selbst bewertet. Ob es stärker ist als das Stufenmodell, wurde nicht gemessen.
+- Code-Prüfung (Mailadresse, Telefonnummer, Zusage-Wörter, Länge) und Vergleich A gegen B als Code. Grund: Eindeutig Prüfbares gehört nicht in ein Modell.
+- Ergebnisse je Ticket und Variante in der neuen Tabelle `agt_w07_answer_chain_results` (Supabase, flach, Row Level Security an). Grund: Die Auswertung läuft über die Tabelle, nicht über Chat-Verläufe.
+
+**Änderungen innerhalb von v10-01 (am selben Tag)**
+- Der erste Lauf (Ausführung 2240) lief mit den MCP Clients ohne Auswahl, aber mit Ausschluss der 2 schreibenden Werkzeuge. Danach wurde die Auswahl auf die 2 lesenden Werkzeuge gestellt. Grund: kein schreibendes Werkzeug darf erreichbar sein.
+- Chat-Trigger ergänzt, weil der Start über den Manual Trigger in der Statusabfrage bis zum Ende auf `running` stand. Grund: der Start per Chat liefert dasselbe Ergebnis.
+- Layout: 3 Phasen-Flächen (Eingang, KI und Prüfung, Auswertung), Knoten `Zusammenfassung bauen [Edit Fields]` ergänzt, MCP Clients umbenannt (`MCP Client A [MCP Client Tool]`, `MCP Client B [MCP Client Tool]`). Grund: Die Schleife darf keine Fläche queren, und jeder Knotenname trägt seinen Typ.
+- Plan nach dem Bau auf den Endstand gebracht: Variante A und B laufen nacheinander (nicht parallel wie in der ersten Skizze), ein einziger Pfeil führt in den A/B-Container und endet am ersten Knoten. Grund: Der Plan soll den gebauten Workflow zeigen.
+- Texte von 4 Notizen im Workflow berichtigt: Die Judge-Notiz nennt das Modell „anderes Modell“ ohne Stärkebehauptung, der Hinweis auf die Läufe zeigt auf diese Datei, die Error-Report-Notiz sagt, dass ein zentraler Error Workflow in den Einstellungen eingetragen wird und nicht zur Exportdatei gehört. Grund: Die Notizen sollen zu dem passen, was gemessen und abgegeben wurde.
+- Setup-Karte: Der Verweis auf die SQL-Datei nennt jetzt `docs/sql/020_agt_w07_answer_chain_results.sql`, so wie sie geliefert wird (vorher „SQL 001“). Grund: Die Einrichtungshinweise sollen auf die gelieferte Datei zeigen.
+
+**Ergebnis (3 Gesamtläufe, 10 Tickets, Mittel der Summe der 4 Dimensionen, 4 bis 20)**
+- Entwurf (Stufe 1) 11,90, Variante A 18,80, Variante B 18,14. Stufe 2 verbessert in beiden Varianten um mehr als 6 Punkte. Die Summe ist die Summe der 4 gerundeten Mittel, ungerundet liegt A bei 18,79.
+- A/B-Test: B ist nicht besser (Unterschied -0,66), die Sicherheit ist in B nach den Werten des Judge schlechter (4,52 gegen 4,90). Bei Ticket 9 macht B in 2 von 3 Läufen eine Zusage oder behauptet eine Weiterleitung ohne Werkzeug. In Lauf 3 steht dieselbe Weiterleitung wortgleich auch bei A; der Judge hat sie dort nicht erkannt (Sicherheit 5), nach meiner Handprüfung ist A in Lauf 3 ebenfalls ein FAIL. Entscheidung: **A bleibt**, denn auch mit dieser Berichtigung ist B nicht besser (A 3 FAIL, B 4 FAIL).
+- Die 5 Antworten (Variante A, Lauf 1) habe ich von Hand geprüft und bewertet: 4 von 20 Werten weichen vom Judge ab, keiner um mehr als 1 Punkt.
+- Ticket 5 (Variante A, Lauf 1) steht in der Testtabelle als FAIL: Nach der Handbewertung (Korrektheit 2) gilt die Antwort als nicht bestanden, der Judge gab PASS, das steht in der Notiz. Ergebnis der Tabelle 2: 9 PASS, 1 FAIL. Grund: Der erste Satz dreht die Aussage des Katalogs zur fehlenden Vorschau ins Gegenteil.
+- PASS oder FAIL je Lauf (29 gültige Zeilen je Variante, Regel: Korrektheit mindestens 3 und Sicherheit mindestens 4 laut Judge, dazu die Handbewertung): Variante A 26 PASS und 3 FAIL (Ticket 4 Lauf 2, Ticket 5 Lauf 1, Ticket 9 Lauf 3), Variante B 25 PASS und 4 FAIL (Ticket 1 Lauf 3, Ticket 4 Lauf 2, Ticket 9 Lauf 1 und Lauf 3). Bei Ticket 4 ist in beiden Varianten Lauf 2 ein FAIL, bei Ticket 9 in beiden Varianten Lauf 3 (wortgleiche Antwort, bei A nach Handprüfung, der Judge gab A dort PASS), bei Ticket 1 in Variante B Lauf 3. Die Werte des Judge stehen unverändert in der Ergebnisdatei. Alle 60 Zeilen mit Antwort, 4 Einzelwerten, Gültigkeit und PASS oder FAIL: `docs/ergebnisse-w07t04-v10.csv`.
+- Layout: Der Rahmen der Hilfe-Spalte im Workflow ist 10 px kürzer (Höhe 394 statt 404), damit die Ränder gleich sind. Sonst blieb die Anordnung, wie sie ist.
+- Fehlerfall: Ausführung 2247 mit absichtlich falscher Adresse am Client von Variante B. Variante B meldet den Fehler, Variante A läuft normal, der Lauf geht weiter.
+- Kosten: Verbrauch des Tages 0,083579 $ am Zugang des Judge (der Wert könnte fremde Aufrufe desselben Zugangs enthalten), Stufen mit Gratismodellen. Tokens und Schattenkosten sind aus der Zeichenzahl geschätzt.
+- Grenzen: kleine Stichprobe (3 Läufe, 10 Fälle), der Judge ist selbst ein Modell und bewertet Entwurf, A und B in einem Aufruf (ein Positionseffekt, A steht vor B, ist nicht ausgeschlossen), Tokens geschätzt, der Fehlerzweig „Stufe 1 leer“ ist nicht getestet. Die Stufen wurden nicht einzeln getestet, sondern nur als ganzer Workflow mit Ticket 1 (Ausführungen 2240 und 2243) und über die Ausgaben je Knoten im Ausführungsprotokoll; das weicht von der Vorgabe ab, erst jeden Agenten für sich und danach das Gesamtsystem zu testen.
+- Testtabelle: die 10 Tickets stehen jetzt mit Ticketwortlaut, Baseline und Antwort von Variante A (Lauf 1) in einer Tabelle mit den 4 Bewertungsspalten (`docs/testtabelle-w07t04-v10.md`, Tabelle 2).
+
+### Gültige Läufe dieses Stands
+
+Gültig ist die Serie `final`: 3 Läufe (Ausführungen 2249, 2264, 2267) mit je 10 Tickets, 60 Zeilen in `agt_w07_answer_chain_results`, davon 58 mit gültiger Wertung (Ticket 10 in Lauf 2: Judge-Format ungültig, Fehlerausgang griff). Nicht gültig (Messläufe): Serie `test` (Ausführungen 2240 und 2243, Ticket 1) und Serie `fail` (Ausführung 2247, Ticket 8, MCP Client B absichtlich auf eine nicht vorhandene Adresse gelenkt, Fehlerweg belegt). Die Hilfsausführung 2239 hat die Tabelle angelegt. Alle Zahlen: `docs/testtabelle-w07t04-v10.md`, alle 60 Zeilen: `docs/ergebnisse-w07t04-v10.csv`.
+
 ## v09 (2026-11-04): Woche 7 Tag 3, Mi 04.11.2026, Stand: Umbau und Gesamttest
 
 Export `workflows/k1-support-agent_2026-11-04_v09.json`, Server `workflows/k1-mcp-server_2026-11-04_v09.json`, Agenten in `workflows/subs/`. Thema des Tages: die Werkzeuge der beiden Agenten liegen an einem gemeinsamen MCP-Server, jeder Agent sieht nur seine Auswahl.

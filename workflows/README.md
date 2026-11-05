@@ -1,10 +1,22 @@
 # Workflows
 
-Hier liegen die n8n-Exporte des Support-Agenten. Dateiname `k1-support-agent_<JJJJ-MM-TT>_vNN.json`, die Versionsnummer immer zweistellig. In den Exporten stehen nur Platzhalter, keine Schlüssel, keine Zugangsdaten und keine private Server- oder Projektadresse. Enthalten sind nur öffentliche Adressen: die Rohdateien auf raw.githubusercontent.com (FAQ und Wissensbasis-Dokumente), openrouter.ai (Jev und Sprachmodell), date.nager.at (Feiertage) und supabase.com (Link im Knopf der Eilmeldung); ab v09 kommt in den Agenten die interne Adresse `http://localhost:5678/mcp/<<REPLACE_WITH_MCP_PATH>>` des MCP-Servers dazu.
+Hier liegen die n8n-Exporte des Support-Agenten. Dateiname `k1-support-agent_<JJJJ-MM-TT>_vNN.json`, die Versionsnummer immer zweistellig. In den Exporten stehen nur Platzhalter, keine Schlüssel, keine Zugangsdaten und keine private Server- oder Projektadresse. Enthalten sind nur öffentliche Adressen: die Rohdateien auf raw.githubusercontent.com (FAQ und Wissensbasis-Dokumente), openrouter.ai (Jev und Sprachmodell), date.nager.at (Feiertage) und supabase.com (Link im Knopf der Eilmeldung); ab v09 kommt in den Agenten die interne Adresse `http://localhost:5678/mcp/<<REPLACE_WITH_MCP_PATH>>` des MCP-Servers dazu. Ab v10 liegt hier zusätzlich der eigenständige Workflow `k1-antwort-kette_<JJJJ-MM-TT>_vNN.json` (Antwort-Kette mit A/B-Test); auch er trägt weder Zugänge noch Kennungen von Zugängen.
 
 Welche Version zu welchem Tag und welcher Tages-Doku gehört, steht in der [Versionstabelle im README](../README.md#versionen).
 
-**Stand 04.11.2026:**
+**Stand 05.11.2026:**
+
+- `k1-antwort-kette_2026-11-05_v10.json` (neu, `AGT-2606 W07T04 K1 Antwort-Kette v10`, 55 Knoten, davon 32 ausführbar und 23 Notizen): ein eigenständiger Workflow neben dem Support-Agenten, nur Standardknoten. Ablauf: `Testtickets erzeugen [Code]` liefert 10 ausgedachte Tickets, Stufe 1 (`Stufe 1 Antwort entwerfen [AI Agent]`, ohne Werkzeug) entwirft eine Antwort, Stufe 2 prüft und verbessert sie in 2 Varianten nacheinander (`Stufe 2 Variante A prüfen [AI Agent]` und `Stufe 2 Variante B prüfen [AI Agent]`, je mit eigenem MCP Client und der Auswahl `K1_Antwortkatalog` und `K1_Technikwissen`), danach `Code-Prüfung [Code]`, ein Judge (`Judge bewertet Entwurf, A und B [Basic LLM Chain]`, anderes Modell als die Stufen) und `Ergebnis speichern [Supabase]`; am Ende vergleicht `Vergleich A gegen B [Code]` beide Varianten. Der Export ist unveröffentlicht und hat einen Manual Trigger und einen Chat Trigger. Er braucht den MCP-Server aus v09 (unverändert) und die Pfad-Platzhalter `<<REPLACE_WITH_MCP_PATH>>` in beiden MCP Clients; weitere Platzhalter gibt es nicht.
+- Neue SQL-Datei: `docs/sql/020_agt_w07_answer_chain_results.sql` (Tabelle `agt_w07_answer_chain_results`, flach, Row Level Security an, 1 Zeile je Ticket, Variante und Lauf).
+
+**Reihenfolge für v10:**
+
+1. `docs/sql/020_agt_w07_answer_chain_results.sql` im Supabase SQL-Editor ausführen.
+2. Den MCP-Server aus v09 (siehe unten) importiert, mit dem eigenen Pfad und dem Bearer-Zugang eingerichtet und veröffentlicht haben.
+3. `k1-antwort-kette_2026-11-05_v10.json` importieren, in beiden MCP Clients den Pfad des Servers statt `<<REPLACE_WITH_MCP_PATH>>` eintragen und den Bearer-Zugang des Servers setzen, dazu die Zugänge der Tabelle unten (Stufenmodelle, Judge, Supabase).
+4. Der Workflow bleibt unveröffentlicht und wird über den Manual Trigger oder den Chat Trigger gestartet. Die Einstellungen `availableInMCP` und `callerPolicy` im Export nach dem Import prüfen und bewusst setzen.
+
+**Stand 04.11.2026 (Vorgänger):**
 
 - `k1-mcp-server_2026-11-04_v09.json` (neu, `AGT-2606 W07T03 K1 MCP-Server v09`, 25 Knoten, davon 8 ausführbar und 17 Notizen): ein eigener Workflow mit einem MCP Server Trigger (Anmeldung Bearer Auth, Pfad als Platzhalter `<<REPLACE_WITH_MCP_PATH>>`) und den 6 Werkzeugen `K1_Antwortkatalog`, `K1_Technikwissen` (mit Embeddings), `Feiertage_nachschlagen`, `Auftragsstand`, `Teamvormerkung` und `Eilmeldung_ans_Team`. `Teamvormerkung` trägt hier den Parameter `session_id`, weil es am Server keinen Konfigurationsknoten gibt; die Kennung steht als Zeile „Sitzung: …“ im Auftrag des Aktions-Agenten. Die Zugänge der Werkzeuge sind dieselben wie in der Tabelle unter „Nach dem Import einrichten“, nur dass sie jetzt im Server gesetzt werden.
 - `k1-support-agent_2026-11-04_v09.json` (`AGT-2606 W07T03 K1 Support-Agent v09`, 58 Knoten, 31 ausführbar und 27 Notizen): der Hauptworkflow ist gegenüber v08 in Logik und Prompt unverändert, die Notizen sind auf v09 gestellt. Er ruft die beiden Agenten `SUB Auskunfts-Agent K1 v09` und `SUB Aktions-Agent K1 v09` auf (4 Platzhalter für Sub-Workflows wie bei v07).
@@ -69,7 +81,7 @@ Beide Exporte haben einen Chat Trigger beziehungsweise einen manuellen Start ohn
 
 ## Nach dem Import einrichten
 
-1. **Datenbank:** in Supabase im SQL-Editor nacheinander ausführen: `docs/sql/001_agt_w06_support_log.sql`, `002_agt_w06_chat_histories.sql`, `003_agt_w06_auftraege_tickets.sql`, `004_agt_w06_wissensbasis.sql`, `005_agt_w06_auftrag_abfragen.sql` und `006_agt_w06_vormerkung_anlegen.sql`, für v05 danach `011`, `013`, `014` und `016` (Kennzeichen in der Wissensbasis, Weg `limit`, Prüfung der Vormerkung, Antworttext im Protokoll; `012`, `015`, `017` und `018` gehören zu den Tests), für v07 zuletzt `019` (Spalte `agents_called`). Anschließend den Einlese-Workflow einmal ausführen (Zugänge: Supabase mit der Rolle `service_role` zum Schreiben, Google Gemini für die Vektoren), er legt die 22 Stücke an.
+1. **Datenbank:** in Supabase im SQL-Editor nacheinander ausführen: `docs/sql/001_agt_w06_support_log.sql`, `002_agt_w06_chat_histories.sql`, `003_agt_w06_auftraege_tickets.sql`, `004_agt_w06_wissensbasis.sql`, `005_agt_w06_auftrag_abfragen.sql` und `006_agt_w06_vormerkung_anlegen.sql`, für v05 danach `011`, `013`, `014` und `016` (Kennzeichen in der Wissensbasis, Weg `limit`, Prüfung der Vormerkung, Antworttext im Protokoll; `012`, `015`, `017` und `018` gehören zu den Tests), für v07 zuletzt `019` (Spalte `agents_called`), für den Workflow `k1-antwort-kette` (v10) `020` (Tabelle `agt_w07_answer_chain_results`). Anschließend den Einlese-Workflow einmal ausführen (Zugänge: Supabase mit der Rolle `service_role` zum Schreiben, Google Gemini für die Vektoren), er legt die 22 Stücke an.
 2. **Credentials neu zuweisen** (der Export führt keine Zugänge). Ab v07 liegen die Werkzeuge in den beiden Agenten-Subs, die Zugänge werden dort gesetzt; **ab v09 liegen die Werkzeug-Knoten (`K1_Antwortkatalog`, `K1_Technikwissen` samt Embeddings, `Feiertage_nachschlagen`, `Auftragsstand`, `Teamvormerkung`, `Eilmeldung_ans_Team`) im Workflow `K1 MCP-Server`, dort werden ihre Zugänge gesetzt, in den Agenten bleiben Sprachmodell und Ausweichmodell, dazu kommt in den beiden MCP Clients der Zugang Bearer Auth:**
 
 | Knoten | Credential-Typ | wofür |
@@ -83,6 +95,10 @@ Beide Exporte haben einen Chat Trigger beziehungsweise einen manuellen Start ohn
 | `Vektoren der Frage [Embeddings Google Gemini]` (ab v07 im Sub `SUB Auskunfts-Agent K1`) | Google Gemini (PaLM) API-Schlüssel | gleiches Modell wie beim Einlesen: `models/gemini-embedding-001` (3072 Stellen) |
 | `Dauergedächtnis [Postgres Chat Memory]` | Postgres, Verbindung über den Session Pooler von Supabase, SSL an | Tabelle `agt_w06_chat_histories`, Fenster 10 |
 | `Eilmeldung_ans_Team` (ab v07 im Sub `SUB Aktions-Agent K1`) | SMTP | Versand der Eilmeldung; im Export ist kein Zugang hinterlegt, er muss gesetzt werden |
+| `Gratismodell Stufe 1`, `Ausweichmodell Stufe 1`, `Gratismodell Stufe 2 A`, `Ausweichmodell Stufe 2 A`, `Gratismodell Stufe 2 B`, `Ausweichmodell Stufe 2 B` (v10, Workflow `k1-antwort-kette`) | OpenAI-Typ mit Base URL `https://openrouter.ai/api/v1` (OpenRouter-Schlüssel) | Sprachmodelle der Stufen und ihre Ausweichmodelle |
+| `Judge-Modell [OpenAI Chat Model]` (v10) | OpenAI-Typ mit Base URL `https://openrouter.ai/api/v1` (OpenRouter-Schlüssel, bezahltes Modell, dazu eine Kostengrenze am Schlüssel setzen) | bewertet Entwurf, Variante A und Variante B |
+| `Ergebnis speichern [Supabase]` (v10) | Supabase API mit der Rolle `service_role` | schreibt in `agt_w07_answer_chain_results` (Row Level Security an, keine Policy) |
+| `MCP Client A [MCP Client Tool]`, `MCP Client B [MCP Client Tool]` (v10) | Bearer Auth, derselbe Zugang wie am MCP-Server | rufen `K1_Antwortkatalog` und `K1_Technikwissen` am Server aus v09 auf |
 
 3. **Platzhalter ersetzen** (3 verschiedene):
    - `<<REPLACE_WITH_SUPABASE_PROJECT>>`: Projektkennung der eigenen Supabase-Adresse, im Feld `supabase_rest` des Knotens `Konfiguration [Edit Fields]` und im Link des Knopfes „Ticket öffnen“ im HTML der Eilmeldung. Ab v07 steht `Konfiguration [Edit Fields]` 3 Mal: im Hauptworkflow und in beiden Agenten-Subs, die Eilmeldung im Sub `SUB Aktions-Agent K1`.
