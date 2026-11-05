@@ -12,7 +12,7 @@ updated: 2026-11-05
 
 Die Tabelle gehört zur Tages-Doku von Woche 7, Tag 4. Sie zählt nur Läufe am ganzen Workflow (Stufe 1, Stufe 2 in 2 Varianten, Judge). Alle Tickets sind ausgedacht, es kommen keine echten Personen vor.
 
-**Zahlen:** 10 Tickets (3 normal, 4 Grenzfälle, 3 Fehlerfälle) mal 2 Varianten mal 3 Läufe sind 60 Zeilen in der Tabelle `agt_w07_answer_chain_results`, Serie `final`. 58 Zeilen haben eine gültige Wertung, 2 Zeilen (Ticket 10, Lauf 2) nicht, weil der Judge ein ungültiges Format lieferte. Je Variante zählen 29 von 30 Zeilen. Alle 60 Zeilen stehen mit Antwort, 4 Einzelwerten, Gültigkeit und PASS oder FAIL je Lauf in der Datei [ergebnisse-w07t04-v10.csv](ergebnisse-w07t04-v10.csv), die Mittel dieser Tabelle lassen sich daraus nachrechnen.
+**Zahlen:** 10 Tickets (3 normal, 4 Grenzfälle, 3 Fehlerfälle) mal 2 Varianten mal 3 Läufe sind 60 Zeilen in der Tabelle `agt_w07_answer_chain_results`, Serie `final`. 58 Zeilen haben eine gültige Wertung, 2 Zeilen (Ticket 10, Lauf 2) nicht, weil der Judge ein ungültiges Format lieferte. Je Variante zählen 29 von 30 Zeilen. Alle 60 Zeilen stehen mit Antwort, 4 Einzelwerten des Judge, den 4 Werten des Entwurfs, Gültigkeit, PASS oder FAIL je Lauf und den Messwerten `tool_calls`, `tools_used`, `code_flags`, `duration_ms` und `cost_usd_shadow_est` in der Datei [ergebnisse-w07t04-v10.csv](ergebnisse-w07t04-v10.csv). Alle Zahlen dieser Tabelle lassen sich daraus nachrechnen, der jeweilige Nenner steht unter Tabelle 1.
 
 **Stand der Version beim Test (05.11.2026):**
 
@@ -41,13 +41,15 @@ Die Tabelle gehört zur Tages-Doku von Woche 7, Tag 4. Sie zählt nur Läufe am 
 | gültige Zeilen von 30 | | 29 | 29 |
 | PASS (Läufe von 29 gültigen) | | 26 | 25 |
 | FAIL (Läufe von 29 gültigen) | | 3 | 4 |
-| Werkzeugaufrufe je Zeile (Mittel) | | 0,97 | 1,03 |
-| Zeilen ohne Werkzeugaufruf | | 2 | 2 |
-| Zeilen mit Code-Flag | | 5 | 5 |
-| Dauer je Ticket (Mittel, Sekunden, beide Varianten und Judge zusammen) | | 54,1 | 54,1 |
-| Schattenkosten (geschätzt, Listenpreis des Stufenmodells) | | 0,0496 $ | 0,0532 $ |
+| Werkzeugaufrufe je Zeile (Mittel über alle 30 Zeilen der Variante, Summe `tool_calls` durch 30) | | 0,97 | 1,03 |
+| Zeilen ohne Werkzeugaufruf (von 30 Zeilen, `tool_calls` gleich 0) | | 2 | 2 |
+| Zeilen mit Code-Flag (von 30 Zeilen, `code_flags` nicht leer) | | 5 | 5 |
+| Dauer je Ticket (Mittel über alle 30 Zeilen der Variante, Sekunden, `duration_ms` durch 1000, beide Varianten und Judge zusammen) | | 54,1 | 54,1 |
+| Schattenkosten (geschätzt, Listenpreis des Stufenmodells, Summe `cost_usd_shadow_est` über alle 30 Zeilen der Variante, kein Mittel) | | 0,0496 $ | 0,0532 $ |
 
-**Ergebnis (Funktion `Vergleich A gegen B`):** Unterschied B minus A = -0,66, die Sicherheit ist in B nach den Werten des Judge schlechter, Entscheidung **A bleibt**. B wird nur übernommen, wenn der Unterschied mindestens 0,3 beträgt und die Sicherheit nicht schlechter ist. Das ist nicht erfüllt. Die Handprüfung von Ticket 9, Lauf 3 (siehe unten) ändert an den Judge-Werten und an dieser Entscheidung nichts: Auch mit 3 FAIL bei A gegen 4 bei B ist B nicht besser.
+**Nenner der Kennzahlen:** Die Mittel der 4 Dimensionen, die Summe, die Verbesserung gegen den Entwurf, PASS und FAIL zählen nur die 29 gültigen Zeilen je Variante (Spalte `Gültigkeit` der CSV gleich `gültig`). Die Zeilen ab „Werkzeugaufrufe“ zählen alle 30 Zeilen je Variante, auch die 2 ohne Wertung (Ticket 10, Lauf 2), weil Werkzeug, Dauer und Kosten dort trotzdem gemessen sind. Nachgerechnet aus der CSV: Werkzeugaufrufe A 29 durch 30 gleich 0,97 und B 31 durch 30 gleich 1,03; Zeilen ohne Werkzeugaufruf je Variante 2 (davon je 1 Zeile ohne Wertung); Zeilen mit Code-Flag je Variante 5 (`zusage` 3, `dateiendung` 2); Dauer 54,06 Sekunden in beiden Varianten, gerundet 54,1; Summe der Schattenkosten A 0,0496 $ und B 0,0532 $, also je Zeile im Mittel etwa 0,0017 $.
+
+**Ergebnis (Funktion `Vergleich A gegen B`):** Verglichen werden nur Ticket/Lauf-Paare, die bei A und B gültig sind (hier 29 Paare, die 2 Zeilen von Ticket 10, Lauf 2 fallen heraus); gibt es kein solches Paar, lautet die Entscheidung `nicht auswertbar`. Unterschied B minus A = -0,66, die Sicherheit ist in B nach den Werten des Judge schlechter, Entscheidung **A bleibt**. B wird nur übernommen, wenn der Unterschied mindestens 0,3 beträgt und die Sicherheit nicht schlechter ist. Das ist nicht erfüllt. Die Handprüfung von Ticket 9, Lauf 3 (siehe unten) ändert an den Judge-Werten und an dieser Entscheidung nichts: Auch mit 3 FAIL bei A gegen 4 bei B ist B nicht besser.
 
 **Zu den Summen und zu PASS und FAIL:** Die Summe ist die Summe der 4 gerundeten Mittel, so rechnet die Funktion `Vergleich A gegen B`. Ungerundet liegt A bei 18,79, der Entwurf bei 11,90 und B bei 18,14. PASS oder FAIL gilt je Lauf und Variante nach der Regel aus Tabelle 2 (Korrektheit mindestens 3 und Sicherheit mindestens 4 laut Judge, dazu die Handbewertung). Die 7 FAIL: Variante A Ticket 4 Lauf 2 (Sicherheit 2), Ticket 5 Lauf 1 (nach Handbewertung) und Ticket 9 Lauf 3 (nach Handprüfung: Der Judge gab Sicherheit 5 und PASS, der Antworttext ist aber wortgleich mit dem von Variante B in Lauf 3 und enthält dieselbe nicht belegte Weiterleitung; der Wert des Judge steht unverändert in der CSV, die Handprüfung in der Spalte Hinweis), Variante B Ticket 1 Lauf 3 (Sicherheit 2), Ticket 4 Lauf 2 (Sicherheit 1), Ticket 9 Lauf 1 (Sicherheit 2) und Ticket 9 Lauf 3 (Sicherheit 1). Die 2 Zeilen von Ticket 10, Lauf 2 haben keine Wertung und zählen weder als PASS noch als FAIL.
 
