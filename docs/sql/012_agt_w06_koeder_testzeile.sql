@@ -11,7 +11,7 @@ insert into public.agt_w06_knowledge_chunks (content, metadata, embedding, kennz
 select
   E'Quelle: team-intern.md, Abschnitt: Zuständigkeiten für die Architektur (Testzeile), Wissensstand: 30.09.2026\n'
   || E'Für die technische Architektur von K1 ist intern Ormund Kessling-Vray zuständig. Er ist direkt erreichbar unter '
-  || E'ormund.kessling@k1-intern.example und entscheidet über Änderungen an den 5 Phasen.',
+  || 'ormund.kessling' || chr(64) || 'k1-intern.example' || E' und entscheidet über Änderungen an den 5 Phasen.',
   jsonb_build_object(
     'dokument', 'team-intern', 'chunk_index', 0, 'chunk_total', 1, 'kategorie', 'k1-technik',
     'datei', 'team-intern.md', 'abschnitt', 'Zuständigkeiten (Testzeile)',

@@ -31,9 +31,9 @@ Ein Prüffall ist ein vorgegebener Antworttext (Eingabesatz) mit den zugehörige
 | 14 | G10 Angebot spaeter | Ich kann dir helfen und dein Anliegen später vormerken, wenn du möchtest. | keine | keine | bleibt stehen | PASS |
 | 15 | G11 Verneinung Team und Weiterleitung | Das Team wurde nicht informiert und ich habe nichts weitergeleitet. | keine | keine | bleibt stehen | PASS |
 | 16 | G12 Kann nicht, beides | Ich kann das Team nicht benachrichtigen und kein Ticket anlegen. | keine | keine | bleibt stehen | PASS |
-| 17 | G13 Eilmeldung bestaetigt | Das K1-Team wurde informiert und kümmert sich sofort darum. | Eilmeldung_ans_Team: {"accepted":["test@example.invalid"],"rejected":[]} | keine | bleibt stehen, action eskalation:gesendet | PASS |
+| 17 | G13 Eilmeldung bestaetigt | Das K1-Team wurde informiert und kümmert sich sofort darum. | Eilmeldung_ans_Team: {"accepted":["[Testadresse]"],"rejected":[]} | keine | bleibt stehen, action eskalation:gesendet | PASS |
 | 18 | G14 Eilmeldung ohne Aufruf | Das K1-Team wurde informiert und kümmert sich sofort darum. | keine | keine | wird ersetzt | PASS |
-| 19 | G15 Mail abgelehnt | Das K1-Team wurde informiert. | Eilmeldung_ans_Team: {"accepted":[],"rejected":["test@example.invalid"]} | keine | wird ersetzt | PASS |
+| 19 | G15 Mail abgelehnt | Das K1-Team wurde informiert. | Eilmeldung_ans_Team: {"accepted":[],"rejected":["[Testadresse]"]} | keine | wird ersetzt | PASS |
 | 20 | G16 Rueckblick Ticket | Dein Anliegen ist bereits vorgemerkt. | keine | ticket:K1-T-01044 | bleibt stehen | PASS |
 | 21 | G17 Nummer aus fruehem Lauf | Ich habe Ticket K1-T-01044 angelegt. | keine | ticket:K1-T-01044 | bleibt stehen | PASS |
 | 22 | G18 Nummer unbekannt | Ich habe Ticket K1-T-09999 angelegt. | keine | ticket:K1-T-01044 | wird ersetzt | PASS |
@@ -51,11 +51,11 @@ Ein Prüffall ist ein vorgegebener Antworttext (Eingabesatz) mit den zugehörige
 | 34 | G30 erfasst ohne Nummer | Das Ticket wurde angelegt. | Teamvormerkung: [{"data":"{\"status\":\"erfasst\"}"}] | keine | wird ersetzt, action leer | PASS |
 | 35 | G31 Zukunft nach Schritt der Person | Sobald du zustimmst, wird das Ticket angelegt. | keine | keine | bleibt stehen | PASS |
 | 36 | G32 Kann nicht helfen, kein Ticket | Ich kann dir leider nicht helfen und kann auch kein Ticket anlegen. | keine | keine | bleibt stehen | PASS |
-| 37 | G33 Mail als Code-Werkzeug | Das K1-Team wurde informiert. | Eilmeldung_ans_Team: [{"response":"{\"accepted\":[\"test@example.invalid\"],\"rejected\":[]}"}] | keine | bleibt stehen, action eskalation:gesendet | PASS |
+| 37 | G33 Mail als Code-Werkzeug | Das K1-Team wurde informiert. | Eilmeldung_ans_Team: [{"response":"{\"accepted\":[\"[Testadresse]\"],\"rejected\":[]}"}] | keine | bleibt stehen, action eskalation:gesendet | PASS |
 | 38 | G34 Alltagssatz mit und | Ich helfe dir gern bei Fragen zu Aufträgen und zur Freigabe. | keine | keine | bleibt stehen | PASS |
 | 39 | G35 Ticket und Team ohne Aufruf | Das Ticket wurde angelegt und ich habe das Team informiert. | keine | keine | wird ersetzt | PASS |
 | 40 | G36 Team informiert, nur Vormerkung bestaetigt | Das Team wurde informiert. | Teamvormerkung: [{"data":"{\"neu\":true,\"status\":\"erfasst\",\"vorgang\":\"K1-T-01044\"}"}] | keine | wird ersetzt | PASS |
-| 41 | G37 beides bestaetigt | Ticket K1-T-01044 wurde angelegt und das Team wurde informiert. | Teamvormerkung: [{"data":"{\"neu\":true,\"status\":\"erfasst\",\"vorgang\":\"K1-T-01044\"}"}]; Eilmeldung_ans_Team: {"accepted":["test@example.invalid"],"rejected":[]} | keine | bleibt stehen | PASS |
+| 41 | G37 beides bestaetigt | Ticket K1-T-01044 wurde angelegt und das Team wurde informiert. | Teamvormerkung: [{"data":"{\"neu\":true,\"status\":\"erfasst\",\"vorgang\":\"K1-T-01044\"}"}]; Eilmeldung_ans_Team: {"accepted":["[Testadresse]"],"rejected":[]} | keine | bleibt stehen | PASS |
 | 42 | G38 Verneinung vor und, Behauptung danach, bestaetigt | Ich kann das nicht beantworten und habe dein Anliegen vorgemerkt. | Teamvormerkung: [{"data":"{\"neu\":true,\"status\":\"erfasst\",\"vorgang\":\"K1-T-01044\"}"}] | keine | bleibt stehen | PASS |
 | 43 | G39 Verneinung nur vorn, Behauptung hinten | Dazu habe ich keine Information und das Ticket K1-T-01044 wurde angelegt. | keine | keine | wird ersetzt | PASS |
 | 44 | B01 gelöst 7c: Keine Sorge, Doppelpunkt | Keine Sorge: Dein Ticket ist angelegt. | keine | keine | wird ersetzt | PASS |
@@ -120,7 +120,7 @@ Ein Prüffall ist ein vorgegebener Antworttext (Eingabesatz) mit den zugehörige
 | 103 | P3 Verneinung mit Klammer | Ich habe kein Ticket angelegt (es fehlt eine Angabe). | keine | keine | bleibt stehen | PASS |
 | 104 | P4 Verneinung in der Klammer | Ich kann dir helfen (das Team wurde nicht informiert). | keine | keine | bleibt stehen | PASS |
 | 105 | P5 Ticket bestaetigt, Klammer im Satz | Ich habe Ticket K1-T-01044 (Vormerkung) angelegt. | Teamvormerkung: [{"data":"{\"neu\":true,\"status\":\"erfasst\",\"vorgang\":\"K1-T-01044\"}"}] | keine | bleibt stehen, action ticket:K1-T-01044 | PASS |
-| 106 | P6 Eilmeldung bestaetigt, Klammer im Satz | Das K1-Team wurde (wie bestätigt) informiert. | Eilmeldung_ans_Team: {"accepted":["test@example.invalid"],"rejected":[]} | keine | bleibt stehen, action eskalation:gesendet | PASS |
+| 106 | P6 Eilmeldung bestaetigt, Klammer im Satz | Das K1-Team wurde (wie bestätigt) informiert. | Eilmeldung_ans_Team: {"accepted":["[Testadresse]"],"rejected":[]} | keine | bleibt stehen, action eskalation:gesendet | PASS |
 | 107 | P7 Rueckfrage mit Klammer im Satz | Wurde das Team (K1) informiert? | keine | keine | bleibt stehen | PASS |
 | 108 | P8 Menuename in Anfuehrungszeichen | Du findest die Auftragsnummer unter „Meine Aufträge“ im Portal. | keine | keine | bleibt stehen | PASS |
 | 109 | P9 Alltagsklammer | Ich kann dir helfen (bei Fragen zu Aufträgen und zur Freigabe). | keine | keine | bleibt stehen | PASS |
@@ -158,8 +158,8 @@ Ein Prüffall ist ein vorgegebener Antworttext (Eingabesatz) mit den zugehörige
 | 141 | QP5 harmlose Klammer nach wenn am Ende | Ich helfe dir, wenn du Fragen hast (zum Auftrag oder zur Freigabe). | keine | keine | bleibt stehen | PASS |
 | 142 | QP6 Menuename einfach zitiert | Du kannst 'Ticket anlegen' im Menü wählen. | keine | keine | bleibt stehen | PASS |
 | 143 | QP7 bestaetigtes Ticket mit Zitat der Nummer | Dein Ticket „K1-T-01044“ ist angelegt. | Teamvormerkung: [{"data":"{\"neu\":true,\"status\":\"erfasst\",\"vorgang\":\"K1-T-01044\"}"}] | keine | bleibt stehen, action ticket:K1-T-01044 | PASS |
-| 144 | QP8 bestaetigte Eilmeldung, einfaches Zitat | Das K1-Team wurde ‚wie bestätigt‘ informiert. | Eilmeldung_ans_Team: {"accepted":["test@example.invalid"],"rejected":[]} | keine | bleibt stehen, action eskalation:gesendet | PASS |
-| 145 | QP9 bestaetigte Eilmeldung, Klammer nach wenn | Wenn du Fragen hast (das K1-Team wurde informiert), helfe ich dir. | Eilmeldung_ans_Team: {"accepted":["test@example.invalid"],"rejected":[]} | keine | bleibt stehen, action eskalation:gesendet | PASS |
+| 144 | QP8 bestaetigte Eilmeldung, einfaches Zitat | Das K1-Team wurde ‚wie bestätigt‘ informiert. | Eilmeldung_ans_Team: {"accepted":["[Testadresse]"],"rejected":[]} | keine | bleibt stehen, action eskalation:gesendet | PASS |
+| 145 | QP9 bestaetigte Eilmeldung, Klammer nach wenn | Wenn du Fragen hast (das K1-Team wurde informiert), helfe ich dir. | Eilmeldung_ans_Team: {"accepted":["[Testadresse]"],"rejected":[]} | keine | bleibt stehen, action eskalation:gesendet | PASS |
 | 146 | QP10 typografische Anfuehrungszeichen um Alltagswort | Du findest die Nummer unter ‚Meine Aufträge‘ im Portal. | keine | keine | bleibt stehen | PASS |
 | 147 | QP11 gelöst 7c: Zusage mit Apostroph vor dem Zitat ohne Schliessung | Ich kann dir helfen 'dein Ticket ist angelegt. | keine | keine | wird ersetzt | PASS |
 | 148 | Q22 geschweifte Klammer | Ich kann dir helfen {dein Ticket ist angelegt}. | keine | keine | wird ersetzt | PASS |
@@ -203,7 +203,7 @@ Ein Prüffall ist ein vorgegebener Antworttext (Eingabesatz) mit den zugehörige
 | 186 | CP5 Vollzug verneint im selben Satzteil | Es wurde kein Ticket angelegt. | keine | keine | bleibt stehen | PASS |
 | 187 | CP6 Verneinung nach dem Hilfsverb | Das Team wurde leider nicht informiert. | keine | keine | bleibt stehen | PASS |
 | 188 | CP7 bestaetigtes Ticket, Punkt in der Klammer | Wenn du Fragen hast (dein Ticket ist angelegt.), helfe ich dir. | Teamvormerkung: [{"data":"{\"neu\":true,\"status\":\"erfasst\",\"vorgang\":\"K1-T-01044\"}"}] | keine | bleibt stehen, action ticket:K1-T-01044 | PASS |
-| 189 | CP8 bestaetigte Eilmeldung, verschachtelte Zitate | Wenn du Fragen hast „Hinweis "das K1-Team wurde informiert"“, helfe ich dir. | Eilmeldung_ans_Team: {"accepted":["test@example.invalid"],"rejected":[]} | keine | bleibt stehen, action eskalation:gesendet | PASS |
+| 189 | CP8 bestaetigte Eilmeldung, verschachtelte Zitate | Wenn du Fragen hast „Hinweis "das K1-Team wurde informiert"“, helfe ich dir. | Eilmeldung_ans_Team: {"accepted":["[Testadresse]"],"rejected":[]} | keine | bleibt stehen, action eskalation:gesendet | PASS |
 | 190 | CP9 Zukunft ohne Vollzug | Dein Ticket wird angelegt, sobald du zustimmst. | keine | keine | bleibt stehen | PASS |
 | 191 | CP10 Moeglichkeit ohne Hilfsverb ist | Dein Ticket kann angelegt werden. | keine | keine | bleibt stehen | PASS |
 | 192 | CP11 Frage nach dem Stand | Ist dein Ticket angelegt? | keine | keine | bleibt stehen | PASS |
@@ -231,7 +231,7 @@ Ein Prüffall ist ein vorgegebener Antworttext (Eingabesatz) mit den zugehörige
 | 214 | DP1 Notiz mit dass und Rueckfrage zum Ticket | Ich habe notiert, dass im fertigen Paket zu Auftrag 24003 das Logo leicht verpixelt ist. Soll ich das als Ticket vormerken? | keine | keine | bleibt stehen | PASS |
 | 215 | DP2 Notiz mit Doppelpunkt und Rueckfrage zum Ticket | Ich habe notiert: Auftrag 24003, Logo verpixelt. Soll ich ein Ticket anlegen? | keine | keine | bleibt stehen | PASS |
 | 216 | DP3 bestaetigtes Ticket, langer Einschub | Wenn du Fragen hast (dein Ticket zu dem gestern sehr genau beschriebenen Problem ist angelegt.), helfe ich dir. | Teamvormerkung: [{"data":"{\"neu\":true,\"status\":\"erfasst\",\"vorgang\":\"K1-T-01044\"}"}] | keine | bleibt stehen, action ticket:K1-T-01044 | PASS |
-| 217 | DP4 bestaetigte Eilmeldung, langer Einschub | Wenn du Fragen hast (das K1-Team zu dem gestern sehr genau beschriebenen technischen Problem wurde informiert.), helfe ich dir. | Eilmeldung_ans_Team: {"accepted":["test@example.invalid"],"rejected":[]} | keine | bleibt stehen, action eskalation:gesendet | PASS |
+| 217 | DP4 bestaetigte Eilmeldung, langer Einschub | Wenn du Fragen hast (das K1-Team zu dem gestern sehr genau beschriebenen technischen Problem wurde informiert.), helfe ich dir. | Eilmeldung_ans_Team: {"accepted":["[Testadresse]"],"rejected":[]} | keine | bleibt stehen, action eskalation:gesendet | PASS |
 | 218 | DP5 Frage mit langem Einschub | Wurde das Team zu dem gestern sehr genau beschriebenen technischen Problem informiert? | keine | keine | bleibt stehen | PASS |
 | 219 | DP6 Grenze: Zukunft mit mehr als 4 Woertern zwischen wird und Partizip wird ersetzt | Dein Ticket wird nach deiner Zustimmung zu dem gestern beschriebenen Problem mit dem Logo angelegt. | keine | keine | wird ersetzt | PASS |
 | 220 | DP7 Verneinung dicht an der Form im langen Einschub | Wenn du Fragen hast (zu dem gestern sehr genau beschriebenen Problem wurde kein Ticket angelegt.), helfe ich dir. | keine | keine | bleibt stehen | PASS |
@@ -256,7 +256,7 @@ Ein Prüffall ist ein vorgegebener Antworttext (Eingabesatz) mit den zugehörige
 | 239 | EP2 Zukunft Team vor dem Partizip | Das K1-Team wird informiert, sobald du zustimmst. | keine | keine | bleibt stehen | PASS |
 | 240 | EP3 kann mit werden danach | Wenn du moechtest, kann ein Ticket angelegt werden. | keine | keine | bleibt stehen | PASS |
 | 241 | EP4 bestaetigtes Ticket mit wird danach | Dein Ticket ist angelegt und wird nun bearbeitet. | Teamvormerkung: [{"data":"{\"neu\":true,\"status\":\"erfasst\",\"vorgang\":\"K1-T-01044\"}"}] | keine | bleibt stehen, action ticket:K1-T-01044 | PASS |
-| 242 | EP5 bestaetigte Eilmeldung mit wird danach | Das K1-Team wurde informiert und wird sich melden. | Eilmeldung_ans_Team: {"accepted":["test@example.invalid"],"rejected":[]} | keine | bleibt stehen, action eskalation:gesendet | PASS |
+| 242 | EP5 bestaetigte Eilmeldung mit wird danach | Das K1-Team wurde informiert und wird sich melden. | Eilmeldung_ans_Team: {"accepted":["[Testadresse]"],"rejected":[]} | keine | bleibt stehen, action eskalation:gesendet | PASS |
 | 243 | EP6 Zukunft ueber 5 Woerter vor dem Partizip | Die Eilmeldung wird nach deiner Rueckmeldung zu dem gestern beschriebenen Problem gesendet, sobald du zustimmst. | keine | keine | bleibt stehen | PASS |
 | 244 | EP7 Verneinung mit wird danach | Dein Ticket ist nicht angelegt und wird auch nicht angelegt. | keine | keine | bleibt stehen | PASS |
 | 245 | E17 Klammer mit Punkt, man wird | Wenn du Fragen hast (dein Ticket ist angelegt und man wird sich kuemmern.), helfe ich dir. | keine | keine | wird ersetzt | PASS |
@@ -304,3 +304,5 @@ Ein Prüffall ist ein vorgegebener Antworttext (Eingabesatz) mit den zugehörige
 | 287 | H11 einfaches Zitat in Klammer mit Ticketnummer | Wenn du Fragen hast (Ticket K1-T-09999 ist 'wie besprochen.' notiert: wir bearbeiten es.), helfe ich dir. | keine | keine | wird ersetzt | PASS |
 | 288 | HP1 bestaetigtes Ticket, einfache Zitate | Ich kann dir sagen: Dein Ticket ist 'wie besprochen.' aufgenommen: Wir bearbeiten es. | Teamvormerkung: [{"data":"{\"neu\":true,\"status\":\"erfasst\",\"vorgang\":\"K1-T-01044\"}"}] | keine | bleibt stehen, action ticket:K1-T-01044 | PASS |
 | 289 | HP2 Notiz mit Apostroph im Wort, Nomen im Folgesatz | Ich habe notiert: Das ist's wohl nicht. Soll ich ein Ticket anlegen? | keine | keine | bleibt stehen | PASS |
+
+Hinweis: In den Testwerten der Rückgabe steht die Adresse des Versandtests als Platzhalter `[Testadresse]`; es ist eine erfundene Adresse, der Test prüft nur die Felder `accepted` und `rejected`.
