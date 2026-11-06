@@ -4,6 +4,19 @@ Hier liegen die n8n-Exporte des Support-Agenten. Dateiname `k1-support-agent_<JJ
 
 Welche Version zu welchem Tag und welcher Tages-Doku gehört, steht in der [Versionstabelle im README](../README.md#versionen).
 
+**Stand 06.11.2026:**
+
+- `k1-support-agent_2026-11-06_v11.json` (neu, `AGT-2606 W07T05 K1 Support-Agent v11`, 66 Knoten, 37 ausführbar und 29 Notizen): der Hauptworkflow ist gegenüber v09 um die Weiche `Frage vorhanden? [If]` mit `Fester Hinweis [Edit Fields]`, den Code-Knoten `Ausgangs-Guardrail [Code]`, die Weiche `Treffer? [If]`, `Ersatztext [Edit Fields]` und `Antwort zusammensetzen [Code]` erweitert. `Sitzung auswerten [Code]` setzt das Feld `frage_vorhanden`, `Protokollzeile bauen [Code]` zählt die Route `guardrail` als Modellweg. Der Knoten `Auskunfts_Agent` ruft jetzt `SUB Auskunfts-Agent K1 v11`. Unveröffentlicht.
+- `subs/sub-auskunfts-agent-k1.json` (jetzt Stand v11, `SUB Auskunfts-Agent K1 v11`, 30 Knoten, 11 ausführbar und 19 Notizen): neu sind der Schalter `fault_test = toolfehler` in `Konfiguration [Edit Fields]` (Max Iterations 1 statt 4) und das Code-Werkzeug `Testwerkzeug_Fehler` am Agenten. Die Datei enthält den manuellen Testzweig (`Testeingang (Test)`, `Testwerte (Test)`) nicht; im Live-Workflow, im Plan und auf dem Bildschirmfoto des Subs ist er vorhanden und dient nur dem Einzeltest. Dieser Sub muss veröffentlicht sein, sonst führt der Hauptworkflow ihn nicht aus. `sub-aktions-agent-k1.json` und der MCP-Server bleiben auf v09.
+- Neue SQL-Datei: `docs/sql/021_agt_w07_route_leer_guardrail.sql` (erweitert den CHECK der Spalte `route` in `agt_w06_support_log` um `leer` und `guardrail`).
+- Neuer Ordner `docs/offline-test-guardrail/` mit den Eingaben, dem Prüfskript und dem Code des Guardrails in 3 Ständen (nur zum Nachmessen, nicht zum Import).
+
+**Reihenfolge für v11:**
+
+1. `docs/sql/021_agt_w07_route_leer_guardrail.sql` im Supabase SQL-Editor ausführen.
+2. `subs/sub-auskunfts-agent-k1.json` importieren (statt des Subs von v09): den Pfad des MCP-Servers statt `<<REPLACE_WITH_MCP_PATH>>` und die Supabase-Adresse statt `<<REPLACE_WITH_SUPABASE_PROJECT>>` eintragen, Zugänge setzen und den Sub **veröffentlichen**. Die Auswahl im Knoten `Auskunfts_Agent` des Hauptworkflows heißt danach `SUB Auskunfts-Agent K1 v11`.
+3. `k1-support-agent_2026-11-06_v11.json` importieren, die Platzhalter `<<REPLACE_WITH_SUPABASE_PROJECT>>` und die 4 Sub-Platzhalter wie in der Tabelle unten ersetzen, Zugänge setzen (Supabase, Postgres für das Gedächtnis, Sprachmodelle). Der Hauptworkflow bleibt unveröffentlicht und wird über den Chat Trigger oder `execute_workflow` gestartet.
+
 **Stand 05.11.2026:**
 
 - `k1-antwort-kette_2026-11-05_v10.json` (neu, `AGT-2606 W07T04 K1 Antwort-Kette v10`, 55 Knoten, davon 32 ausführbar und 23 Notizen): ein eigenständiger Workflow neben dem Support-Agenten, nur Standardknoten. Ablauf: `Testtickets erzeugen [Code]` liefert 10 ausgedachte Tickets, Stufe 1 (`Stufe 1 Antwort entwerfen [AI Agent]`, ohne Werkzeug) entwirft eine Antwort, Stufe 2 prüft und verbessert sie in 2 Varianten nacheinander (`Stufe 2 Variante A prüfen [AI Agent]` und `Stufe 2 Variante B prüfen [AI Agent]`, je mit eigenem MCP Client und der Auswahl `K1_Antwortkatalog` und `K1_Technikwissen`), danach `Code-Prüfung [Code]`, ein Judge (`Judge bewertet Entwurf, A und B [Basic LLM Chain]`, anderes Modell als die Stufen) und `Ergebnis speichern [Supabase]`; am Ende vergleicht `Vergleich A gegen B [Code]` beide Varianten. Der Export ist unveröffentlicht und hat einen Manual Trigger und einen Chat Trigger. Er braucht den MCP-Server aus v09 (unverändert) und die Pfad-Platzhalter `<<REPLACE_WITH_MCP_PATH>>` in beiden MCP Clients; weitere Platzhalter gibt es nicht.

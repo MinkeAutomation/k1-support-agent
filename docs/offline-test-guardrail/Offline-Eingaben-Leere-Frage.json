@@ -1,0 +1,167 @@
+{
+ "_hinweis": "Offline-Eingaben f\u00fcr den Knoten Sitzung auswerten (Feld frage_vorhanden, V6). Unsichtbare Zeichen stehen als Unicode-Escape. 21 Eingaben ohne Inhalt (frage_vorhanden false), 6 mit Inhalt (true). Grenze: die Liste deckt bekannte unsichtbare Zeichen ab, nicht jedes denkbare.",
+ "faelle": [
+  {
+   "id": "L-1",
+   "beschreibung": "vier Leerzeichen",
+   "frage": "    ",
+   "frage_vorhanden_erwartet": false
+  },
+  {
+   "id": "L-2",
+   "beschreibung": "Tab",
+   "frage": "\t",
+   "frage_vorhanden_erwartet": false
+  },
+  {
+   "id": "L-3",
+   "beschreibung": "gesch\u00fctztes Leerzeichen U+00A0",
+   "frage": "\u00a0",
+   "frage_vorhanden_erwartet": false
+  },
+  {
+   "id": "L-4",
+   "beschreibung": "zwei nullbreite Zeichen U+200B U+200C",
+   "frage": "\u200b\u200c",
+   "frage_vorhanden_erwartet": false
+  },
+  {
+   "id": "L-5",
+   "beschreibung": "F\u00fcllzeichen U+3164",
+   "frage": "\u3164",
+   "frage_vorhanden_erwartet": false
+  },
+  {
+   "id": "L-6",
+   "beschreibung": "Braille-Leerzeichen U+2800",
+   "frage": "\u2800",
+   "frage_vorhanden_erwartet": false
+  },
+  {
+   "id": "L-7",
+   "beschreibung": "Hangul-F\u00fcllzeichen U+1160",
+   "frage": "\u1160",
+   "frage_vorhanden_erwartet": false
+  },
+  {
+   "id": "L-8",
+   "beschreibung": "Hangul-F\u00fcllzeichen U+115F",
+   "frage": "\u115f",
+   "frage_vorhanden_erwartet": false
+  },
+  {
+   "id": "L-9",
+   "beschreibung": "Hangul-F\u00fcllzeichen U+FFA0",
+   "frage": "\uffa0",
+   "frage_vorhanden_erwartet": false
+  },
+  {
+   "id": "L-10",
+   "beschreibung": "Khmer-Zeichen U+17B5",
+   "frage": "\u17b5",
+   "frage_vorhanden_erwartet": false
+  },
+  {
+   "id": "L-11",
+   "beschreibung": "Variationsselektor U+FE0F",
+   "frage": "\ufe0f",
+   "frage_vorhanden_erwartet": false
+  },
+  {
+   "id": "L-12",
+   "beschreibung": "Steuerzeichen U+0085",
+   "frage": "\u0085",
+   "frage_vorhanden_erwartet": false
+  },
+  {
+   "id": "L-13",
+   "beschreibung": "Steuerzeichen U+0000",
+   "frage": "\u0000",
+   "frage_vorhanden_erwartet": false
+  },
+  {
+   "id": "L-14",
+   "beschreibung": "Objekt-Ersatzzeichen U+FFFC",
+   "frage": "\ufffc",
+   "frage_vorhanden_erwartet": false
+  },
+  {
+   "id": "L-15",
+   "beschreibung": "kombinierendes Zeichen U+0300",
+   "frage": "\u0300",
+   "frage_vorhanden_erwartet": false
+  },
+  {
+   "id": "L-16",
+   "beschreibung": "Format-Steuerzeichen U+200E",
+   "frage": "\u200e",
+   "frage_vorhanden_erwartet": false
+  },
+  {
+   "id": "L-17",
+   "beschreibung": "weiches Trennzeichen U+00AD",
+   "frage": "\u00ad",
+   "frage_vorhanden_erwartet": false
+  },
+  {
+   "id": "L-18",
+   "beschreibung": "Mongolisches Trennzeichen U+180E",
+   "frage": "\u180e",
+   "frage_vorhanden_erwartet": false
+  },
+  {
+   "id": "L-19",
+   "beschreibung": "Tag-Zeichen U+E0041",
+   "frage": "\udb40\udc41",
+   "frage_vorhanden_erwartet": false
+  },
+  {
+   "id": "L-20",
+   "beschreibung": "unsichtbarer Trenner U+2063",
+   "frage": "\u2063",
+   "frage_vorhanden_erwartet": false
+  },
+  {
+   "id": "L-21",
+   "beschreibung": "nur Zeilenumbr\u00fcche",
+   "frage": "\n\n\r\n",
+   "frage_vorhanden_erwartet": false
+  },
+  {
+   "id": "N-1",
+   "beschreibung": "Hallo",
+   "frage": "Hallo",
+   "frage_vorhanden_erwartet": true
+  },
+  {
+   "id": "N-2",
+   "beschreibung": "Fragezeichen",
+   "frage": "?",
+   "frage_vorhanden_erwartet": true
+  },
+  {
+   "id": "N-3",
+   "beschreibung": "Ziffer Null",
+   "frage": "0",
+   "frage_vorhanden_erwartet": true
+  },
+  {
+   "id": "N-4",
+   "beschreibung": "\u00fc",
+   "frage": "\u00fc",
+   "frage_vorhanden_erwartet": true
+  },
+  {
+   "id": "N-5",
+   "beschreibung": "Emoji",
+   "frage": "\ud83d\ude00",
+   "frage_vorhanden_erwartet": true
+  },
+  {
+   "id": "N-6",
+   "beschreibung": "\u00e9 in zerlegter Schreibweise",
+   "frage": "e\u0301",
+   "frage_vorhanden_erwartet": true
+  }
+ ]
+}

@@ -29,22 +29,23 @@
 <a href="w07t02.html">W7 Tag 2</a>
 <a href="w07t03.html">W7 Tag 3</a>
 <a href="w07t04.html">W7 Tag 4</a>
-<span aria-disabled="true" class="aus" title="noch nicht dokumentiert">W7 Tag 5</span>
+<a href="w07t05.html">W7 Tag 5</a>
 <a href="https://github.com/MinkeAutomation/k1-support-agent">Repository</a>
 </nav>
 </header>
 <div class="titelkopf">
 <div>
-<p class="oberzeile"><span aria-hidden="true" class="marke"></span>Wochen-Doku · Woche 6 und 7 · 26.10. bis 05.11.2026</p>
+<p class="oberzeile"><span aria-hidden="true" class="marke"></span>Wochen-Doku · Woche 6 und 7 · 26.10. bis 06.11.2026</p>
 <h1>K1 Support-Agent</h1>
-<p class="untertitel">Ein n8n-Agent beantwortet Fragen zur Content-Maschine K1 und wächst jeden Kurstag um eine Fähigkeit. Stand: v09 vom 04.11.2026, ein Orchestrator verteilt jede Anfrage an 2 Agenten, deren 6 Werkzeuge einmal an einem MCP-Server liegen. Seit 05.11.2026 gibt es dazu die Antwort-Kette v10, einen eigenen Workflow mit A/B-Test, siehe Woche 7 Tag 4.</p>
+<p class="untertitel">Ein n8n-Agent beantwortet Fragen zur Content-Maschine K1 und wächst jeden Kurstag um eine Fähigkeit. Stand: v09 vom 04.11.2026, ein Orchestrator verteilt jede Anfrage an 2 Agenten, deren 6 Werkzeuge einmal an einem MCP-Server liegen. Seit 05.11.2026 gibt es dazu die Antwort-Kette v10, einen eigenen Workflow mit A/B-Test, siehe Woche 7 Tag 4. Stand am 06.11.2026 ist v11: eine Weiche für die leere Frage, ein Ausgangs-Guardrail und ein abschaltbarer Fehlertest, siehe Woche 7 Tag 5.</p>
 </div>
 </div>
 <dl aria-label="Stand" class="messleiste">
-<div><dt>Workflow</dt><dd>v09<small>04.11.2026</small></dd></div><div><dt>Agenten</dt><dd>3<small>Orchestrator, Auskunft, Aktion</small></dd></div><div><dt>Gesamttest v09</dt><dd>17 von 17<small>Läufe bestanden, 7 Fälle</small></dd></div><div><dt>Werkzeuge am MCP-Server</dt><dd>6<small>4 lesend, 2 schreibend</small></dd></div><div><dt>Knotentest v05.1 bis v07</dt><dd>289 / 0<small>Prüffälle / Abweichungen, Prüfknoten bis v07</small></dd></div><div><dt>Vergleichsläufe</dt><dd>45<small>3 Prompts, W6 Tag 4</small></dd></div><div><dt>Tage Woche 6</dt><dd>5 von 5<small>dokumentiert</small></dd></div>
+<div><dt>Workflow</dt><dd>v11<small>06.11.2026</small></dd></div><div><dt>Agenten</dt><dd>3<small>Orchestrator, Auskunft, Aktion</small></dd></div><div><dt>Gesamttest v09</dt><dd>17 von 17<small>Läufe bestanden, 7 Fälle</small></dd></div><div><dt>Werkzeuge am MCP-Server</dt><dd>6<small>4 lesend, 2 schreibend</small></dd></div><div><dt>Knotentest v05.1 bis v07</dt><dd>289 / 0<small>Prüffälle / Abweichungen, Prüfknoten bis v07</small></dd></div><div><dt>Vergleichsläufe</dt><dd>45<small>3 Prompts, W6 Tag 4</small></dd></div><div><dt>Tage Woche 6</dt><dd>5 von 5<small>dokumentiert</small></dd></div>
 </dl>
 <div class="knoepfe">
-<a class="knopf" href="w07t04.html">Woche 7 Tag 4 <span aria-hidden="true" class="pfeil">→</span></a>
+<a class="knopf" href="w07t05.html">Woche 7 Tag 5 <span aria-hidden="true" class="pfeil">→</span></a>
+<a class="knopf zweit" href="w07t04.html">Woche 7 Tag 4 <span aria-hidden="true" class="pfeil">→</span></a>
 <a class="knopf zweit" href="w07t03.html">Woche 7 Tag 3 <span aria-hidden="true" class="pfeil">→</span></a>
 <a class="knopf zweit" href="w07t02.html">Woche 7 Tag 2 <span aria-hidden="true" class="pfeil">→</span></a>
 <a class="knopf zweit" href="w07t01.html">Woche 7 Tag 1 <span aria-hidden="true" class="pfeil">→</span></a>
@@ -59,9 +60,10 @@
 <main id="inhalt">
 <section aria-labelledby="plan-t" class="kapitel" id="plan">
 <h2 id="plan-t">Aktueller Plan</h2>
-<p>Es gibt 2 aktuelle Pläne, weil es 2 Workflows gibt: Die Antwort-Kette v10 ist neu und steht zuerst, der Plan des Support-Agenten v09 gilt unverändert weiter.</p>
+<p>Es gibt 3 Pläne, weil es 2 Workflows gibt: Der Plan des Support-Agenten v11 (2 Seiten) ist neu und steht zuerst, die Antwort-Kette v10 daneben, und der Plan v09 gilt für den Aktions-Agenten und den MCP-Server weiter.</p>
+<figure><img alt="Plan v11, Seite 1 von 2: Hauptworkflow mit Limit, der neuen Weiche Frage vorhanden mit festem Hinweis, Jev-Weiche, Orchestrator, Prüfen, Ausgangs-Guardrail, Treffer mit Ersatztext, Antwort zusammensetzen und Protokollzeile" height="2653" src="bilder/w07t05-plan-seite1-v11.png" width="3500"/><figcaption><strong>Support-Agent, Plan v11, Seite 1 (Hauptworkflow), Endstand 06.11.2026.</strong> Orange gefüllt ist neu oder geändert. <a href="plan/plan-w07t05-v11-seite1.png">Volle Auflösung</a>, <a href="plan/plan-w07t05-v11-seite2.png">Seite 2 (Sub-Agenten und MCP-Server)</a>, <a href="plan/plan-w07t05-v11.png">beide Seiten in einer Datei</a>, <a href="w07t05.html">Tag 5 mit Testtabelle</a>.</figcaption></figure>
 <figure><img alt="Plan v10: links der Trigger, daneben Konfiguration, Testtickets, MCP-Server und Baseline, in der Mitte die Verarbeitung mit Stufe 1, der Weiche Entwurf vorhanden und dem Container A/B-Test mit den Varianten A und B, rechts die Ausgabe mit Speichern, Vergleich, Handbewertung und der Entscheidung. Der Pfeil in den Container endet am ersten Knoten, Variante A, und trägt die Beschriftung Hauptablauf. Alle Pfeile sind schwarz." height="1632" src="bilder/w07t04-plan-v10.png" width="2600"/><figcaption><strong>Antwort-Kette, Plan v10, Endstand 05.11.2026.</strong> Eigener Workflow neben dem Support-Agenten. Dicker Rand und „Einstieg“ markieren den ersten Knoten im Container, dort endet der Pfeil. <a href="plan/plan-w07t04-v10.png">Volle Auflösung</a>, <a href="w07t04.html">Tag 4 mit Testtabelle</a>.</figcaption></figure>
-<figure><img alt="Plan v09: Hauptworkflow, zwei Agenten als Container und der MCP-Server als dritter Container, Pfeile enden am ersten Knoten im Container" src="bilder/w07t03-plan-v09.png"/><figcaption><strong>Support-Agent, Plan v09, weiterhin gültig.</strong> Stand 04.11.2026, am 05.11.2026 unverändert: Die Antwort-Kette v10 ändert den Support-Agenten nicht. Die Pfeile enden am ersten Knoten im Container und tragen die Anbindungsart. <a href="plan/plan-w07t03-v09.png">Volle Auflösung</a>. Den vorherigen Plan zeigt <a href="plan/plan-w07t02-v08.png">Plan v08</a>; was an Tag 1 offen war, steht im <a href="w07t02.html#update">Update-Abschnitt von Tag 2</a>.</figcaption></figure>
+<figure><img alt="Plan v09: Hauptworkflow, zwei Agenten als Container und der MCP-Server als dritter Container, Pfeile enden am ersten Knoten im Container" src="bilder/w07t03-plan-v09.png"/><figcaption><strong>Support-Agent, Plan v09, abgelöst für Hauptworkflow und Auskunfts-Agent durch Plan v11.</strong> Stand 04.11.2026; Aktions-Agent und MCP-Server sind in v11 unverändert. Am 05.11.2026 war er unverändert: Die Antwort-Kette v10 ändert den Support-Agenten nicht. Die Pfeile enden am ersten Knoten im Container und tragen die Anbindungsart. <a href="plan/plan-w07t03-v09.png">Volle Auflösung</a>. Den vorherigen Plan zeigt <a href="plan/plan-w07t02-v08.png">Plan v08</a>; was an Tag 1 offen war, steht im <a href="w07t02.html#update">Update-Abschnitt von Tag 2</a>.</figcaption></figure>
 </section>
 <section aria-labelledby="versionen-t" class="kapitel" id="versionen">
 <h2 id="versionen-t">Versionen</h2>
@@ -71,6 +73,7 @@
 <caption id="t-versionen">Versionsleiter, neueste oben</caption>
 <thead><tr><th scope="col">Version</th><th scope="col">Datum</th><th scope="col">Neu</th><th scope="col">Plan</th><th scope="col">Tests</th><th scope="col">Workflow</th><th scope="col">Doku</th></tr></thead>
 <tbody>
+<tr><th data-label="Version" scope="row">v11</th><td data-label="Datum">06.11.2026</td><td data-label="Neu">Leere Frage wird vor dem Modell abgefangen, Ausgangs-Guardrail prüft den Modelltext je Muster (22 Muster), abschaltbarer Fehlertest im Auskunfts-Agenten (Baurunden intern bis v19)</td><td data-label="Plan"><a href="plan/plan-w07t05-v11.png">Plan v11</a></td><td data-label="Tests"><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/testtabelle-w07t05-v11.md">Testtabelle v11</a>, <a href="https://github.com/MinkeAutomation/k1-support-agent/tree/main/docs/offline-test-guardrail">Offline-Test</a></td><td data-label="Workflow"><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/k1-support-agent_2026-11-06_v11.json">Export v11</a></td><td data-label="Doku"><a href="w07t05.html">W7 Tag 5</a></td></tr>
 <tr><th data-label="Version" scope="row">v10</th><td data-label="Datum">05.11.2026</td><td data-label="Neu">Eigener Workflow Antwort-Kette: Stufe 1 entwirft, Stufe 2 prüft in 2 Varianten (A und B), ein Judge bewertet; A/B-Test mit 10 Tickets in 3 Läufen</td><td data-label="Plan"><a href="plan/plan-w07t04-v10.png">Plan v10</a></td><td data-label="Tests"><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/testtabelle-w07t04-v10.md">Testtabelle v10</a></td><td data-label="Workflow"><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/k1-antwort-kette_2026-11-05_v10.json">Export v10</a></td><td data-label="Doku"><a href="w07t04.html">W7 Tag 4</a></td></tr>
 <tr><th data-label="Version" scope="row">v09</th><td data-label="Datum">04.11.2026</td><td data-label="Neu">Die 6 Werkzeuge liegen einmal an einem MCP-Server (Bearer-Anmeldung), beide Agenten wählen am Client ihre Auswahl</td><td data-label="Plan"><a href="plan/plan-w07t03-v09.png">Plan v09</a></td><td data-label="Tests"><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/testtabelle-w07t03-v09.md">Testtabelle v09</a></td><td data-label="Workflow"><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/k1-support-agent_2026-11-04_v09.json">Export v09</a>, <a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/k1-mcp-server_2026-11-04_v09.json">Server</a></td><td data-label="Doku"><a href="w07t03.html">W7 Tag 3</a></td></tr>
 <tr><th data-label="Version" scope="row">v08</th><td data-label="Datum">03.11.2026</td><td data-label="Neu">Handoff-Feld prioritaet, feste Felder für die Zustimmung, fester Ausfallsatz, fester Absatz aus den Belegen (Baurunden intern bis v16, letzte Textrunde v17)</td><td data-label="Plan"><a href="plan/plan-w07t02-v08.png">Plan v08</a></td><td data-label="Tests"><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/docs/testtabelle-w07t02-v08.md">Testtabelle v08</a></td><td data-label="Workflow"><a href="https://github.com/MinkeAutomation/k1-support-agent/blob/main/workflows/k1-support-agent_2026-11-03_v08.json">Export v08</a></td><td data-label="Doku"><a href="w07t02.html">W7 Tag 2</a></td></tr>
@@ -87,7 +90,7 @@
 </section></main>
 <footer class="fuss">
 <span>Patrick Minkler · K1 Support-Agent</span>
-<span>Stand 05.11.2026 · v10</span>
+<span>Stand 06.11.2026 · v11</span>
 </footer>
 </div>
 </body>
